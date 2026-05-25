@@ -167,6 +167,26 @@
       font-size:.85rem;
     }
 
+
+    .enzyme-card .row > div{
+      display:flex;
+      flex-direction:column;
+    }
+    .enzyme-card .row > div label{
+      min-height:42px;
+      display:flex;
+      align-items:flex-end;
+    }
+    .enzyme-card input,
+    .enzyme-card select{
+      height:50px;
+    }
+    @media (max-width:560px){
+      .enzyme-card .row > div label{
+        min-height:auto;
+      }
+    }
+
     @media (max-width:560px){
       header{padding:30px 22px}
       main{padding:22px 14px}
@@ -309,7 +329,7 @@
     </section>
 
 
-    <section class="card">
+    <section class="card enzyme-card">
       <h2>Enzyme Day Supply</h2>
       <div class="row">
         <div><label>Total capsules dispensed</label><input id="enz_qty" type="number" placeholder="e.g. 240"></div>
