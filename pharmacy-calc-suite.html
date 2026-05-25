@@ -588,13 +588,6 @@ function fridge(){
   else msg+=`Status: No obvious weekend/holiday fridge-delivery flag from this checker. Verify local policy.`;
   out('fr_result', msg);
 }
-\nClass selected: ${c}`);
-}
-function noteGen(){
-  const type=$('note_type').value, details=$('note_details').value.trim(), action=$('note_action').value.trim();
-  const stamp=new Date().toLocaleString();
-  out('note_result', `${type}: ${details || '[details]'}\nAction: ${action || '[action taken]'}\nEntered: ${stamp}`);
-}
 
 function nasalDS(){
   const total=num('nasal_total'),
