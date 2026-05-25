@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pharmacy Calculator Suite</title>
+  <style>
+    :root{
+      --navy:#0d243f;
+      --navy2:#102b4c;
+      --gold:#d4a017;
+      --cream:#f8f6ef;
+      --card:#ffffff;
+      --text:#0d243f;
+      --muted:#667085;
+      --line:#d9d6cc;
+      --input:#ffffff;
+      --soft:#f3f0e8;
+      --green:#15803d;
+      --red:#b42318;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:var(--cream);
+      color:var(--text);
+    }
+    header{
+      padding:34px 28px 38px;
+      background:var(--navy);
+      color:#fff;
+      border-bottom:7px solid var(--gold);
+    }
+    h1{
+      margin:0;
+      font-size:clamp(2rem,4vw,3rem);
+      line-height:1.05;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+    .sub{
+      color:#f2efe7;
+      margin-top:14px;
+      font-size:clamp(1rem,2.3vw,1.25rem);
+      line-height:1.35;
+      max-width:900px;
+    }
+    main{max-width:1180px;margin:0 auto;padding:28px 18px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:18px}
+    .card{
+      background:var(--card);
+      border:2px solid var(--line);
+      border-radius:22px;
+      padding:22px;
+      box-shadow:0 10px 28px rgba(13,36,63,.08);
+    }
+    h2{
+      font-size:1.35rem;
+      margin:0 0 16px;
+      padding-bottom:10px;
+      border-bottom:4px solid var(--gold);
+      color:var(--navy);
+      font-weight:850;
+      letter-spacing:-.02em;
+    }
+    label{
+      display:block;
+      font-size:.95rem;
+      color:var(--navy);
+      font-weight:750;
+      margin-top:13px;
+    }
+    input,select,textarea{
+      width:100%;
+      margin-top:7px;
+      padding:13px 14px;
+      border-radius:14px;
+      border:2px solid #c9c9c9;
+      background:var(--input);
+      color:#111827;
+      font-size:1.03rem;
+      outline:none;
+    }
+    input:focus,select:focus,textarea:focus{
+      border-color:var(--gold);
+      box-shadow:0 0 0 3px rgba(212,160,23,.18);
+    }
+    input::placeholder,textarea::placeholder{color:#a3a3a3}
+    textarea{min-height:96px;resize:vertical}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    button{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      background:var(--navy);
+      color:#fff;
+      font-weight:850;
+      cursor:pointer;
+      box-shadow:0 4px 0 rgba(13,36,63,.18);
+    }
+    button:hover{filter:brightness(1.05)}
+    button.secondary{
+      background:#e9e5da;
+      color:var(--navy);
+      border:1px solid #d1cabc;
+      box-shadow:none;
+    }
+    button.good{background:var(--green);color:#fff}
+    button.warn{background:var(--gold);color:#1f1300}
+    .result{
+      margin-top:14px;
+      padding:14px;
+      border:2px solid #d8d2c5;
+      border-radius:16px;
+      background:#fbfaf7;
+      white-space:pre-wrap;
+      line-height:1.38;
+      color:#111827;
+      min-height:56px;
+    }
+    .small{font-size:.86rem;color:var(--muted);margin-top:10px;line-height:1.35}
+    .pill{display:inline-block;padding:4px 9px;border-radius:999px;background:#f8f6ef;border:1px solid #d8d2c5;color:var(--navy);font-size:.8rem;margin:2px}
+    .danger{color:var(--red)}.ok{color:var(--green)}.yellow{color:#92400e}
+    footer{
+      padding:24px 8px 10px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.86rem;
+      line-height:1.35;
+    }
+    @media (max-width:560px){
+      header{padding:30px 22px}
+      main{padding:22px 14px}
+      .grid{grid-template-columns:1fr}
+      .row{grid-template-columns:1fr}
+      .card{padding:20px 18px}
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Pharmacy Calculator Suite</h1>
+  <div class="sub">Pharmacy workflow calculator · Manual-first · Human oversight always</div>
+</header>
+<main>
+  <div class="grid">
+
+    <section class="card">
+      <h2>Next Fill Date</h2>
+      <div class="row">
+        <div><label>Last fill date</label><input id="nfd_last" type="date"></div>
+        <div><label>Days supply</label><input id="nfd_days" type="number" min="1" value="30"></div>
+      </div>
+      <label>Threshold</label>
+      <select id="nfd_threshold">
+        <option value="0.85">85%</option><option value="0.90">90%</option><option value="1">100%</option>
+      </select>
+      <label><input id="nfd_control" type="checkbox" style="width:auto"> Control / C-II? Auto-use 100%</label>
+      <div class="btns"><button onclick="nextFill()">Calculate</button><button class="secondary" onclick="copyResult('nfd_result')">Copy</button></div>
+      <div id="nfd_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Days Supply</h2>
+      <div class="row">
+        <div><label>Total quantity</label><input id="ds_qty" type="number" step="0.01"></div>
+        <div><label>Units used per day</label><input id="ds_perday" type="number" step="0.01"></div>
+      </div>
+      <div class="btns"><button onclick="daysSupply()">Calculate</button><button class="secondary" onclick="copyResult('ds_result')">Copy</button></div>
+      <div id="ds_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Quantity Needed</h2>
+      <div class="row">
+        <div><label>Units used per day</label><input id="qn_perday" type="number" step="0.01"></div>
+        <div><label>Desired days supply</label><input id="qn_days" type="number" value="30"></div>
+      </div>
+      <div class="btns"><button onclick="qtyNeeded()">Calculate</button><button class="secondary" onclick="copyResult('qn_result')">Copy</button></div>
+      <div id="qn_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Insulin Day Supply</h2>
+      <div class="row">
+        <div><label>Total mL dispensed</label><input id="ins_ml" type="number" step="0.01" placeholder="e.g. 15"></div>
+        <div><label>Units per mL</label><input id="ins_unitsml" type="number" value="100"></div>
+      </div>
+      <div class="row">
+        <div><label>Units/day</label><input id="ins_unitsday" type="number" step="0.01"></div>
+        <div><label>Prime/waste units/day optional</label><input id="ins_waste" type="number" step="0.01" value="0"></div>
+      </div>
+      <div class="btns"><button onclick="insulinDS()">Calculate</button><button class="secondary" onclick="copyResult('ins_result')">Copy</button></div>
+      <div id="ins_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Eye Drop Day Supply</h2>
+      <div class="row">
+        <div><label>Total mL</label><input id="eye_ml" type="number" step="0.01"></div>
+        <div><label>Drops per mL</label><input id="eye_dpm" type="number" value="20"></div>
+      </div>
+      <div class="row">
+        <div><label>Drops per dose</label><input id="eye_dose" type="number" value="1"></div>
+        <div><label>Doses per day</label><input id="eye_freq" type="number" value="1"></div>
+      </div>
+      <label>Number of eyes</label><select id="eye_eyes"><option value="1">One eye</option><option value="2">Both eyes</option></select>
+      <div class="btns"><button onclick="eyeDS()">Calculate</button><button class="secondary" onclick="copyResult('eye_result')">Copy</button></div>
+      <div id="eye_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Inhaler Day Supply</h2>
+      <div class="row">
+        <div><label>Total actuations</label><input id="inh_act" type="number" placeholder="e.g. 200"></div>
+        <div><label>Puffs per day</label><input id="inh_puffs" type="number" step="0.01"></div>
+      </div>
+      <div class="btns"><button onclick="inhDS()">Calculate</button><button class="secondary" onclick="copyResult('inh_result')">Copy</button></div>
+      <div id="inh_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Cream/Ointment Estimate</h2>
+      <div class="row">
+        <div><label>Total grams dispensed</label><input id="top_g" type="number" step="0.01"></div>
+        <div><label>Estimated grams/day</label><input id="top_gpd" type="number" step="0.01"></div>
+      </div>
+      <div class="btns"><button onclick="topicalDS()">Calculate</button><button class="secondary" onclick="copyResult('top_result')">Copy</button></div>
+      <div id="top_result" class="result">Ready.</div>
+      <div class="small">Use only as an estimate when workflow permits. Topicals can be audit-sensitive.</div>
+    </section>
+
+    <section class="card">
+      <h2>Titration Schedule</h2>
+      <label>Start date</label><input id="tit_start" type="date">
+      <label>Steps</label>
+      <textarea id="tit_steps" placeholder="One per line: dose | days&#10;Example: 1 tablet daily | 7&#10;1 tablet twice daily | 7&#10;3 tablets daily | 7&#10;2 tablets twice daily | 30"></textarea>
+      <div class="btns"><button onclick="titration()">Build Schedule</button><button class="secondary" onclick="copyResult('tit_result')">Copy</button></div>
+      <div id="tit_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Refill Too Soon / Eligible Date</h2>
+      <div class="row">
+        <div><label>Last fill date</label><input id="rts_last" type="date"></div>
+        <div><label>Days supply</label><input id="rts_days" type="number" value="30"></div>
+      </div>
+      <label>Plan threshold</label>
+      <select id="rts_threshold"><option value="0.75">75%</option><option value="0.80">80%</option><option value="0.85" selected>85%</option><option value="0.90">90%</option><option value="1">100%</option></select>
+      <div class="btns"><button onclick="rts()">Calculate</button><button class="secondary" onclick="copyResult('rts_result')">Copy</button></div>
+      <div id="rts_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Fridge Delivery Safe-Date Checker</h2>
+      <label>Proposed delivery date</label><input id="fr_date" type="date">
+      <label><input id="fr_holiday_monday" type="checkbox" style="width:auto"> Monday holiday / closure before delivery week</label>
+      <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
+      <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button></div>
+      <div id="fr_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Control Threshold Helper</h2>
+      <label>Medication class</label>
+      <select id="ct_class"><option>Non-control</option><option>Control / C-II</option></select>
+      <div class="btns"><button onclick="controlThreshold()">Apply Rule</button><button class="secondary" onclick="copyResult('ct_result')">Copy</button></div>
+      <div id="ct_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Copy Note Generator</h2>
+      <label>Issue type</label>
+      <select id="note_type">
+        <option>Refill too soon</option><option>Inventory / product selection</option><option>Fridge delivery date</option><option>Typo / unclear request</option><option>Clinical clarification</option><option>Payment / copay issue</option><option>Custom</option>
+      </select>
+      <label>Patient/request details</label><textarea id="note_details" placeholder="Keep PHI out if copying outside approved systems."></textarea>
+      <label>Action taken</label><textarea id="note_action" placeholder="Example: Sent MHAV to confirm delivery address."></textarea>
+      <div class="btns"><button onclick="noteGen()">Generate</button><button class="secondary" onclick="copyResult('note_result')">Copy</button></div>
+      <div id="note_result" class="result">Ready.</div>
+    </section>
+
+  </div>
+  <footer>For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.</footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const num = id => parseFloat($(id).value);
+function dval(id){ const v=$(id).value; return v ? new Date(v+"T00:00:00") : null; }
+function fmt(d){ return d ? d.toLocaleDateString(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric'}) : ""; }
+function addDays(d, days){ const x=new Date(d); x.setDate(x.getDate()+Math.ceil(days)); return x; }
+function out(id, text){ $(id).textContent=text; }
+function copyResult(id){ navigator.clipboard.writeText($(id).textContent); }
+
+function nextFill(){
+  const last=dval('nfd_last'), days=num('nfd_days'); if(!last||!days) return out('nfd_result','Missing last fill date or days supply.');
+  const thresh=$('nfd_control').checked ? 1 : parseFloat($('nfd_threshold').value);
+  const eligible=addDays(last, days*thresh);
+  out('nfd_result', `Next fill date: ${fmt(eligible)}\nThreshold used: ${Math.round(thresh*100)}%\nLast fill: ${fmt(last)}\nDays supply: ${days}`);
+}
+function daysSupply(){
+  const q=num('ds_qty'), p=num('ds_perday'); if(!q||!p) return out('ds_result','Missing quantity or daily usage.');
+  out('ds_result', `Days supply: ${Math.floor(q/p)} days\nRaw: ${(q/p).toFixed(2)} days\nQuantity: ${q}\nUnits/day: ${p}`);
+}
+function qtyNeeded(){
+  const p=num('qn_perday'), d=num('qn_days'); if(!p||!d) return out('qn_result','Missing units/day or desired days.');
+  out('qn_result', `Quantity needed: ${Math.ceil(p*d)}\nRaw: ${(p*d).toFixed(2)}\nUnits/day: ${p}\nDays: ${d}`);
+}
+function insulinDS(){
+  const ml=num('ins_ml'), u=num('ins_unitsml'), day=num('ins_unitsday'), waste=num('ins_waste')||0;
+  if(!ml||!u||!day) return out('ins_result','Missing total mL, units/mL, or units/day.');
+  const total=ml*u, daily=day+waste;
+  out('ins_result', `Insulin day supply: ${Math.floor(total/daily)} days\nTotal units: ${total}\nDaily units used: ${daily}${waste?` (${day} dose + ${waste} prime/waste)`:''}`);
+}
+function eyeDS(){
+  const ml=num('eye_ml'), dpm=num('eye_dpm'), dose=num('eye_dose'), freq=num('eye_freq'), eyes=parseInt($('eye_eyes').value);
+  if(!ml||!dpm||!dose||!freq) return out('eye_result','Missing eye drop values.');
+  const total=ml*dpm, daily=dose*freq*eyes;
+  out('eye_result', `Eye drop day supply: ${Math.floor(total/daily)} days\nTotal drops: ${total}\nDrops/day: ${daily}\nAssumption: ${dpm} drops/mL`);
+}
+function inhDS(){
+  const act=num('inh_act'), p=num('inh_puffs'); if(!act||!p) return out('inh_result','Missing actuations or puffs/day.');
+  out('inh_result', `Inhaler day supply: ${Math.floor(act/p)} days\nTotal actuations: ${act}\nPuffs/day: ${p}`);
+}
+function topicalDS(){
+  const g=num('top_g'), gpd=num('top_gpd'); if(!g||!gpd) return out('top_result','Missing grams or grams/day.');
+  out('top_result', `Estimated topical day supply: ${Math.floor(g/gpd)} days\nTotal grams: ${g}\nEstimated grams/day: ${gpd}`);
+}
+function titration(){
+  const start=dval('tit_start'); if(!start) return out('tit_result','Missing start date.');
+  const lines=$('tit_steps').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  if(!lines.length) return out('tit_result','Enter titration steps as: dose | days');
+  let cur=new Date(start), text=`Titration schedule starting ${fmt(start)}:\n`;
+  let total=0;
+  lines.forEach((line,i)=>{
+    const parts=line.split('|'); const dose=(parts[0]||'').trim(); const days=parseInt((parts[1]||'').trim());
+    if(!dose||!days){ text+=`\nStep ${i+1}: INVALID - use dose | days`; return; }
+    const end=addDays(cur, days-1);
+    text+=`\nStep ${i+1}: ${dose} for ${days} day(s)\n  ${fmt(cur)} through ${fmt(end)}`;
+    cur=addDays(end,1); total+=days;
+  });
+  text+=`\n\nTotal scheduled days: ${total}\nNext date after schedule: ${fmt(cur)}`;
+  out('tit_result', text);
+}
+function rts(){
+  const last=dval('rts_last'), days=num('rts_days'), t=parseFloat($('rts_threshold').value);
+  if(!last||!days) return out('rts_result','Missing last fill date or days supply.');
+  out('rts_result', `Eligible/RTS estimate: ${fmt(addDays(last,days*t))}\nThreshold: ${Math.round(t*100)}%\nLast fill: ${fmt(last)}\nDays supply: ${days}`);
+}
+function fridge(){
+  const d=dval('fr_date'); if(!d) return out('fr_result','Missing delivery date.');
+  const day=d.getDay(); let msg=`Proposed delivery: ${fmt(d)}\n`;
+  let flags=[];
+  if(day===1) flags.push('Monday delivery: usually avoid fridge delivery.');
+  if($('fr_holiday_monday').checked && day===2) flags.push('Tuesday after Monday holiday acts like Monday-risk logic.');
+  if($('fr_weekend').checked && (day===0||day===6)) flags.push('Weekend delivery/exposure risk.');
+  if(flags.length){ msg+=`Status: REVIEW / likely unsafe\n- ${flags.join('\n- ')}\nSuggested: consider next safer business delivery date per policy.`; }
+  else msg+=`Status: No obvious weekend/holiday fridge-delivery flag from this checker. Verify local policy.`;
+  out('fr_result', msg);
+}
+function controlThreshold(){
+  const c=$('ct_class').value; const pct=c.includes('Control')?'100%':'85% default';
+  out('ct_result', `Recommended threshold: ${pct}\nClass selected: ${c}`);
+}
+function noteGen(){
+  const type=$('note_type').value, details=$('note_details').value.trim(), action=$('note_action').value.trim();
+  const stamp=new Date().toLocaleString();
+  out('note_result', `${type}: ${details || '[details]'}\nAction: ${action || '[action taken]'}\nEntered: ${stamp}`);
+}
+</script>
+</body>
+</html>
