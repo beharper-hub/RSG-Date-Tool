@@ -15,9 +15,7 @@
       --border: #d9d3c7;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -201,6 +199,9 @@
       <option value="C-II">C-II</option>
     </select>
 
+    <label for="claimDate">Claim Earliest Fill (optional)</label>
+    <input type="date" id="claimDate">
+
     <label for="override">Override Reason</label>
     <textarea id="override" placeholder="Optional override reason"></textarea>
 
@@ -288,6 +289,8 @@ function calculate() {
   const lastFillValue = document.getElementById("lastFill").value;
   const daySupply = Number(document.getElementById("daySupply").value);
   const allowedPercent = Number(document.getElementById("allowedPercent").value);
+  const medType = document.getElementById("medType").value;
+  const claimDateValue = document.getElementById("claimDate").value;
   const override = document.getElementById("override").value.trim();
 
   if (!lastFillValue || !daySupply || daySupply <= 0) {
@@ -351,6 +354,14 @@ function calculate() {
     `Status: ${refillStatus}`
   ];
 
+  if (medType === "Controlled" || medType === "C-II") {
+    noteLines.push(`Medication type: ${medType}`);
+  }
+
+  if (claimDateValue) {
+    noteLines.push(`Claim date: ${formatDate(parseLocalDate(claimDateValue))}`);
+  }
+
   if (override) {
     noteLines.push(`Override: ${override}`);
   }
@@ -382,6 +393,7 @@ function clearForm() {
   document.getElementById("daySupply").value = "";
   document.getElementById("allowedPercent").value = "0.85";
   document.getElementById("medType").value = "Non-Control";
+  document.getElementById("claimDate").value = "";
   document.getElementById("override").value = "";
 
   document.getElementById("earliestFill").textContent = "—";
