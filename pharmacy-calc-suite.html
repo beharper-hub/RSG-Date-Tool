@@ -308,6 +308,34 @@
       <div id="inh_result" class="result">Ready.</div>
     </section>
 
+
+    <section class="card">
+      <h2>Enzyme Day Supply</h2>
+      <div class="row">
+        <div><label>Total capsules dispensed</label><input id="enz_qty" type="number" placeholder="e.g. 240"></div>
+        <div><label>Capsules per meal</label><input id="enz_meal_caps" type="number" step="0.01" value="2"></div>
+      </div>
+      <div class="row">
+        <div><label>Meals per day</label><input id="enz_meals" type="number" step="0.01" value="3"></div>
+        <div><label>Capsules per snack</label><input id="enz_snack_caps" type="number" step="0.01" value="1"></div>
+      </div>
+      <div class="row">
+        <div><label>Snacks per day</label><input id="enz_snacks" type="number" step="0.01" value="2"></div>
+        <div><label>Rounding</label><select id="enz_round"><option value="up" selected>Round up</option><option value="down">Round down</option><option value="raw">Show raw only</option></select></div>
+      </div>
+      <div class="btns"><button onclick="enzymeDS()">Calculate</button><button class="secondary" onclick="copyResult('enz_result')">Copy</button></div>
+      <div id="enz_result" class="result">Ready.</div>
+      <div class="preset-row">
+        <button class="preset" onclick="enzymePreset(240,2,3,1,2)">2 Meals / 1 Snacks</button>
+        <button class="preset" onclick="enzymePreset(360,3,3,2,2)">High Usage</button>
+      </div>
+      <div class="history">
+        <h3>Recent Calculations</h3>
+        <div id="enz_history"></div>
+      </div>
+      <div class="small">For pancreatic enzyme capsule day supply. Verify SIG and dispense quantity before billing.</div>
+    </section>
+
     <section class="card">
       <h2>Cream/Ointment Estimate</h2>
       <div class="row">
@@ -341,20 +369,12 @@
     </section>
 
     <section class="card">
-      <h2>Fridge Delivery Safe-Date Checker</h2>
+      <h2>Refrigerated Shipment Checker</h2>
       <label>Proposed delivery date</label><input id="fr_date" type="date">
       <label><input id="fr_holiday_monday" type="checkbox" style="width:auto"> Monday holiday / closure before delivery week</label>
       <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
       <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button></div>
       <div id="fr_result" class="result">Ready.</div>
-    </section>
-
-    <section class="card">
-      <h2>Control Threshold Helper</h2>
-      <label>Medication class</label>
-      <select id="ct_class"><option>Non-control</option><option>Control / C-II</option></select>
-      <div class="btns"><button onclick="controlThreshold()">Apply Rule</button><button class="secondary" onclick="copyResult('ct_result')">Copy</button></div>
-      <div id="ct_result" class="result">Ready.</div>
     </section>
 
     
@@ -414,6 +434,16 @@ function nasalPreset(total,per,freq,nostrils){
   $('nasal_nostrils').value = nostrils;
 }
 
+
+function enzymePreset(qty,mealCaps,meals,snackCaps,snacks){
+  $('enz_qty').value = qty;
+  $('enz_meal_caps').value = mealCaps;
+  $('enz_meals').value = meals;
+  $('enz_snack_caps').value = snackCaps;
+  $('enz_snacks').value = snacks;
+  $('enz_round').value = 'up';
+}
+
 function copyResult(id){ navigator.clipboard.writeText($(id).textContent); }
 
 function nextFill(){
@@ -471,6 +501,57 @@ function inhDS(){
   const act=num('inh_act'), p=num('inh_puffs'); if(!act||!p) return out('inh_result','Missing actuations or puffs/day.');
   out('inh_result', `Inhaler day supply: ${Math.floor(act/p)} days\nTotal actuations: ${act}\nPuffs/day: ${p}`);
 }
+
+function enzymeDS(){
+  const qty=num('enz_qty'),
+        mealCaps=num('enz_meal_caps')||0,
+        meals=num('enz_meals')||0,
+        snackCaps=num('enz_snack_caps')||0,
+        snacks=num('enz_snacks')||0,
+        roundMode=$('enz_round').value;
+
+  if(!validatePositive([qty])){
+    return out('enz_result','Enter a valid positive capsule quantity.');
+  }
+
+  if((mealCaps <= 0 || meals <= 0) && (snackCaps <= 0 || snacks <= 0)){
+    return out('enz_result','Enter meal and/or snack capsule usage.');
+  }
+
+  const mealDaily = mealCaps * meals;
+  const snackDaily = snackCaps * snacks;
+  const daily = mealDaily + snackDaily;
+
+  if(daily <= 0){
+    return out('enz_result','Daily capsule usage must be greater than zero.');
+  }
+
+  const raw = qty / daily;
+  let dsLabel = `${raw.toFixed(2)} days raw`;
+  let finalDS = raw.toFixed(2);
+
+  if(roundMode === 'up'){
+    finalDS = Math.ceil(raw);
+    dsLabel = `${finalDS} days rounded up`;
+  } else if(roundMode === 'down'){
+    finalDS = Math.floor(raw);
+    dsLabel = `${finalDS} days rounded down`;
+  }
+
+  if(raw > 365){
+    return out('enz_result','Calculated day supply exceeds realistic limits. Verify quantity and usage.');
+  }
+
+  const text=`Enzyme day supply: ${dsLabel}
+Total capsules: ${qty}
+Capsules/day: ${daily}
+Meal use: ${mealCaps} capsule(s) × ${meals} meal(s) = ${mealDaily}/day
+Snack use: ${snackCaps} capsule(s) × ${snacks} snack(s) = ${snackDaily}/day`;
+
+  out('enz_result', text);
+  addHistory('enz', text);
+}
+
 function topicalDS(){
   const g=num('top_g'), gpd=num('top_gpd'); if(!g||!gpd) return out('top_result','Missing grams or grams/day.');
   out('top_result', `Estimated topical day supply: ${Math.floor(g/gpd)} days\nTotal grams: ${g}\nEstimated grams/day: ${gpd}`);
@@ -507,9 +588,7 @@ function fridge(){
   else msg+=`Status: No obvious weekend/holiday fridge-delivery flag from this checker. Verify local policy.`;
   out('fr_result', msg);
 }
-function controlThreshold(){
-  const c=$('ct_class').value; const pct=c.includes('Control')?'100%':'85% default';
-  out('ct_result', `Recommended threshold: ${pct}\nClass selected: ${c}`);
+\nClass selected: ${c}`);
 }
 function noteGen(){
   const type=$('note_type').value, details=$('note_details').value.trim(), action=$('note_action').value.trim();
