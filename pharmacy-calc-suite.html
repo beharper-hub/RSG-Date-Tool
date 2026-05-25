@@ -211,6 +211,29 @@
       <div id="eye_result" class="result">Ready.</div>
     </section>
 
+<section class="card">
+  <h2>Nasal Spray Day Supply</h2>
+  <div class="row">
+    <div><label>Total sprays in bottle</label><input id="nasal_total" type="number" placeholder="e.g. 120"></div>
+    <div><label>Sprays per nostril</label><input id="nasal_pernostril" type="number" value="1"></div>
+  </div>
+  <div class="row">
+    <div><label>Doses per day</label><input id="nasal_freq" type="number" value="1"></div>
+    <div>
+      <label>Number of nostrils treated</label>
+      <select id="nasal_nostrils">
+        <option value="1">One nostril</option>
+        <option value="2">Both nostrils</option>
+      </select>
+    </div>
+  </div>
+  <div class="btns">
+    <button onclick="nasalDS()">Calculate</button>
+    <button class="secondary" onclick="copyResult('nasal_result')">Copy</button>
+  </div>
+  <div id="nasal_result" class="result">Ready.</div>
+</section>
+
     <section class="card">
       <h2>Inhaler Day Supply</h2>
       <div class="row">
@@ -270,19 +293,12 @@
       <div id="ct_result" class="result">Ready.</div>
     </section>
 
-    <section class="card">
-      <h2>Copy Note Generator</h2>
-      <label>Issue type</label>
-      <select id="note_type">
-        <option>Refill too soon</option><option>Inventory / product selection</option><option>Fridge delivery date</option><option>Typo / unclear request</option><option>Clinical clarification</option><option>Payment / copay issue</option><option>Custom</option>
-      </select>
-      <label>Patient/request details</label><textarea id="note_details" placeholder="Keep PHI out if copying outside approved systems."></textarea>
-      <label>Action taken</label><textarea id="note_action" placeholder="Example: Sent MHAV to confirm delivery address."></textarea>
-      <div class="btns"><button onclick="noteGen()">Generate</button><button class="secondary" onclick="copyResult('note_result')">Copy</button></div>
-      <div id="note_result" class="result">Ready.</div>
-    </section>
+    
 
-  </div>
+  
+
+
+</div>
   <footer>For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.</footer>
 </main>
 <script>
@@ -369,6 +385,27 @@ function noteGen(){
   const stamp=new Date().toLocaleString();
   out('note_result', `${type}: ${details || '[details]'}\nAction: ${action || '[action taken]'}\nEntered: ${stamp}`);
 }
+
+function nasalDS(){
+  const total=num('nasal_total'),
+        per=num('nasal_pernostril'),
+        freq=num('nasal_freq'),
+        nostrils=parseInt($('nasal_nostrils').value);
+
+  if(!total || !per || !freq){
+    return out('nasal_result','Missing nasal spray values.');
+  }
+
+  const daily = per * freq * nostrils;
+  const ds = Math.floor(total / daily);
+
+  out('nasal_result',
+`Nasal spray day supply: ${ds} days
+Total sprays: ${total}
+Sprays/day: ${daily}
+Usage: ${per} spray(s) per nostril, ${freq} time(s) daily`);
+}
+
 </script>
 </body>
 </html>
