@@ -80,6 +80,13 @@
       font-size: 13px;
     }
 
+    .field-note {
+      margin: -2px 0 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
     input,
     select,
     textarea {
@@ -107,6 +114,10 @@
       margin-top: 16px;
       width: 100%;
       font-size: 15px;
+    }
+
+    button:hover {
+      background: #15345d;
     }
 
     .secondary {
@@ -148,6 +159,16 @@
       line-height: 1.45;
     }
 
+    .danger {
+      color: #8a1f11;
+      font-weight: 800;
+    }
+
+    .success {
+      color: #175c35;
+      font-weight: 800;
+    }
+
     footer {
       max-width: 980px;
       margin: 0 auto 30px;
@@ -160,6 +181,10 @@
     @media (max-width: 760px) {
       .grid {
         grid-template-columns: 1fr;
+      }
+
+      header h1 {
+        font-size: 24px;
       }
     }
   </style>
@@ -184,6 +209,7 @@
     <input type="number" id="daySupply" min="1" placeholder="Example: 30">
 
     <label for="allowedPercent">Allowed Fill Threshold</label>
+    <p class="field-note">Default is 85%. Controlled and C-II selections automatically switch to 100%.</p>
     <select id="allowedPercent">
       <option value="0.75">75%</option>
       <option value="0.80">80%</option>
@@ -199,11 +225,17 @@
       <option value="C-II">C-II</option>
     </select>
 
+    <label for="prn">PRN / Variable Use?</label>
+    <select id="prn">
+      <option value="No">No</option>
+      <option value="Yes">Yes</option>
+    </select>
+
     <label for="claimDate">Claim Earliest Fill (optional)</label>
     <input type="date" id="claimDate">
 
-    <label for="override">Override Reason</label>
-    <textarea id="override" placeholder="Optional override reason"></textarea>
+    <label for="override">Early Fill / Override Reason</label>
+    <textarea id="override" placeholder="Optional: vacation, dose increase, lost medication, therapy change, insurance override, etc."></textarea>
 
     <button onclick="calculate()">Calculate Dates</button>
     <button class="secondary" onclick="clearForm()">Clear</button>
@@ -245,13 +277,13 @@
   <section class="card full">
     <h2>Workflow Interpretation</h2>
     <div id="interpretation" class="note">
-      Enter last fill date and day supply to calculate refill timing.
+      Enter last fill date, day supply, and threshold to calculate refill timing.
     </div>
   </section>
 
   <section class="card full">
     <h2>Copy Note</h2>
-    <textarea id="copyNote" readonly></textarea>
+    <textarea id="copyNote" readonly placeholder="Calculated workflow note will appear here."></textarea>
     <button onclick="copyNote()">Copy Note</button>
   </section>
 
@@ -259,7 +291,9 @@
 
 <footer>
   <strong>Guardrail:</strong>
-  Verify against live claim response, plan rules, state law, and pharmacist direction.
+  This tool is a workflow calculation aid only. Verify against the live claim response, plan rules, state law,
+  controlled substance policy, prescriber instructions, and pharmacist direction. It does not authorize early fills,
+  overrides, or clinical decisions.
 </footer>
 
 <script>
@@ -284,12 +318,24 @@ function formatDate(date) {
   });
 }
 
+function handleMedicationTypeChange() {
+  const medType = document.getElementById("medType").value;
+  const threshold = document.getElementById("allowedPercent");
+
+  if (medType === "Controlled" || medType === "C-II") {
+    threshold.value = "1.00";
+  } else if (threshold.value === "1.00") {
+    threshold.value = "0.85";
+  }
+}
+
 function calculate() {
 
   const lastFillValue = document.getElementById("lastFill").value;
   const daySupply = Number(document.getElementById("daySupply").value);
   const allowedPercent = Number(document.getElementById("allowedPercent").value);
   const medType = document.getElementById("medType").value;
+  const prn = document.getElementById("prn").value;
   const claimDateValue = document.getElementById("claimDate").value;
   const override = document.getElementById("override").value.trim();
 
@@ -337,10 +383,35 @@ function calculate() {
   document.getElementById("daysUsed").textContent = `${daysUsedValue} day(s)`;
   document.getElementById("daysEarly").textContent = `${daysEarlyValue} day(s)`;
 
-  document.getElementById("interpretation").innerHTML =
-    `<strong>Earliest fill:</strong> ${formatDate(earliest)}<br><br>
-     <strong>Next fill due:</strong> ${formatDate(standard)}<br><br>
-     <strong>Status:</strong> ${refillStatus}`;
+  let message = "";
+  message += `<strong>Calculation:</strong> ${daySupply} day supply × ${(allowedPercent * 100).toFixed(0)}% = ${(daySupply * allowedPercent).toFixed(2)}. Rounded up to ${daysUsedValue} day(s).<br><br>`;
+  message += `<strong>Earliest fill:</strong> ${formatDate(earliest)}.<br>`;
+  message += `<strong>Standard next fill:</strong> ${formatDate(standard)}.<br>`;
+  message += `<strong>Status:</strong> ${refillStatus}.<br><br>`;
+
+  if (medType === "C-II") {
+    message += `<span class="danger">C-II selected:</span> threshold automatically set to 100%. Verify controlled substance rules, earliest fill policy, prescriber direction, and pharmacist approval. Do not rely on calculator alone.<br><br>`;
+  } else if (medType === "Controlled") {
+    message += `<span class="danger">Controlled medication selected:</span> threshold automatically set to 100%. Verify plan rules, state policy, and pharmacist direction.<br><br>`;
+  } else {
+    message += `<span class="success">Non-control selected:</span> verify against claim response and plan rules.<br><br>`;
+  }
+
+  if (prn === "Yes") {
+    message += `<strong>PRN / variable use:</strong> refill timing may require use pattern review. Confirm with claim response and pharmacist direction if early.<br><br>`;
+  }
+
+  if (claimDateValue) {
+    message += `<strong>Claim earliest fill:</strong> ${formatDate(parseLocalDate(claimDateValue))}.<br><br>`;
+  }
+
+  if (override) {
+    message += `<strong>Override reason entered:</strong> ${override}<br><br>`;
+  }
+
+  message += `<strong>Suggested action:</strong> compare calculated date against live claim response. If refill-too-soon remains, follow plan rejection guidance or escalate per workflow.`;
+
+  document.getElementById("interpretation").innerHTML = message;
 
   const noteLines = [
     "NEXT FILL / RTS REVIEW",
@@ -393,6 +464,7 @@ function clearForm() {
   document.getElementById("daySupply").value = "";
   document.getElementById("allowedPercent").value = "0.85";
   document.getElementById("medType").value = "Non-Control";
+  document.getElementById("prn").value = "No";
   document.getElementById("claimDate").value = "";
   document.getElementById("override").value = "";
 
@@ -403,10 +475,14 @@ function clearForm() {
   document.getElementById("daysEarly").textContent = "—";
 
   document.getElementById("interpretation").innerHTML =
-    "Enter last fill date and day supply to calculate refill timing.";
+    "Enter last fill date, day supply, and threshold to calculate refill timing.";
 
   document.getElementById("copyNote").value = "";
 }
+
+document
+  .getElementById("medType")
+  .addEventListener("change", handleMedicationTypeChange);
 
 </script>
 
