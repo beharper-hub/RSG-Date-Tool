@@ -168,6 +168,70 @@
     }
 
 
+
+    .calc-display{
+      width:100%;
+      min-height:74px;
+      padding:14px 18px;
+      border:2px solid #cfd3dc;
+      border-radius:18px;
+      background:#fff;
+      color:#111827;
+      font-size:2rem;
+      font-weight:750;
+      text-align:right;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      overflow:hidden;
+      white-space:nowrap;
+    }
+    .calc-expression{
+      margin-top:8px;
+      min-height:20px;
+      color:var(--muted);
+      font-size:.86rem;
+      text-align:right;
+      overflow:hidden;
+      white-space:nowrap;
+    }
+    .calc-keypad{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+    .calc-key{
+      min-height:44px;
+      border-radius:999px;
+      background:#f1f1f1;
+      color:#1f2937;
+      box-shadow:none;
+      font-size:1rem;
+      font-weight:750;
+      padding:10px 0;
+    }
+    .calc-key.op{
+      background:#e9eefc;
+      color:var(--navy);
+    }
+    .calc-key.equals{
+      background:#1f5bd8;
+      color:#fff;
+    }
+    .calc-key.clear{
+      background:#e9eefc;
+      color:var(--navy);
+    }
+    .calc-hidden-input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+      height:0;
+      width:0;
+    }
+
+
     .enzyme-card .row > div{
       display:flex;
       flex-direction:column;
@@ -240,19 +304,46 @@
       <div id="fr_result" class="result">Ready.</div>
     </section>
 
-
-    <section class="card">
+    <section class="card calc-card">
       <h2>General Calculator</h2>
-      <label>Expression</label>
-      <input id="calc_expr" type="text" inputmode="decimal" placeholder="e.g. 84 / 3 or (30 * 2) + 5">
-      <div class="btns">
-        <button onclick="generalCalc()">Calculate</button>
-        <button class="secondary" onclick="clearGeneralCalc()">Clear</button>
-        <button class="secondary" onclick="copyResult('calc_result')">Copy</button>
+      <input id="calc_expr" class="calc-hidden-input" type="text" inputmode="decimal" aria-label="Calculator expression">
+      <div id="calc_display" class="calc-display">0</div>
+      <div id="calc_expression" class="calc-expression"></div>
+
+      <div class="calc-keypad">
+        <button class="calc-key op" onclick="calcPress('(')">(</button>
+        <button class="calc-key op" onclick="calcPress(')')">)</button>
+        <button class="calc-key op" onclick="calcPercent()">%</button>
+        <button class="calc-key clear" onclick="clearGeneralCalc()">AC</button>
+
+        <button class="calc-key" onclick="calcPress('7')">7</button>
+        <button class="calc-key" onclick="calcPress('8')">8</button>
+        <button class="calc-key" onclick="calcPress('9')">9</button>
+        <button class="calc-key op" onclick="calcPress('/')">÷</button>
+
+        <button class="calc-key" onclick="calcPress('4')">4</button>
+        <button class="calc-key" onclick="calcPress('5')">5</button>
+        <button class="calc-key" onclick="calcPress('6')">6</button>
+        <button class="calc-key op" onclick="calcPress('*')">×</button>
+
+        <button class="calc-key" onclick="calcPress('1')">1</button>
+        <button class="calc-key" onclick="calcPress('2')">2</button>
+        <button class="calc-key" onclick="calcPress('3')">3</button>
+        <button class="calc-key op" onclick="calcPress('-')">−</button>
+
+        <button class="calc-key" onclick="calcPress('0')">0</button>
+        <button class="calc-key" onclick="calcPress('.')">.</button>
+        <button class="calc-key equals" onclick="generalCalc()">=</button>
+        <button class="calc-key op" onclick="calcPress('+')">+</button>
       </div>
-      <div id="calc_result" class="result">Ready.</div>
-      <div class="small">Basic arithmetic only: +, -, ×, *, ÷, /, decimals, and parentheses.</div>
+
+      <div class="btns">
+        <button class="secondary" onclick="calcBackspace()">Backspace</button>
+        <button class="secondary" onclick="copyResult('calc_display')">Copy</button>
+      </div>
+      <div class="small">Basic arithmetic only: +, -, ×, ÷, %, decimals, and parentheses.</div>
     </section>
+
 
 
     <section class="card aligned-card">
@@ -662,36 +753,74 @@ function copyResult(id){ navigator.clipboard.writeText($(id).textContent); }
 
 
 
+
+function calcUpdateDisplay(){
+  const expr = $('calc_expr').value;
+  const display = expr
+    .replace(/\*/g,'×')
+    .replace(/\//g,'÷')
+    .replace(/-/g,'−');
+
+  $('calc_display').textContent = display || '0';
+}
+
+function calcPress(value){
+  $('calc_expr').value += value;
+  calcUpdateDisplay();
+}
+
+function calcBackspace(){
+  $('calc_expr').value = $('calc_expr').value.slice(0,-1);
+  calcUpdateDisplay();
+}
+
+function calcPercent(){
+  const expr = $('calc_expr').value;
+  if(!expr) return;
+  $('calc_expr').value = expr + '/100';
+  calcUpdateDisplay();
+}
+
 function generalCalc(){
   let expr = $('calc_expr').value.trim();
 
   if(!expr){
-    return out('calc_result','Enter a calculation.');
+    $('calc_display').textContent = '0';
+    $('calc_expression').textContent = '';
+    return;
   }
 
-  expr = expr.replace(/×/g,'*').replace(/÷/g,'/');
-
   if(!/^[0-9+\-*/().\s]+$/.test(expr)){
-    return out('calc_result','Invalid entry. Use numbers and basic operators only.');
+    $('calc_display').textContent = 'Error';
+    $('calc_expression').textContent = 'Invalid entry';
+    return;
   }
 
   try{
     const result = Function('"use strict"; return (' + expr + ')')();
 
     if(typeof result !== 'number' || !isFinite(result)){
-      return out('calc_result','Calculation error. Check the expression.');
+      $('calc_display').textContent = 'Error';
+      $('calc_expression').textContent = 'Check expression';
+      return;
     }
 
-    out('calc_result', expr + ' = ' + Number(result.toFixed(8)));
+    const cleanResult = Number(result.toFixed(8));
+    $('calc_expression').textContent = expr.replace(/\*/g,'×').replace(/\//g,'÷') + ' =';
+    $('calc_expr').value = String(cleanResult);
+    $('calc_display').textContent = cleanResult;
   } catch(e){
-    out('calc_result','Calculation error. Check the expression.');
+    $('calc_display').textContent = 'Error';
+    $('calc_expression').textContent = 'Check expression';
   }
 }
 
 function clearGeneralCalc(){
   $('calc_expr').value = '';
-  out('calc_result','Ready.');
+  $('calc_display').textContent = '0';
+  $('calc_expression').textContent = '';
 }
+
 
 function fillDateCalc(){
   const last=dval('fill_last'), days=num('fill_days');
