@@ -482,8 +482,9 @@
     <section class="card">
       <h2>Refrigerated Shipment Checker</h2>
       <label>Proposed delivery date</label><input id="fr_date" type="date">
-      <label><input id="fr_holiday_monday" type="checkbox" style="width:auto"> Monday holiday / closure before delivery week</label>
+      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS holiday logic</label>
       <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
+      <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
       <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button></div>
       <div id="fr_result" class="result">Ready.</div>
     </section>
@@ -757,17 +758,118 @@ function rts(){
   if(!last||!days) return out('rts_result','Missing last fill date or days supply.');
   out('rts_result', `Eligible/RTS estimate: ${fmt(addDays(last,days*t))}\nThreshold: ${Math.round(t*100)}%\nLast fill: ${fmt(last)}\nDays supply: ${days}`);
 }
+
+function sameDate(a,b){
+  return a && b && a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+}
+function nthWeekday(year, month, weekday, nth){
+  const d = new Date(year, month, 1);
+  const offset = (weekday - d.getDay() + 7) % 7;
+  d.setDate(1 + offset + (nth - 1) * 7);
+  return d;
+}
+function lastWeekday(year, month, weekday){
+  const d = new Date(year, month + 1, 0);
+  const offset = (d.getDay() - weekday + 7) % 7;
+  d.setDate(d.getDate() - offset);
+  return d;
+}
+function observedDate(actual){
+  const d = new Date(actual);
+  const day = d.getDay();
+  if(day === 6){ d.setDate(d.getDate() - 1); }
+  if(day === 0){ d.setDate(d.getDate() + 1); }
+  return d;
+}
+function upsHolidayDates(year){
+  const actual = [
+    {name:"New Year’s Day", date:new Date(year,0,1)},
+    {name:"Martin Luther King Jr. Day", date:nthWeekday(year,0,1,3)},
+    {name:"Memorial Day", date:lastWeekday(year,4,1)},
+    {name:"Independence Day", date:new Date(year,6,4)},
+    {name:"Labor Day", date:nthWeekday(year,8,1,1)},
+    {name:"Thanksgiving", date:nthWeekday(year,10,4,4)},
+    {name:"Christmas Day", date:new Date(year,11,25)}
+  ];
+
+  return actual.map(h => {
+    const obs = observedDate(h.date);
+    return {...h, observed:obs};
+  });
+}
+function findUpsHoliday(d){
+  const years = [d.getFullYear() - 1, d.getFullYear(), d.getFullYear() + 1];
+  for(const y of years){
+    for(const h of upsHolidayDates(y)){
+      if(sameDate(d,h.date)) return `${h.name}`;
+      if(!sameDate(h.date,h.observed) && sameDate(d,h.observed)) return `${h.name} observed`;
+    }
+  }
+  return "";
+}
+function previousDay(d){
+  const x = new Date(d);
+  x.setDate(x.getDate() - 1);
+  return x;
+}
+function nextDay(d){
+  const x = new Date(d);
+  x.setDate(x.getDate() + 1);
+  return x;
+}
+
 function fridge(){
-  const d=dval('fr_date'); if(!d) return out('fr_result','Missing delivery date.');
-  const day=d.getDay(); let msg=`Proposed delivery: ${fmt(d)}\n`;
+  const d=dval('fr_date');
+  if(!d) return out('fr_result','Missing delivery date.');
+
+  const day=d.getDay();
+  let msg='Proposed delivery: ' + fmt(d) + '\n';
   let flags=[];
-  if(day===1) flags.push('Monday delivery: usually avoid fridge delivery.');
-  if($('fr_holiday_monday').checked && day===2) flags.push('Tuesday after Monday holiday acts like Monday-risk logic.');
-  if($('fr_weekend').checked && (day===0||day===6)) flags.push('Weekend delivery/exposure risk.');
-  if(flags.length){ msg+=`Status: REVIEW / likely unsafe\n- ${flags.join('\n- ')}\nSuggested: consider next safer business delivery date per policy.`; }
-  else msg+=`Status: No obvious weekend/holiday fridge-delivery flag from this checker. Verify local policy.`;
+
+  const applyHolidays = $('fr_ups_holidays') ? $('fr_ups_holidays').checked : true;
+  const avoidWeekend = $('fr_weekend') ? $('fr_weekend').checked : true;
+
+  if(applyHolidays){
+    const holiday = findUpsHoliday(d);
+    const prevHoliday = findUpsHoliday(previousDay(d));
+    const nextHoliday = findUpsHoliday(nextDay(d));
+
+    if(holiday){
+      flags.push('UPS holiday closure: ' + holiday + '.');
+    }
+    if(prevHoliday && day !== 0 && day !== 6){
+      flags.push('Delivery follows UPS holiday closure: ' + prevHoliday + '. Review cold-chain timing.');
+    }
+    if(nextHoliday && day !== 0 && day !== 6){
+      flags.push('Delivery is immediately before UPS holiday closure: ' + nextHoliday + '. Review pickup/transit timing.');
+    }
+    if(day === 2 && prevHoliday){
+      flags.push('Tuesday after Monday holiday may behave like Monday-risk logic.');
+    }
+  }
+
+  if(avoidWeekend){
+    if(day===0 || day===6){
+      flags.push('Weekend delivery/exposure risk.');
+    }
+    if(day===1){
+      flags.push('Monday delivery: review weekend transit/holdover risk.');
+    }
+    if(day===5){
+      flags.push('Friday delivery: review weekend holdover risk if delayed.');
+    }
+  }
+
+  if(flags.length){
+    const uniqueFlags = Array.from(new Set(flags));
+    msg += 'Status: REVIEW\n- ' + uniqueFlags.join('\n- ') + '\nSuggested: verify UPS schedule, product handling limits, and local policy before release.';
+  } else {
+    msg += 'Status: No obvious UPS holiday/weekend flag from this checker. Verify local policy and current carrier schedule.';
+  }
+
   out('fr_result', msg);
 }
+
 
 function nasalDS(){
   const total=num('nasal_total'),
