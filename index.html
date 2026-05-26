@@ -181,11 +181,43 @@
     .enzyme-card select{
       height:50px;
     }
+
+    .aligned-card .row > div{
+      display:flex;
+      flex-direction:column;
+    }
+    .aligned-card .row > div label{
+      min-height:42px;
+      display:flex;
+      align-items:flex-end;
+    }
+    .aligned-card input,
+    .aligned-card select{
+      height:50px;
+    }
+
+
     @media (max-width:560px){
       .enzyme-card .row > div label{
         min-height:auto;
       }
     }
+
+
+    .aligned-card .row > div{
+      display:flex;
+      flex-direction:column;
+    }
+    .aligned-card .row > div label{
+      min-height:42px;
+      display:flex;
+      align-items:flex-end;
+    }
+    .aligned-card input,
+    .aligned-card select{
+      height:50px;
+    }
+
 
     @media (max-width:560px){
       header{padding:30px 22px}
@@ -372,7 +404,7 @@
       <div class="small">Rounds up to the nearest whole package and shows extra quantity dispensed.</div>
     </section>
 
-    <section class="card">
+    <section class="card aligned-card">
       <h2>Pen Day Supply</h2>
       <div class="row">
         <div><label>Number of pens dispensed</label><input id="pen_count" type="number" step="1" placeholder="e.g. 5"></div>
@@ -392,7 +424,7 @@
       <div class="history"><h3>Recent Calculations</h3><div id="pen_history"></div></div>
     </section>
 
-    <section class="card">
+    <section class="card aligned-card">
       <h2>Injectable Interval Calculator</h2>
       <div class="row">
         <div><label>Total doses dispensed</label><input id="inj_doses" type="number" step="0.01" placeholder="e.g. 4"></div>
