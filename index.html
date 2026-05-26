@@ -240,6 +240,21 @@
       <div id="fr_result" class="result">Ready.</div>
     </section>
 
+
+    <section class="card">
+      <h2>General Calculator</h2>
+      <label>Expression</label>
+      <input id="calc_expr" type="text" inputmode="decimal" placeholder="e.g. 84 / 3 or (30 * 2) + 5">
+      <div class="btns">
+        <button onclick="generalCalc()">Calculate</button>
+        <button class="secondary" onclick="clearGeneralCalc()">Clear</button>
+        <button class="secondary" onclick="copyResult('calc_result')">Copy</button>
+      </div>
+      <div id="calc_result" class="result">Ready.</div>
+      <div class="small">Basic arithmetic only: +, -, ×, *, ÷, /, decimals, and parentheses.</div>
+    </section>
+
+
     <section class="card aligned-card">
       <h2>Injectable Interval Calculator</h2>
       <div class="row">
@@ -489,15 +504,6 @@
       <div class="small">Arithmetic support only. Does not recommend dose changes or interpret INR.</div>
     </section>
 
-    <section class="card">
-      <h2>Titration Schedule</h2>
-      <label>Start date</label><input id="tit_start" type="date">
-      <label>Steps</label>
-      <textarea id="tit_steps" placeholder="One per line: dose | days&#10;Example: 1 tablet daily | 7&#10;1 tablet twice daily | 7&#10;3 tablets daily | 7&#10;2 tablets twice daily | 30"></textarea>
-      <div class="btns"><button onclick="titration()">Build Schedule</button><button class="secondary" onclick="copyResult('tit_result')">Copy</button></div>
-      <div id="tit_result" class="result">Ready.</div>
-    </section>
-
     
 
   
@@ -654,6 +660,38 @@ function nasalPreset(total,per,freq,nostrils){
 function copyResult(id){ navigator.clipboard.writeText($(id).textContent); }
 
 
+
+
+function generalCalc(){
+  let expr = $('calc_expr').value.trim();
+
+  if(!expr){
+    return out('calc_result','Enter a calculation.');
+  }
+
+  expr = expr.replace(/×/g,'*').replace(/÷/g,'/');
+
+  if(!/^[0-9+\-*/().\s]+$/.test(expr)){
+    return out('calc_result','Invalid entry. Use numbers and basic operators only.');
+  }
+
+  try{
+    const result = Function('"use strict"; return (' + expr + ')')();
+
+    if(typeof result !== 'number' || !isFinite(result)){
+      return out('calc_result','Calculation error. Check the expression.');
+    }
+
+    out('calc_result', expr + ' = ' + Number(result.toFixed(8)));
+  } catch(e){
+    out('calc_result','Calculation error. Check the expression.');
+  }
+}
+
+function clearGeneralCalc(){
+  $('calc_expr').value = '';
+  out('calc_result','Ready.');
+}
 
 function fillDateCalc(){
   const last=dval('fill_last'), days=num('fill_days');
@@ -962,22 +1000,6 @@ function warfarinCalc(){
 function topicalDS(){
   const g=num('top_g'), gpd=num('top_gpd'); if(!g||!gpd) return out('top_result','Missing grams or grams/day.');
   out('top_result', `Estimated topical day supply: ${Math.floor(g/gpd)} days\nTotal grams: ${g}\nEstimated grams/day: ${gpd}`);
-}
-function titration(){
-  const start=dval('tit_start'); if(!start) return out('tit_result','Missing start date.');
-  const lines=$('tit_steps').value.split('\n').map(x=>x.trim()).filter(Boolean);
-  if(!lines.length) return out('tit_result','Enter titration steps as: dose | days');
-  let cur=new Date(start), text=`Titration schedule starting ${fmt(start)}:\n`;
-  let total=0;
-  lines.forEach((line,i)=>{
-    const parts=line.split('|'); const dose=(parts[0]||'').trim(); const days=parseInt((parts[1]||'').trim());
-    if(!dose||!days){ text+=`\nStep ${i+1}: INVALID - use dose | days`; return; }
-    const end=addDays(cur, days-1);
-    text+=`\nStep ${i+1}: ${dose} for ${days} day(s)\n  ${fmt(cur)} through ${fmt(end)}`;
-    cur=addDays(end,1); total+=days;
-  });
-  text+=`\n\nTotal scheduled days: ${total}\nNext date after schedule: ${fmt(cur)}`;
-  out('tit_result', text);
 }
 
 function sameDate(a,b){
