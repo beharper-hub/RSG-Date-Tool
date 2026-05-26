@@ -552,6 +552,7 @@
       <select id="gen_mode" onchange="toggleGeneralMode()">
         <option value="units">General units</option>
         <option value="liquid">Liquid mL</option>
+        <option value="titration">Titration schedule</option>
       </select>
 
       <div id="gen_units_mode">
@@ -569,6 +570,35 @@
         <label>Doses per day</label><input id="liq_freq" type="number" step="0.01" placeholder="e.g. 2">
       </div>
 
+      <div id="gen_titration_mode" style="display:none">
+        <div class="row">
+          <div><label>Starting dose / units per day</label><input id="tit_start" type="number" step="0.01" placeholder="e.g. 1"></div>
+          <div><label>Change by</label><input id="tit_change" type="number" step="0.01" placeholder="e.g. 1"></div>
+        </div>
+        <div class="row">
+          <div><label>Target dose / units per day</label><input id="tit_target" type="number" step="0.01" placeholder="e.g. 4"></div>
+          <div><label>Change every</label><input id="tit_interval" type="number" step="1" value="7"></div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Interval unit</label>
+            <select id="tit_unit">
+              <option value="days">Day(s)</option>
+              <option value="weeks">Week(s)</option>
+            </select>
+          </div>
+          <div>
+            <label>Direction</label>
+            <select id="tit_direction">
+              <option value="up">Titrate up</option>
+              <option value="down">Taper down</option>
+            </select>
+          </div>
+        </div>
+        <label>Total quantity dispensed optional</label>
+        <input id="tit_qty" type="number" step="0.01" placeholder="e.g. 84">
+      </div>
+
       <label>Rounding</label>
       <select id="gen_round">
         <option value="down" selected>Round down</option>
@@ -581,6 +611,7 @@
       <div class="preset-row">
         <button class="preset" onclick="generalPreset(30,1)">30 tabs / 1 daily</button>
         <button class="preset" onclick="liquidPreset(473,5,2)">473 mL / 5 mL BID</button>
+        <button class="preset" onclick="titrationPreset(1,1,4,7,'days','up',84)">Titrate Up Example</button>
       </div>
       <div class="history"><h3>Recent Calculations</h3><div id="gen_history"></div></div>
     </section>
@@ -885,6 +916,8 @@ function toggleGeneralMode(){
   const mode = $('gen_mode').value;
   $('gen_units_mode').style.display = mode === 'units' ? 'block' : 'none';
   $('gen_liquid_mode').style.display = mode === 'liquid' ? 'block' : 'none';
+  const titration = $('gen_titration_mode');
+  if(titration) titration.style.display = mode === 'titration' ? 'block' : 'none';
 }
 
 function generalPreset(qty,perday){
@@ -901,6 +934,19 @@ function liquidPreset(ml,dose,freq){
   $('liq_ml').value = ml;
   $('liq_dose').value = dose;
   $('liq_freq').value = freq;
+  $('gen_round').value = 'down';
+}
+
+function titrationPreset(start,change,target,interval,unit,direction,qty){
+  $('gen_mode').value = 'titration';
+  toggleGeneralMode();
+  $('tit_start').value = start;
+  $('tit_change').value = change;
+  $('tit_target').value = target;
+  $('tit_interval').value = interval;
+  $('tit_unit').value = unit;
+  $('tit_direction').value = direction;
+  $('tit_qty').value = qty || '';
   $('gen_round').value = 'down';
 }
 
@@ -1117,6 +1163,57 @@ function fillDateCalc(){
   out('fill_result', text);
 }
 
+
+function buildTitrationSchedule(start, change, target, interval, unit, direction){
+  const multiplier = unit === 'weeks' ? 7 : 1;
+  const daysPerStep = interval * multiplier;
+  const steps = [];
+  let dose = start;
+  let guard = 0;
+
+  if(direction === 'up'){
+    if(target < start) return null;
+    while(dose < target && guard < 100){
+      steps.push({dose:dose, days:daysPerStep});
+      dose = Math.min(dose + change, target);
+      guard++;
+    }
+    steps.push({dose:target, days:daysPerStep});
+  } else {
+    if(target > start) return null;
+    while(dose > target && guard < 100){
+      steps.push({dose:dose, days:daysPerStep});
+      dose = Math.max(dose - change, target);
+      guard++;
+    }
+    steps.push({dose:target, days:daysPerStep});
+  }
+
+  return steps;
+}
+
+function formatTitrationSchedule(steps, qty){
+  let totalUsed = 0;
+  const lines = steps.map((step, idx) => {
+    const use = step.dose * step.days;
+    totalUsed += use;
+    return 'Step ' + (idx + 1) + ': ' + step.dose + ' unit(s)/day × ' + step.days + ' day(s) = ' + use.toFixed(2) + ' unit(s)';
+  });
+
+  let text = 'Titration schedule estimate:\n' + lines.join('\n') + '\n\n';
+  text += 'Total scheduled quantity needed: ' + totalUsed.toFixed(2) + ' unit(s)';
+
+  if(qty && qty > 0){
+    const remaining = qty - totalUsed;
+    text += '\nQuantity dispensed: ' + qty;
+    text += '\nCoverage status: ' + (remaining >= 0 ? 'Enough for schedule' : 'Short for schedule');
+    text += '\nDifference: ' + remaining.toFixed(2) + ' unit(s)';
+  }
+
+  text += '\n\nNote: Arithmetic support only. Verify prescriber directions and clinical appropriateness.';
+  return text;
+}
+
 function generalLiquidDS(){
   const mode = $('gen_mode').value;
   const roundMode = $('gen_round').value;
@@ -1133,7 +1230,7 @@ function generalLiquidDS(){
     text = 'General day supply: ';
     text += formatDaySupply(raw, roundMode) + '\n';
     text += 'Quantity: ' + qty + '\nUnits/day: ' + perday;
-  } else {
+  } else if(mode === 'liquid') {
     const ml=num('liq_ml'), dose=num('liq_dose'), freq=num('liq_freq');
     if(!validatePositive([ml,dose,freq])){
       return out('gen_result','Enter valid positive liquid values.');
@@ -1144,6 +1241,28 @@ function generalLiquidDS(){
     text = 'Liquid day supply: ';
     text += formatDaySupply(raw, roundMode) + '\n';
     text += 'Total mL: ' + ml + '\nmL per dose: ' + dose + '\nDoses/day: ' + freq + '\nTotal mL/day: ' + daily.toFixed(2);
+  } else {
+    const start=num('tit_start'),
+          change=num('tit_change'),
+          target=num('tit_target'),
+          interval=num('tit_interval'),
+          unit=$('tit_unit').value,
+          direction=$('tit_direction').value,
+          qty=num('tit_qty');
+
+    if(!validatePositive([start,change,target,interval])){
+      return out('gen_result','Enter valid positive titration values.');
+    }
+
+    const steps = buildTitrationSchedule(start, change, target, interval, unit, direction);
+    if(!steps){
+      return out('gen_result','Titration direction does not match start and target dose.');
+    }
+
+    text = formatTitrationSchedule(steps, qty);
+    out('gen_result', text);
+    addHistory('gen', text);
+    return;
   }
 
   if(raw > 365){
