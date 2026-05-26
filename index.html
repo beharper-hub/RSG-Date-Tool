@@ -199,7 +199,7 @@
 <body>
 <header>
   <h1>Pharmacy Calculator Suite</h1>
-  <div class="sub">Pharmacy workflow calculator · Calculate faster · Verify carefully</div>
+  <div class="sub">Pharmacy workflow calculator · Built for workflow · Human verification required</div>
 </header>
 <main>
   <div class="grid">
@@ -357,6 +357,65 @@
     </section>
 
     <section class="card">
+      <h2>Package Size / Box Rounding Helper</h2>
+      <div class="row">
+        <div><label>Quantity needed</label><input id="pkg_needed" type="number" step="0.01" placeholder="e.g. 84"></div>
+        <div><label>Package size</label><input id="pkg_size" type="number" step="0.01" placeholder="e.g. 30"></div>
+      </div>
+      <div class="btns"><button onclick="packageRound()">Calculate</button><button class="secondary" onclick="copyResult('pkg_result')">Copy</button></div>
+      <div id="pkg_result" class="result">Ready.</div>
+      <div class="preset-row">
+        <button class="preset" onclick="packagePreset(84,30)">30-count Packages</button>
+        <button class="preset" onclick="packagePreset(28,3)">Sensor Boxes</button>
+      </div>
+      <div class="history"><h3>Recent Calculations</h3><div id="pkg_history"></div></div>
+      <div class="small">Rounds up to the nearest whole package and shows extra quantity dispensed.</div>
+    </section>
+
+    <section class="card">
+      <h2>Pen Day Supply</h2>
+      <div class="row">
+        <div><label>Number of pens dispensed</label><input id="pen_count" type="number" step="1" placeholder="e.g. 5"></div>
+        <div><label>mL per pen</label><input id="pen_ml" type="number" step="0.01" value="3"></div>
+      </div>
+      <div class="row">
+        <div><label>Units per mL</label><input id="pen_unitsml" type="number" step="1" value="100"></div>
+        <div><label>Units/day</label><input id="pen_unitsday" type="number" step="0.01" placeholder="e.g. 50"></div>
+      </div>
+      <label>Prime/waste units/day optional</label><input id="pen_waste" type="number" step="0.01" value="0">
+      <div class="btns"><button onclick="penDS()">Calculate</button><button class="secondary" onclick="copyResult('pen_result')">Copy</button></div>
+      <div id="pen_result" class="result">Ready.</div>
+      <div class="preset-row">
+        <button class="preset" onclick="penPreset(5,3,100,50,2)">5 Pens / U-100</button>
+        <button class="preset" onclick="penPreset(3,3,100,30,2)">3 Pens / U-100</button>
+      </div>
+      <div class="history"><h3>Recent Calculations</h3><div id="pen_history"></div></div>
+    </section>
+
+    <section class="card">
+      <h2>Injectable Interval Calculator</h2>
+      <div class="row">
+        <div><label>Total doses dispensed</label><input id="inj_doses" type="number" step="0.01" placeholder="e.g. 4"></div>
+        <div><label>Use every</label><input id="inj_interval" type="number" step="0.01" placeholder="e.g. 7"></div>
+      </div>
+      <label>Interval unit</label>
+      <select id="inj_unit">
+        <option value="days">Day(s)</option>
+        <option value="weeks">Week(s)</option>
+        <option value="months">Month(s), estimated 30 days</option>
+      </select>
+      <div class="btns"><button onclick="injectableInterval()">Calculate</button><button class="secondary" onclick="copyResult('inj_result')">Copy</button></div>
+      <div id="inj_result" class="result">Ready.</div>
+      <div class="preset-row">
+        <button class="preset" onclick="injectablePreset(4,1,'weeks')">Weekly × 4</button>
+        <button class="preset" onclick="injectablePreset(2,14,'days')">Every 14 Days</button>
+      </div>
+      <div class="history"><h3>Recent Calculations</h3><div id="inj_history"></div></div>
+      <div class="small">For interval-based day supply math only. Verify package and directions.</div>
+    </section>
+
+
+    <section class="card">
       <h2>Cream/Ointment Estimate</h2>
       <div class="row">
         <div><label>Total grams dispensed</label><input id="top_g" type="number" step="0.01"></div>
@@ -462,6 +521,24 @@ function enzymePreset(qty,mealCaps,meals,snackCaps,snacks){
   $('enz_snack_caps').value = snackCaps;
   $('enz_snacks').value = snacks;
   $('enz_round').value = 'up';
+}
+
+
+function packagePreset(needed,size){
+  $('pkg_needed').value = needed;
+  $('pkg_size').value = size;
+}
+function penPreset(count,ml,unitsml,unitsday,waste){
+  $('pen_count').value = count;
+  $('pen_ml').value = ml;
+  $('pen_unitsml').value = unitsml;
+  $('pen_unitsday').value = unitsday;
+  $('pen_waste').value = waste;
+}
+function injectablePreset(doses,interval,unit){
+  $('inj_doses').value = doses;
+  $('inj_interval').value = interval;
+  $('inj_unit').value = unit;
 }
 
 function copyResult(id){ navigator.clipboard.writeText($(id).textContent); }
@@ -571,6 +648,57 @@ Snack use: ${snackCaps} capsule(s) × ${snacks} snack(s) = ${snackDaily}/day`;
   out('enz_result', text);
   addHistory('enz', text);
 }
+
+
+function packageRound(){
+  const needed=num('pkg_needed'), size=num('pkg_size');
+  if(!validatePositive([needed,size])) return out('pkg_result','Enter valid positive quantity needed and package size.');
+  const packages=Math.ceil(needed/size);
+  const dispense=packages*size;
+  const extra=dispense-needed;
+  const text=`Package rounding result: ${packages} package(s)
+Quantity needed: ${needed}
+Package size: ${size}
+Dispense quantity: ${dispense}
+Extra quantity from rounding: ${extra.toFixed(2)}`;
+  out('pkg_result', text);
+  addHistory('pkg', text);
+}
+
+function penDS(){
+  const count=num('pen_count'), ml=num('pen_ml'), unitsml=num('pen_unitsml'), unitsday=num('pen_unitsday'), waste=num('pen_waste')||0;
+  if(!validatePositive([count,ml,unitsml,unitsday])) return out('pen_result','Enter valid positive pen values.');
+  const totalMl=count*ml;
+  const totalUnits=totalMl*unitsml;
+  const daily=unitsday+waste;
+  if(daily<=0) return out('pen_result','Daily units must be greater than zero.');
+  const ds=Math.floor(totalUnits/daily);
+  if(ds>365) return out('pen_result','Calculated day supply exceeds realistic limits. Verify entry values.');
+  const text=`Pen day supply: ${ds} days
+Pens dispensed: ${count}
+Total mL: ${totalMl}
+Total units: ${totalUnits}
+Daily units used: ${daily}${waste?` (${unitsday} dose + ${waste} prime/waste)`:''}`;
+  out('pen_result', text);
+  addHistory('pen', text);
+}
+
+function injectableInterval(){
+  const doses=num('inj_doses'), interval=num('inj_interval'), unit=$('inj_unit').value;
+  if(!validatePositive([doses,interval])) return out('inj_result','Enter valid positive dose and interval values.');
+  let multiplier=1, unitLabel='day(s)';
+  if(unit==='weeks'){ multiplier=7; unitLabel='week(s)'; }
+  if(unit==='months'){ multiplier=30; unitLabel='month(s), estimated at 30 days each'; }
+  const days=doses*interval*multiplier;
+  if(days>365) return out('inj_result','Calculated day supply exceeds realistic limits. Verify dose count and interval.');
+  const text=`Injectable interval day supply: ${Math.ceil(days)} days
+Total doses dispensed: ${doses}
+Use every: ${interval} ${unitLabel}
+Calculation: ${doses} dose(s) × ${interval} × ${multiplier} day multiplier`;
+  out('inj_result', text);
+  addHistory('inj', text);
+}
+
 
 function topicalDS(){
   const g=num('top_g'), gpd=num('top_gpd'); if(!g||!gpd) return out('top_result','Missing grams or grams/day.');
