@@ -403,6 +403,25 @@
     .aligned-card select{
       height:50px;
     }
+
+    .help-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:16px;
+      padding:10px 14px;
+      border-radius:14px;
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      text-decoration:none;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.18);
+      transition:.2s ease;
+    }
+    .help-link:hover{
+      background:rgba(255,255,255,.2);
+    }
+
 @media (max-width:560px){
       header{padding:30px 22px}
       main{padding:22px 14px}
@@ -425,6 +444,10 @@
 <header>
 <h1>Pharmacy Calc Suite</h1>
       <div class="sub">Workflow-focused pharmacy calculators · Verify all results</div>
+  <a class="help-link" href="how-to.html">
+    📘 How-To Guide
+  </a>
+
   <div class="header-actions">
     <label class="theme-switch">
       <input id="dark_mode_toggle" type="checkbox" onchange="toggleDarkMode()">
