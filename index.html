@@ -19,6 +19,104 @@
       --green:#15803d;
       --red:#b42318;
     }
+
+    body.dark{
+      --cream:#071423;
+      --card:#0f2136;
+      --text:#f8fafc;
+      --muted:#cbd5e1;
+      --line:#2f4158;
+      --input:#10243b;
+      --soft:#122b46;
+    }
+    body.dark header{
+      background:#06111f;
+      color:#fff;
+    }
+    body.dark h2,
+    body.dark label{
+      color:#f8fafc;
+    }
+    body.dark input,
+    body.dark select,
+    body.dark textarea,
+    body.dark .calc-display{
+      background:#10243b;
+      color:#f8fafc;
+      border-color:#3d526c;
+    }
+    body.dark .result,
+    body.dark .history-item{
+      background:#0b1a2c;
+      color:#f8fafc;
+      border-color:#33465f;
+    }
+    body.dark button.secondary,
+    body.dark .preset,
+    body.dark .calc-key,
+    body.dark .calc-key.clear,
+    body.dark .calc-key.op{
+      background:#1b3656;
+      color:#f8fafc;
+      border-color:#38506b;
+    }
+    body.dark .small,
+    body.dark .calc-expression{
+      color:#cbd5e1;
+    }
+    .top-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      max-width:1180px;
+      margin:0 auto;
+      padding:18px 18px 0;
+    }
+    .mode-toggle{
+      background:#e9e5da;
+      color:var(--navy);
+      border:1px solid #d1cabc;
+      box-shadow:none;
+    }
+    body.dark .mode-toggle{
+      background:#1b3656;
+      color:#f8fafc;
+      border-color:#38506b;
+    }
+    .calc-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .calc-icon{
+      width:38px;
+      height:38px;
+      border-radius:14px;
+      background:#f8f6ef;
+      color:var(--navy);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      flex:0 0 38px;
+      border:1.5px solid #d8d2c5;
+      box-shadow:0 2px 8px rgba(13,36,63,.06);
+    }
+    .calc-icon svg{
+      width:21px;
+      height:21px;
+      stroke:currentColor;
+      stroke-width:2.1;
+      fill:none;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    body.dark .calc-icon{
+      background:#10243b;
+      border-color:#38506b;
+      color:#f8fafc;
+    }
+
+
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -279,13 +377,16 @@
 <h1>Pharmacy Calc Suite</h1>
       <div class="sub">Workflow-focused pharmacy calculators · Verify all results</div>
 </header>
+<div class="top-actions">
+  <button id="dark_mode_btn" class="mode-toggle" onclick="toggleDarkMode()">Dark Mode</button>
+</div>
 <main>
   <div class="grid">
 
     
 
     <section class="card calc-card" onclick="calcFocus()">
-      <h2>Standard Calculator</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><line x1="8" y1="7" x2="16" y2="7"/><circle cx="9" cy="12" r=".7"/><circle cx="12" cy="12" r=".7"/><circle cx="15" cy="12" r=".7"/><circle cx="9" cy="16" r=".7"/><circle cx="12" cy="16" r=".7"/><circle cx="15" cy="16" r=".7"/></svg></span><span>Standard Calculator</span></span></h2>
       <input id="calc_expr" class="calc-hidden-input" type="text" inputmode="none" readonly aria-label="Calculator expression" autocomplete="off">
       <div id="calc_display" class="calc-display">0</div>
       <div id="calc_expression" class="calc-expression"></div>
@@ -335,11 +436,11 @@
         <button class="secondary" onclick="calcBackspace()">Backspace</button>
         <button class="secondary" onclick="copyResult('calc_display')">Copy</button>
       </div>
-      <div class="small">Basic arithmetic only: +, -, ×, ÷, %, decimals, and parentheses.</div>
+      <div class="small">Standard mode stays clean. Scientific mode adds √, trig, logs, powers, and π.</div>
     </section>
 
 <section class="card">
-      <h2>Fill Date / RTS Calculator</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><line x1="4" y1="10" x2="20" y2="10"/><path d="M9 15l2 2 4-5"/></svg></span><span>Fill Date / RTS Calculator</span></span></h2>
       <div class="row">
         <div><label>Last fill date</label><input id="fill_last" type="date"></div>
         <div><label>Days supply</label><input id="fill_days" type="number" min="1" value="30"></div>
@@ -358,7 +459,7 @@
     </section>
 
     <section class="card">
-      <h2>Refrigerated Shipment Checker</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M8 7V5h8v2"/><path d="M12 10v6M9.5 11.5l5 3M14.5 11.5l-5 3"/></svg></span><span>Refrigerated Shipment Checker</span></span></h2>
       <label>Proposed delivery date</label><input id="fr_date" type="date">
       <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS holiday logic</label>
       <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
@@ -370,7 +471,7 @@
 
 
     <section class="card aligned-card">
-      <h2>Injectable Interval Calculator</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M14 4l6 6"/><path d="M17 7L7 17"/><path d="M5 19l2-2"/><path d="M9 15l-3-3"/><path d="M12 12l-3-3"/></svg></span><span>Injectable Interval Calculator</span></span></h2>
       <div class="row">
         <div><label>Total doses dispensed</label><input id="inj_doses" type="number" step="0.01" placeholder="e.g. 4"></div>
         <div><label>Use every</label><input id="inj_interval" type="number" step="0.01" placeholder="e.g. 7"></div>
@@ -392,7 +493,7 @@
     </section>
 
     <section class="card">
-      <h2>General / Liquid Day Supply</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.2 6 11a6 6 0 0 1-12 0c0-4.8 6-11 6-11z"/><path d="M9 15a3 3 0 0 0 5 2"/></svg></span><span>General / Liquid Day Supply</span></span></h2>
       <label>Calculation type</label>
       <select id="gen_mode" onchange="toggleGeneralMode()">
         <option value="units">General units</option>
@@ -431,7 +532,7 @@
     </section>
 
     <section class="card">
-      <h2>Package Size / Box Rounding Helper</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v9l8 4 8-4V8"/><path d="M12 12v9"/></svg></span><span>Package Size / Box Rounding Helper</span></span></h2>
       <div class="row">
         <div><label>Quantity needed</label><input id="pkg_needed" type="number" step="0.01" placeholder="e.g. 84"></div>
         <div><label>Package size</label><input id="pkg_size" type="number" step="0.01" placeholder="e.g. 30"></div>
@@ -447,7 +548,7 @@
     </section>
 
     <section class="card aligned-card">
-      <h2>Insulin / Pen Day Supply</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M6 18l12-12"/><path d="M14 4l6 6"/><path d="M5 19l4-1 9-9-3-3-9 9-1 4z"/></svg></span><span>Insulin / Pen Day Supply</span></span></h2>
       <label>Dispense type</label>
       <select id="ins_mode" onchange="toggleInsulinMode()">
         <option value="ml">Total mL dispensed</option>
@@ -487,7 +588,7 @@
     </section>
 
     <section class="card">
-      <h2>Eye/Ear Drop Day Supply</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M2.5 12s3.5-5 9.5-5 9.5 5 9.5 5-3.5 5-9.5 5-9.5-5-9.5-5z"/><circle cx="12" cy="12" r="2.5"/><path d="M18 18c1.5 1.2 1.5 2.4 0 3"/></svg></span><span>Eye/Ear Drop Day Supply</span></span></h2>
       <div class="row">
         <div><label>Total mL</label><input id="eye_ml" type="number" step="0.01"></div>
         <div><label>Drops per mL</label><input id="eye_dpm" type="number" value="20"></div>
@@ -511,7 +612,7 @@
     </section>
 
     <section class="card aligned-card">
-      <h2>Actuation / Spray Day Supply</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M7 8h7v11H7z"/><path d="M9 8V5h3v3"/><path d="M14 6h3"/><path d="M17 6c2 0 3 1 3 3"/><path d="M17 10c1.5 0 2.5 1 2.5 2.5"/></svg></span><span>Actuation / Spray Day Supply</span></span></h2>
       <label>Calculation type</label>
       <select id="act_mode" onchange="toggleActuationMode()">
         <option value="inhaler">Inhaler puffs</option>
@@ -552,7 +653,7 @@
     </section>
 
     <section class="card">
-      <h2>Cream/Ointment Estimate</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M8 3h8l1 5H7l1-5z"/><path d="M7 8h10l2 12H5L7 8z"/><path d="M9 13h6"/></svg></span><span>Cream/Ointment Estimate</span></span></h2>
       <div class="row">
         <div><label>Total grams dispensed</label><input id="top_g" type="number" step="0.01"></div>
         <div><label>Estimated grams/day</label><input id="top_gpd" type="number" step="0.01"></div>
@@ -563,7 +664,7 @@
     </section>
 
     <section class="card enzyme-card">
-      <h2>Enzyme Day Supply</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M2 12h3M19 12h3M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span><span>Enzyme Day Supply</span></span></h2>
       <div class="row">
         <div><label>Total capsules dispensed</label><input id="enz_qty" type="number" placeholder="e.g. 240"></div>
         <div><label>Capsules per meal</label><input id="enz_meal_caps" type="number" step="0.01" value="2"></div>
@@ -590,7 +691,7 @@
     </section>
 
     <section class="card aligned-card">
-      <h2>Warfarin Weekly Dose Calculator</h2>
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M12 3s5 5.5 5 9a5 5 0 0 1-10 0c0-3.5 5-9 5-9z"/><path d="M9 16h6"/><path d="M10 12h4"/></svg></span><span>Warfarin Weekly Dose Calculator</span></span></h2>
       <div class="row">
         <div><label>Monday mg</label><input id="war_mon" type="number" step="0.01" value="0"></div>
         <div><label>Tuesday mg</label><input id="war_tue" type="number" step="0.01" value="0"></div>
@@ -775,6 +876,26 @@ function copyResult(id){ navigator.clipboard.writeText($(id).textContent); }
 
 
 
+
+
+
+function toggleDarkMode(){
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('pharmCalcDarkMode', isDark ? 'dark' : 'light');
+  const btn = $('dark_mode_btn');
+  if(btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+}
+
+function initTheme(){
+  const saved = localStorage.getItem('pharmCalcDarkMode');
+  if(saved === 'dark'){
+    document.body.classList.add('dark');
+    const btn = $('dark_mode_btn');
+    if(btn) btn.textContent = 'Light Mode';
+  }
+}
+
+initTheme();
 
 
 function calcUpdateDisplay(){
