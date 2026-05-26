@@ -226,9 +226,12 @@
     .calc-hidden-input{
       position:absolute;
       opacity:0;
-      pointer-events:none;
-      height:0;
-      width:0;
+      height:1px;
+      width:1px;
+      left:-9999px;
+    }
+    .calc-card{
+      cursor:text;
     }
 
 
@@ -275,38 +278,11 @@
 <main>
   <div class="grid">
 
-    <section class="card">
-      <h2>Fill Date / RTS Calculator</h2>
-      <div class="row">
-        <div><label>Last fill date</label><input id="fill_last" type="date"></div>
-        <div><label>Days supply</label><input id="fill_days" type="number" min="1" value="30"></div>
-      </div>
-      <label>Threshold</label>
-      <select id="fill_threshold">
-        <option value="0.75">75%</option>
-        <option value="0.80">80%</option>
-        <option value="0.85" selected>85%</option>
-        <option value="0.90">90%</option>
-        <option value="1">100%</option>
-      </select>
-      <label><input id="fill_control" type="checkbox" style="width:auto"> Control / C-II? Auto-use 100%</label>
-      <div class="btns"><button onclick="fillDateCalc()">Calculate</button><button class="secondary" onclick="copyResult('fill_result')">Copy</button></div>
-      <div id="fill_result" class="result">Ready.</div>
-    </section>
+    
 
-    <section class="card">
-      <h2>Refrigerated Shipment Checker</h2>
-      <label>Proposed delivery date</label><input id="fr_date" type="date">
-      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS holiday logic</label>
-      <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
-      <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
-      <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button></div>
-      <div id="fr_result" class="result">Ready.</div>
-    </section>
-
-    <section class="card calc-card">
-      <h2>General Calculator</h2>
-      <input id="calc_expr" class="calc-hidden-input" type="text" inputmode="decimal" aria-label="Calculator expression">
+    <section class="card calc-card" onclick="calcFocus()">
+      <h2>Standard Calculator</h2>
+      <input id="calc_expr" class="calc-hidden-input" type="text" inputmode="decimal" aria-label="Calculator expression" autocomplete="off">
       <div id="calc_display" class="calc-display">0</div>
       <div id="calc_expression" class="calc-expression"></div>
 
@@ -342,6 +318,35 @@
         <button class="secondary" onclick="copyResult('calc_display')">Copy</button>
       </div>
       <div class="small">Basic arithmetic only: +, -, ×, ÷, %, decimals, and parentheses.</div>
+    </section>
+
+<section class="card">
+      <h2>Fill Date / RTS Calculator</h2>
+      <div class="row">
+        <div><label>Last fill date</label><input id="fill_last" type="date"></div>
+        <div><label>Days supply</label><input id="fill_days" type="number" min="1" value="30"></div>
+      </div>
+      <label>Threshold</label>
+      <select id="fill_threshold">
+        <option value="0.75">75%</option>
+        <option value="0.80">80%</option>
+        <option value="0.85" selected>85%</option>
+        <option value="0.90">90%</option>
+        <option value="1">100%</option>
+      </select>
+      <label><input id="fill_control" type="checkbox" style="width:auto"> Control / C-II? Auto-use 100%</label>
+      <div class="btns"><button onclick="fillDateCalc()">Calculate</button><button class="secondary" onclick="copyResult('fill_result')">Copy</button></div>
+      <div id="fill_result" class="result">Ready.</div>
+    </section>
+
+    <section class="card">
+      <h2>Refrigerated Shipment Checker</h2>
+      <label>Proposed delivery date</label><input id="fr_date" type="date">
+      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS holiday logic</label>
+      <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
+      <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
+      <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button></div>
+      <div id="fr_result" class="result">Ready.</div>
     </section>
 
 
@@ -821,6 +826,58 @@ function clearGeneralCalc(){
   $('calc_expression').textContent = '';
 }
 
+
+
+function calcFocus(){
+  const el = $('calc_expr');
+  if(el) el.focus();
+}
+
+function calcKeyboardInput(event){
+  const key = event.key;
+
+  if(event.target && ['INPUT','TEXTAREA','SELECT'].includes(event.target.tagName) && event.target.id !== 'calc_expr'){
+    return;
+  }
+
+  if(/^[0-9]$/.test(key)){
+    event.preventDefault();
+    calcPress(key);
+    return;
+  }
+
+  if(['+','-','*','/','(',')','.'].includes(key)){
+    event.preventDefault();
+    calcPress(key);
+    return;
+  }
+
+  if(key === '%'){
+    event.preventDefault();
+    calcPercent();
+    return;
+  }
+
+  if(key === 'Enter' || key === '='){
+    event.preventDefault();
+    generalCalc();
+    return;
+  }
+
+  if(key === 'Backspace'){
+    event.preventDefault();
+    calcBackspace();
+    return;
+  }
+
+  if(key === 'Escape'){
+    event.preventDefault();
+    clearGeneralCalc();
+    return;
+  }
+}
+
+document.addEventListener('keydown', calcKeyboardInput);
 
 function fillDateCalc(){
   const last=dval('fill_last'), days=num('fill_days');
