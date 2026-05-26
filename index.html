@@ -241,6 +241,12 @@
     }
     button.good{background:var(--green);color:#fff}
     button.warn{background:var(--gold);color:#1f1300}
+
+    button.reset-btn{
+      background:#7c2d12;
+      color:#fff;
+    }
+
     .result{
       margin-top:14px;
       padding:14px;
@@ -502,7 +508,7 @@
         <option value="1">100%</option>
       </select>
       <label><input id="fill_control" type="checkbox" style="width:auto"> Control / C-II? Auto-use 100%</label>
-      <div class="btns"><button onclick="fillDateCalc()">Calculate</button><button class="secondary" onclick="copyResult('fill_result')">Copy</button></div>
+      <div class="btns"><button onclick="fillDateCalc()">Calculate</button><button class="secondary" onclick="copyResult('fill_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="fill_result" class="result">Ready.</div>
     </section>
 
@@ -512,7 +518,7 @@
       <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS holiday logic</label>
       <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
       <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
-      <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button></div>
+      <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="fr_result" class="result">Ready.</div>
     </section>
 
@@ -530,7 +536,7 @@
         <option value="weeks">Week(s)</option>
         <option value="months">Month(s), estimated 30 days</option>
       </select>
-      <div class="btns"><button onclick="injectableInterval()">Calculate</button><button class="secondary" onclick="copyResult('inj_result')">Copy</button></div>
+      <div class="btns"><button onclick="injectableInterval()">Calculate</button><button class="secondary" onclick="copyResult('inj_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="inj_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="injectablePreset(4,1,'weeks')">Weekly × 4</button>
@@ -570,7 +576,7 @@
         <option value="raw">Show raw only</option>
       </select>
 
-      <div class="btns"><button onclick="generalLiquidDS()">Calculate</button><button class="secondary" onclick="copyResult('gen_result')">Copy</button></div>
+      <div class="btns"><button onclick="generalLiquidDS()">Calculate</button><button class="secondary" onclick="copyResult('gen_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="gen_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="generalPreset(30,1)">30 tabs / 1 daily</button>
@@ -585,7 +591,7 @@
         <div><label>Quantity needed</label><input id="pkg_needed" type="number" step="0.01" placeholder="e.g. 84"></div>
         <div><label>Package size</label><input id="pkg_size" type="number" step="0.01" placeholder="e.g. 30"></div>
       </div>
-      <div class="btns"><button onclick="packageRound()">Calculate</button><button class="secondary" onclick="copyResult('pkg_result')">Copy</button></div>
+      <div class="btns"><button onclick="packageRound()">Calculate</button><button class="secondary" onclick="copyResult('pkg_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="pkg_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="packagePreset(84,30)">30-count Packages</button>
@@ -623,7 +629,7 @@
         <div><label>Prime/waste units/day optional</label><input id="ins_waste" type="number" step="0.01" value="0"></div>
       </div>
 
-      <div class="btns"><button onclick="insulinCombinedDS()">Calculate</button><button class="secondary" onclick="copyResult('ins_result')">Copy</button></div>
+      <div class="btns"><button onclick="insulinCombinedDS()">Calculate</button><button class="secondary" onclick="copyResult('ins_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="ins_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="insulinMlPreset(15,100,50,2)">15 mL / U-100</button>
@@ -646,7 +652,7 @@
         <div><label>Doses per day</label><input id="eye_freq" type="number" value="1"></div>
       </div>
       <label>Number of eyes/ears treated</label><select id="eye_eyes"><option value="1">One eye/ear</option><option value="2">Both eyes/ears</option></select>
-      <div class="btns"><button onclick="eyeDS()">Calculate</button><button class="secondary" onclick="copyResult('eye_result')">Copy</button></div>
+      <div class="btns"><button onclick="eyeDS()">Calculate</button><button class="secondary" onclick="copyResult('eye_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="eye_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="eyePreset(5,20,1,4,2)">QID Both Eyes/Ears</button>
@@ -691,7 +697,7 @@
         </div>
       </div>
 
-      <div class="btns"><button onclick="actuationSprayDS()">Calculate</button><button class="secondary" onclick="copyResult('act_result')">Copy</button></div>
+      <div class="btns"><button onclick="actuationSprayDS()">Calculate</button><button class="secondary" onclick="copyResult('act_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="act_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="actuationPreset(200,2)">Inhaler 200 / 2 per day</button>
@@ -706,7 +712,7 @@
         <div><label>Total grams dispensed</label><input id="top_g" type="number" step="0.01"></div>
         <div><label>Estimated grams/day</label><input id="top_gpd" type="number" step="0.01"></div>
       </div>
-      <div class="btns"><button onclick="topicalDS()">Calculate</button><button class="secondary" onclick="copyResult('top_result')">Copy</button></div>
+      <div class="btns"><button onclick="topicalDS()">Calculate</button><button class="secondary" onclick="copyResult('top_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="top_result" class="result">Ready.</div>
       <div class="small">Use only as an estimate when workflow permits. Topicals can be audit-sensitive.</div>
     </section>
@@ -725,7 +731,7 @@
         <div><label>Snacks per day</label><input id="enz_snacks" type="number" step="0.01" value="2"></div>
         <div><label>Rounding</label><select id="enz_round"><option value="up" selected>Round up</option><option value="down">Round down</option><option value="raw">Show raw only</option></select></div>
       </div>
-      <div class="btns"><button onclick="enzymeDS()">Calculate</button><button class="secondary" onclick="copyResult('enz_result')">Copy</button></div>
+      <div class="btns"><button onclick="enzymeDS()">Calculate</button><button class="secondary" onclick="copyResult('enz_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="enz_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="enzymePreset(240,2,3,1,2)">2 Meals / 1 Snacks</button>
@@ -757,7 +763,7 @@
         <div><label>Tablet strength mg optional</label><input id="war_strength" type="number" step="0.01" placeholder="e.g. 5"></div>
       </div>
       <label>Quantity dispensed optional</label><input id="war_qty" type="number" step="0.01" placeholder="e.g. 30">
-      <div class="btns"><button onclick="warfarinCalc()">Calculate</button><button class="secondary" onclick="copyResult('war_result')">Copy</button></div>
+      <div class="btns"><button onclick="warfarinCalc()">Calculate</button><button class="secondary" onclick="copyResult('war_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="war_result" class="result">Ready.</div>
       <div class="preset-row">
         <button class="preset" onclick="warfarinPreset(5,5,5,5,5,5,5,5,30)">5 mg Daily</button>
@@ -1521,6 +1527,57 @@ function fridge(){
 
 
 
+
+
+function resetCalc(section){
+  const card = section.closest('.card');
+  if(!card) return;
+
+  card.querySelectorAll('input').forEach(el => {
+    if(el.type === 'checkbox'){
+      el.checked = false;
+    } else if(el.type === 'date'){
+      el.value = '';
+    } else {
+      const defaultVal = el.getAttribute('value');
+      el.value = defaultVal !== null ? defaultVal : '';
+    }
+  });
+
+  card.querySelectorAll('select').forEach(el => {
+    el.selectedIndex = 0;
+    if(el.id === 'fill_threshold'){
+      el.value = '0.85';
+    }
+    if(el.id === 'gen_round'){
+      el.value = 'down';
+    }
+    if(el.id === 'enz_round'){
+      el.value = 'up';
+    }
+  });
+
+  card.querySelectorAll('.result').forEach(el => {
+    el.textContent = 'Ready.';
+  });
+
+  if(card.querySelector('#calc_display')){
+    clearGeneralCalc();
+  }
+
+  if(card.querySelector('#inj_history')) $('inj_history').innerHTML = '';
+  if(card.querySelector('#gen_history')) $('gen_history').innerHTML = '';
+  if(card.querySelector('#pkg_history')) $('pkg_history').innerHTML = '';
+  if(card.querySelector('#ins_history')) $('ins_history').innerHTML = '';
+  if(card.querySelector('#eye_history')) $('eye_history').innerHTML = '';
+  if(card.querySelector('#act_history')) $('act_history').innerHTML = '';
+  if(card.querySelector('#enz_history')) $('enz_history').innerHTML = '';
+  if(card.querySelector('#war_history')) $('war_history').innerHTML = '';
+
+  toggleGeneralMode();
+  toggleActuationMode();
+  toggleInsulinMode();
+}
 
 </script>
 
