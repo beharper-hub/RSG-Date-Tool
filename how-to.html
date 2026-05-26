@@ -26,12 +26,32 @@ li{margin:5px 0;}
 .small{font-size:.9rem;color:var(--muted);line-height:1.4;}
 footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8px;line-height:1.35;}
 @media print{header{background:#fff;color:var(--navy)}.card{box-shadow:none;break-inside:avoid}}
+
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:18px;
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,.18);
+  transition:.2s ease;
+}
+.back-link:hover{
+  background:rgba(255,255,255,.2);
+}
+
 </style>
 </head>
 <body>
 <header>
   <h1>Pharmacy Calc Suite<br>How-To Guide</h1>
   <div class="sub">Quick reference for using each calculator. Arithmetic support only — verify against policy, prescription directions, adjudication, and pharmacist guidance.</div>
+  <a class="back-link" href="index.html">← Back to Main Suite</a>
 </header>
 <main>
   <section class="card">
