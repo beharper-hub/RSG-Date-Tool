@@ -1533,9 +1533,15 @@ function resetCalc(section){
   const card = section.closest('.card');
   if(!card) return;
 
+  const isFridgeCard = !!card.querySelector('#fr_date');
+
   card.querySelectorAll('input').forEach(el => {
     if(el.type === 'checkbox'){
-      el.checked = false;
+      if(isFridgeCard && (el.id === 'fr_ups_holidays' || el.id === 'fr_weekend')){
+        el.checked = true;
+      } else {
+        el.checked = false;
+      }
     } else if(el.type === 'date'){
       el.value = '';
     } else {
@@ -1574,9 +1580,9 @@ function resetCalc(section){
   if(card.querySelector('#enz_history')) $('enz_history').innerHTML = '';
   if(card.querySelector('#war_history')) $('war_history').innerHTML = '';
 
-  toggleGeneralMode();
-  toggleActuationMode();
-  toggleInsulinMode();
+  if($('gen_mode')) toggleGeneralMode();
+  if($('act_mode')) toggleActuationMode();
+  if($('ins_mode')) toggleInsulinMode();
 }
 
 </script>
