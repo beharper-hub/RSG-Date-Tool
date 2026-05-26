@@ -195,9 +195,7 @@
     .aligned-card select{
       height:50px;
     }
-
-
-    @media (max-width:560px){
+@media (max-width:560px){
       .enzyme-card .row > div label{
         min-height:auto;
       }
@@ -217,9 +215,7 @@
     .aligned-card select{
       height:50px;
     }
-
-
-    @media (max-width:560px){
+@media (max-width:560px){
       header{padding:30px 22px}
       main{padding:22px 14px}
       .grid{grid-template-columns:1fr}
@@ -230,8 +226,8 @@
 </head>
 <body>
 <header>
-  <h1>Pharmacy Calculator Suite</h1>
-  <div class="sub">Pharmacy workflow calculator · Built for workflow · Human verification required</div>
+<h1>Pharmacy Calc Suite</h1>
+      <div class="sub">Pharmacy workflow calculator · Built for workflow · Human verification required</div>
 </header>
 <main>
   <div class="grid">
@@ -295,7 +291,27 @@
     </section>
 
     <section class="card">
-      <h2>Eye Drop Day Supply</h2>
+      <h2>Liquid Day Supply</h2>
+      <div class="row">
+        <div><label>Total mL dispensed</label><input id="liq_ml" type="number" step="0.01" placeholder="e.g. 473"></div>
+        <div><label>mL per dose</label><input id="liq_dose" type="number" step="0.01" placeholder="e.g. 5"></div>
+      </div>
+      <div class="row">
+        <div><label>Doses per day</label><input id="liq_freq" type="number" step="0.01" placeholder="e.g. 2"></div>
+        <div><label>Rounding</label><select id="liq_round"><option value="down" selected>Round down</option><option value="up">Round up</option><option value="raw">Show raw only</option></select></div>
+      </div>
+      <div class="btns"><button onclick="liquidDS()">Calculate</button><button class="secondary" onclick="copyResult('liq_result')">Copy</button></div>
+      <div id="liq_result" class="result">Ready.</div>
+      <div class="preset-row">
+        <button class="preset" onclick="liquidPreset(473,5,2)">473 mL / 5 mL BID</button>
+        <button class="preset" onclick="liquidPreset(150,10,3)">150 mL / 10 mL TID</button>
+      </div>
+      <div class="history"><h3>Recent Calculations</h3><div id="liq_history"></div></div>
+    </section>
+
+
+    <section class="card">
+      <h2>Eye/Ear Drop Day Supply</h2>
       <div class="row">
         <div><label>Total mL</label><input id="eye_ml" type="number" step="0.01"></div>
         <div><label>Drops per mL</label><input id="eye_dpm" type="number" value="20"></div>
@@ -304,12 +320,12 @@
         <div><label>Drops per dose</label><input id="eye_dose" type="number" value="1"></div>
         <div><label>Doses per day</label><input id="eye_freq" type="number" value="1"></div>
       </div>
-      <label>Number of eyes</label><select id="eye_eyes"><option value="1">One eye</option><option value="2">Both eyes</option></select>
+      <label>Number of eyes/ears treated</label><select id="eye_eyes"><option value="1">One eye/ear</option><option value="2">Both eyes/ears</option></select>
       <div class="btns"><button onclick="eyeDS()">Calculate</button><button class="secondary" onclick="copyResult('eye_result')">Copy</button></div>
       <div id="eye_result" class="result">Ready.</div>
       <div class="preset-row">
-        <button class="preset" onclick="eyePreset(5,20,1,4,2)">Typical QID Both Eyes</button>
-        <button class="preset" onclick="eyePreset(10,20,1,2,1)">BID One Eye</button>
+        <button class="preset" onclick="eyePreset(5,20,1,4,2)">QID Both Eyes/Ears</button>
+        <button class="preset" onclick="eyePreset(10,20,1,2,1)">BID One Eye/Ear</button>
       </div>
       <div class="history">
         <h3>Recent Calculations</h3>
@@ -317,6 +333,26 @@
       </div>
 
     </section>
+
+
+    <section class="card">
+      <h2>Eye/Ear Drop Taper Calculator</h2>
+      <label>Total mL</label><input id="tap_ml" type="number" step="0.01" placeholder="e.g. 5">
+      <label>Drops per mL</label><input id="tap_dpm" type="number" value="20">
+      <label>Number of eyes/ears treated</label><select id="tap_sites"><option value="1">One eye/ear</option><option value="2">Both eyes/ears</option></select>
+      <label>Taper steps</label>
+      <textarea id="tap_steps" placeholder="One per line: drops per dose | doses per day | days&#10;Example: 1 | 4 | 7&#10;1 | 3 | 7&#10;1 | 2 | 7&#10;1 | 1 | 7"></textarea>
+      <div class="btns"><button onclick="dropTaperCalc()">Calculate</button><button class="secondary" onclick="copyResult('tap_result')">Copy</button></div>
+      <div id="tap_result" class="result">Ready.</div>
+      <div class="preset-row">
+        <button class="preset" onclick="dropTaperPreset()">Common 4-3-2-1 Taper</button>
+      </div>
+      <div class="history"><h3>Recent Calculations</h3><div id="tap_history"></div></div>
+      <div class="small">Calculates total drops needed for taper directions and compares against bottle volume.</div>
+    </section>
+
+
+
 
 <section class="card">
   <h2>Nasal Spray Day Supply</h2>
@@ -446,6 +482,37 @@
       <div class="small">For interval-based day supply math only. Verify package and directions.</div>
     </section>
 
+    <section class="card aligned-card">
+      <h2>Warfarin Weekly Dose Calculator</h2>
+      <div class="row">
+        <div><label>Monday mg</label><input id="war_mon" type="number" step="0.01" value="0"></div>
+        <div><label>Tuesday mg</label><input id="war_tue" type="number" step="0.01" value="0"></div>
+      </div>
+      <div class="row">
+        <div><label>Wednesday mg</label><input id="war_wed" type="number" step="0.01" value="0"></div>
+        <div><label>Thursday mg</label><input id="war_thu" type="number" step="0.01" value="0"></div>
+      </div>
+      <div class="row">
+        <div><label>Friday mg</label><input id="war_fri" type="number" step="0.01" value="0"></div>
+        <div><label>Saturday mg</label><input id="war_sat" type="number" step="0.01" value="0"></div>
+      </div>
+      <div class="row">
+        <div><label>Sunday mg</label><input id="war_sun" type="number" step="0.01" value="0"></div>
+        <div><label>Tablet strength mg optional</label><input id="war_strength" type="number" step="0.01" placeholder="e.g. 5"></div>
+      </div>
+      <label>Quantity dispensed optional</label><input id="war_qty" type="number" step="0.01" placeholder="e.g. 30">
+      <div class="btns"><button onclick="warfarinCalc()">Calculate</button><button class="secondary" onclick="copyResult('war_result')">Copy</button></div>
+      <div id="war_result" class="result">Ready.</div>
+      <div class="preset-row">
+        <button class="preset" onclick="warfarinPreset(5,5,5,5,5,5,5,5,30)">5 mg Daily</button>
+        <button class="preset" onclick="warfarinPreset(5,2.5,5,2.5,5,2.5,5,5,30)">Alternating Example</button>
+      </div>
+      <div class="history"><h3>Recent Calculations</h3><div id="war_history"></div></div>
+      <div class="small">Arithmetic support only. Does not recommend dose changes or interpret INR.</div>
+    </section>
+
+
+
 
     <section class="card">
       <h2>Cream/Ointment Estimate</h2>
@@ -574,6 +641,34 @@ function injectablePreset(doses,interval,unit){
   $('inj_unit').value = unit;
 }
 
+
+function warfarinPreset(mon,tue,wed,thu,fri,sat,sun,strength,qty){
+  $('war_mon').value = mon;
+  $('war_tue').value = tue;
+  $('war_wed').value = wed;
+  $('war_thu').value = thu;
+  $('war_fri').value = fri;
+  $('war_sat').value = sat;
+  $('war_sun').value = sun;
+  $('war_strength').value = strength;
+  $('war_qty').value = qty;
+}
+
+
+function liquidPreset(ml,dose,freq){
+  $('liq_ml').value = ml;
+  $('liq_dose').value = dose;
+  $('liq_freq').value = freq;
+  $('liq_round').value = 'down';
+}
+
+function dropTaperPreset(){
+  $('tap_ml').value = 5;
+  $('tap_dpm').value = 20;
+  $('tap_sites').value = 1;
+  $('tap_steps').value = '1 | 4 | 7\n1 | 3 | 7\n1 | 2 | 7\n1 | 1 | 7';
+}
+
 function copyResult(id){ navigator.clipboard.writeText($(id).textContent); }
 
 function nextFill(){
@@ -614,13 +709,13 @@ function eyeDS(){
   const ml=num('eye_ml'), dpm=num('eye_dpm'), dose=num('eye_dose'), freq=num('eye_freq'), eyes=parseInt($('eye_eyes').value);
 
   if(!validatePositive([ml,dpm,dose,freq])){
-    return out('eye_result','Enter valid eye drop values.');
+    return out('eye_result','Enter valid eye/ear drop values.');
   }
 
   const total=ml*dpm, daily=dose*freq*eyes;
   const ds=Math.floor(total/daily);
 
-  const text=`Eye drop day supply: ${ds} days
+  const text=`Eye/Ear drop day supply: ${ds} days
 Total drops: ${total}
 Drops/day: ${daily}
 Assumption: ${dpm} drops/mL`;
@@ -732,6 +827,55 @@ Calculation: ${doses} dose(s) × ${interval} × ${multiplier} day multiplier`;
   addHistory('inj', text);
 }
 
+
+
+function warfarinCalc(){
+  const days = [
+    ['Monday', num('war_mon') || 0],
+    ['Tuesday', num('war_tue') || 0],
+    ['Wednesday', num('war_wed') || 0],
+    ['Thursday', num('war_thu') || 0],
+    ['Friday', num('war_fri') || 0],
+    ['Saturday', num('war_sat') || 0],
+    ['Sunday', num('war_sun') || 0]
+  ];
+
+  if(days.some(d => d[1] < 0)){
+    return out('war_result','Warfarin daily mg values cannot be negative.');
+  }
+
+  const weekly = days.reduce((sum,d) => sum + d[1], 0);
+
+  if(weekly <= 0){
+    return out('war_result','Enter at least one daily warfarin dose.');
+  }
+
+  const avg = weekly / 7;
+  const strength = num('war_strength');
+  const qty = num('war_qty');
+
+  let text = 'Warfarin weekly dose: ' + weekly.toFixed(2) + ' mg/week\n';
+  text += 'Average daily dose: ' + avg.toFixed(2) + ' mg/day\n\n';
+  text += 'Daily schedule:\n';
+  text += days.map(d => '- ' + d[0] + ': ' + d[1] + ' mg').join('\n');
+
+  if(strength && strength > 0){
+    const tabsWeek = weekly / strength;
+    text += '\n\nTablet strength: ' + strength + ' mg';
+    text += '\nTablets per week: ' + tabsWeek.toFixed(2);
+
+    if(qty && qty > 0){
+      const daySupply = Math.floor((qty / tabsWeek) * 7);
+      text += '\nQuantity dispensed: ' + qty;
+      text += '\nEstimated day supply: ' + daySupply + ' days';
+    }
+  } else if(qty && qty > 0){
+    text += '\n\nQuantity dispensed entered, but tablet strength is needed to estimate day supply.';
+  }
+
+  out('war_result', text);
+  addHistory('war', text);
+}
 
 function topicalDS(){
   const g=num('top_g'), gpd=num('top_gpd'); if(!g||!gpd) return out('top_result','Missing grams or grams/day.');
@@ -868,6 +1012,85 @@ function fridge(){
   }
 
   out('fr_result', msg);
+}
+
+
+
+function liquidDS(){
+  const ml=num('liq_ml'), dose=num('liq_dose'), freq=num('liq_freq'), roundMode=$('liq_round').value;
+
+  if(!validatePositive([ml,dose,freq])){
+    return out('liq_result','Enter valid positive liquid values.');
+  }
+
+  const daily=dose*freq;
+  const raw=ml/daily;
+  let dsLabel=raw.toFixed(2) + ' days raw';
+
+  if(roundMode === 'down'){
+    dsLabel = Math.floor(raw) + ' days rounded down';
+  } else if(roundMode === 'up'){
+    dsLabel = Math.ceil(raw) + ' days rounded up';
+  }
+
+  if(raw > 365){
+    return out('liq_result','Calculated day supply exceeds realistic limits. Verify mL dispensed and usage.');
+  }
+
+  const text='Liquid day supply: ' + dsLabel + '\nTotal mL: ' + ml + '\nmL per dose: ' + dose + '\nDoses/day: ' + freq + '\nTotal mL/day: ' + daily.toFixed(2);
+
+  out('liq_result', text);
+  addHistory('liq', text);
+}
+
+function dropTaperCalc(){
+  const ml=num('tap_ml'), dpm=num('tap_dpm'), sites=parseInt($('tap_sites').value);
+  if(!validatePositive([ml,dpm])){
+    return out('tap_result','Enter valid bottle mL and drops/mL values.');
+  }
+
+  const lines=$('tap_steps').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  if(!lines.length){
+    return out('tap_result','Enter taper steps as: drops per dose | doses per day | days');
+  }
+
+  let totalNeeded=0;
+  let text='Eye/Ear drop taper calculation:\n';
+  let valid=true;
+
+  lines.forEach((line,i)=>{
+    const parts=line.split('|').map(p=>p.trim());
+    const drops=parseFloat(parts[0]);
+    const freq=parseFloat(parts[1]);
+    const days=parseFloat(parts[2]);
+
+    if(!drops || !freq || !days){
+      text += '\nStep ' + (i+1) + ': INVALID - use drops per dose | doses per day | days';
+      valid=false;
+      return;
+    }
+
+    const stepDrops=drops*freq*days*sites;
+    totalNeeded += stepDrops;
+    text += '\nStep ' + (i+1) + ': ' + drops + ' drop(s) × ' + freq + ' time(s)/day × ' + days + ' day(s) × ' + sites + ' site(s) = ' + stepDrops + ' drops';
+  });
+
+  if(!valid){
+    return out('tap_result', text);
+  }
+
+  const totalAvailable=ml*dpm;
+  const remaining=totalAvailable-totalNeeded;
+  const bottleStatus = remaining >= 0 ? 'Bottle volume appears sufficient by this estimate.' : 'Bottle volume may be short by this estimate.';
+
+  text += '\n\nTotal drops needed: ' + totalNeeded;
+  text += '\nTotal drops available: ' + totalAvailable;
+  text += '\nEstimated remaining drops: ' + remaining;
+  text += '\nStatus: ' + bottleStatus;
+  text += '\nAssumption: ' + dpm + ' drops/mL';
+
+  out('tap_result', text);
+  addHistory('tap', text);
 }
 
 
