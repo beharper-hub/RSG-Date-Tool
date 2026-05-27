@@ -544,8 +544,13 @@
       <div class="btns">
         <button class="secondary" onclick="calcBackspace()">Backspace</button>
         <button class="secondary" onclick="copyResult('calc_display')">Copy</button>
+        <button class="secondary" onclick="clearCalcHistory()">Clear History</button>
       </div>
       <div class="small">Standard mode stays clean. Scientific mode adds √, trig, logs, powers, and π.</div>
+      <div class="history">
+        <h3>Recent Calculations</h3>
+        <div id="calc_history"></div>
+      </div>
     </section>
 
 <section class="card">
@@ -607,7 +612,7 @@
       <select id="gen_mode" onchange="toggleGeneralMode()">
         <option value="units">Tablets/Capsules</option>
         <option value="liquid">Liquid mL</option>
-        <option value="titration">Titration Schedule</option>
+        <option value="titration">Simple Titration</option>
       </select>
 
       <div id="gen_units_mode">
@@ -877,17 +882,30 @@ function out(id, text){ $(id).textContent=text; }
 
 const calcHistory = {};
 
-function addHistory(key, text){
-  if(!calcHistory[key]) calcHistory[key] = [];
-  calcHistory[key].unshift(text);
-  calcHistory[key] = calcHistory[key].slice(0,5);
-
-  const el = document.getElementById(key + '_history');
-  if(el){
-    el.innerHTML = calcHistory[key]
-      .map(item => `<div class="history-item">${item.replace(/\n/g,'<br>')}</div>`)
-      .join('');
+function addHistory(type, text){
+  if(!calcHistory[type]){
+    calcHistory[type] = [];
   }
+
+  calcHistory[type].unshift(text);
+
+  // Keep only the 5 most recent entries
+  if(calcHistory[type].length > 5){
+    calcHistory[type] = calcHistory[type].slice(0,5);
+  }
+
+  const target = document.getElementById(type + '_history');
+  if(!target) return;
+
+  target.innerHTML = calcHistory[type]
+    .map(item => `<div class="history-item">${item}</div>`)
+    .join('');
+}
+
+function clearCalcHistory(){
+  calcHistory.calc = [];
+  const el = document.getElementById('calc_history');
+  if(el) el.innerHTML = '';
 }
 
 function validatePositive(values){
@@ -1105,9 +1123,11 @@ function generalCalc(){
     }
 
     const cleanResult = Number(result.toFixed(8));
-    $('calc_expression').textContent = expr.replace(/\*/g,'×').replace(/\//g,'÷') + ' =';
+    const prettyExpr = expr.replace(/\*/g,'×').replace(/\//g,'÷');
+    $('calc_expression').textContent = prettyExpr + ' =';
     $('calc_expr').value = String(cleanResult);
     $('calc_display').textContent = cleanResult;
+    addHistory('calc', prettyExpr + ' = ' + cleanResult);
   } catch(e){
     $('calc_display').textContent = 'Error';
     $('calc_expression').textContent = 'Check expression';
