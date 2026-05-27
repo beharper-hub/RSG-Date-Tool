@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pharmcalc-v10';
+const CACHE_NAME = 'pharmcalc-v11';
 const ASSETS = [
   './',
   './index.html',
