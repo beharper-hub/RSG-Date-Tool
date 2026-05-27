@@ -538,8 +538,8 @@
     <section class="card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M8 7V5h8v2"/><path d="M12 10v6"/><path d="M9.5 13h5"/></svg></span><span>Refrigerated Shipment Checker</span></span></h2>
       <label>Proposed delivery date</label><input id="fr_date" type="date">
-      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS holiday logic</label>
-      <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid weekend exposure logic</label>
+      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS Holiday Schedule Changes</label>
+      <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid Weekend Exposure</label>
       <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
       <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="fr_result" class="result">Ready.</div>
