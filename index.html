@@ -587,8 +587,8 @@
     <section class="card aligned-card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M14 4l6 6"/><path d="M17 7L7 17"/><path d="M5 19l2-2"/><path d="M10 14l-3-3"/></svg></span><span>Injection Day Supply</span></span></h2>
       <div class="row">
-        <div><label>Total doses dispensed</label><input id="inj_doses" type="number" step="0.01" placeholder="e.g. 4"></div>
-        <div><label>Use every</label><input id="inj_interval" type="number" step="0.01" placeholder="e.g. 7"></div>
+        <div><label>Doses Dispensed</label><input id="inj_doses" type="number" step="0.01" placeholder="e.g. 4"></div>
+        <div><label>Every</label><input id="inj_interval" type="number" step="0.01" placeholder="e.g. 7"></div>
       </div>
       <label>Interval unit</label>
       <select id="inj_unit">
@@ -617,27 +617,27 @@
 
       <div id="gen_units_mode">
         <div class="row">
-          <div><label>Total tablets/capsules dispensed</label><input id="gen_qty" type="number" step="0.01"></div>
-          <div><label>Tablets/capsules used per day</label><input id="gen_perday" type="number" step="0.01"></div>
+          <div><label>Qty Dispensed</label><input id="gen_qty" type="number" step="0.01"></div>
+          <div><label>Used Per Day</label><input id="gen_perday" type="number" step="0.01"></div>
         </div>
       </div>
 
       <div id="gen_liquid_mode" style="display:none">
         <div class="row">
-          <div><label>Total mL dispensed</label><input id="liq_ml" type="number" step="0.01" placeholder="e.g. 473"></div>
-          <div><label>mL per dose</label><input id="liq_dose" type="number" step="0.01" placeholder="e.g. 5"></div>
+          <div><label>mL Dispensed</label><input id="liq_ml" type="number" step="0.01" placeholder="e.g. 473"></div>
+          <div><label>mL Per Dose</label><input id="liq_dose" type="number" step="0.01" placeholder="e.g. 5"></div>
         </div>
-        <label>Doses per day</label><input id="liq_freq" type="number" step="0.01" placeholder="e.g. 2">
+        <label>Doses/Day</label><input id="liq_freq" type="number" step="0.01" placeholder="e.g. 2">
       </div>
 
       <div id="gen_titration_mode" style="display:none">
         <div class="row">
-          <div><label>Starting dose / units per day</label><input id="tit_start" type="number" step="0.01" placeholder="e.g. 1"></div>
+          <div><label>Starting Dose</label><input id="tit_start" type="number" step="0.01" placeholder="e.g. 1"></div>
           <div><label>Change by</label><input id="tit_change" type="number" step="0.01" placeholder="e.g. 1"></div>
         </div>
         <div class="row">
-          <div><label>Target dose / units per day</label><input id="tit_target" type="number" step="0.01" placeholder="e.g. 4"></div>
-          <div><label>Change every</label><input id="tit_interval" type="number" step="1" value="7"></div>
+          <div><label>Target Dose</label><input id="tit_target" type="number" step="0.01" placeholder="e.g. 4"></div>
+          <div><label>Adjust Every</label><input id="tit_interval" type="number" step="1" value="7"></div>
         </div>
         <div class="row">
           <div>
@@ -655,7 +655,7 @@
             </select>
           </div>
         </div>
-        <label>Total quantity dispensed optional</label>
+        <label>Qty Dispensed Optional</label>
         <input id="tit_qty" type="number" step="0.01" placeholder="e.g. 84">
       </div>
 
@@ -681,13 +681,13 @@
       <div class="small">For uneven weekly tablet/capsule schedules. Example: take 1 tablet daily and may take 1 additional tablet Monday, Wednesday, and Friday.</div>
 
       <div class="row">
-        <div><label>Total quantity dispensed</label><input id="pat_qty" type="number" step="0.01" placeholder="e.g. 30"></div>
-        <div><label>Base daily dose</label><input id="pat_base_daily" type="number" step="0.01" placeholder="e.g. 1"></div>
+        <div><label>Qty Dispensed</label><input id="pat_qty" type="number" step="0.01" placeholder="e.g. 30"></div>
+        <div><label>Daily Base Dose</label><input id="pat_base_daily" type="number" step="0.01" placeholder="e.g. 1"></div>
       </div>
 
       <div class="row">
-        <div><label>Additional dose amount</label><input id="pat_extra_dose" type="number" step="0.01" placeholder="e.g. 1"></div>
-        <div><label>Additional days per week</label><input id="pat_extra_days" type="number" step="1" min="0" max="7" placeholder="e.g. 3"></div>
+        <div><label>Extra Dose</label><input id="pat_extra_dose" type="number" step="0.01" placeholder="e.g. 1"></div>
+        <div><label>Extra Days/Week</label><input id="pat_extra_days" type="number" step="1" min="0" max="7" placeholder="e.g. 3"></div>
       </div>
 
       <label>Rounding</label>
@@ -715,28 +715,28 @@
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M5 19l4-1 9-9-3-3-9 9-1 4z"/><path d="M14 4l6 6"/></svg></span><span>Insulin / Pen Day Supply</span></span></h2>
       <label>Dispense type</label>
       <select id="ins_mode" onchange="toggleInsulinMode()">
-        <option value="ml">Total mL dispensed</option>
+        <option value="ml">mL Dispensed</option>
         <option value="pen">Pen count</option>
       </select>
 
       <div id="ins_ml_mode">
         <div class="row">
-          <div><label>Total mL dispensed</label><input id="ins_ml" type="number" step="0.01" placeholder="e.g. 15"></div>
-          <div><label>Units per mL</label><input id="ins_unitsml" type="number" value="100"></div>
+          <div><label>mL Dispensed</label><input id="ins_ml" type="number" step="0.01" placeholder="e.g. 15"></div>
+          <div><label>Units/mL</label><input id="ins_unitsml" type="number" value="100"></div>
         </div>
       </div>
 
       <div id="ins_pen_mode" style="display:none">
         <div class="row">
-          <div><label>Number of pens dispensed</label><input id="pen_count" type="number" step="1" placeholder="e.g. 5"></div>
-          <div><label>mL per pen</label><input id="pen_ml" type="number" step="0.01" value="3"></div>
+          <div><label>Pens Dispensed</label><input id="pen_count" type="number" step="1" placeholder="e.g. 5"></div>
+          <div><label>mL Per Pen</label><input id="pen_ml" type="number" step="0.01" value="3"></div>
         </div>
-        <label>Units per mL</label><input id="pen_unitsml" type="number" value="100">
+        <label>Units/mL</label><input id="pen_unitsml" type="number" value="100">
       </div>
 
       <div class="row">
         <div><label>Units/day</label><input id="ins_unitsday" type="number" step="0.01"></div>
-        <div><label>Prime/waste units/day optional</label><input id="ins_waste" type="number" step="0.01" value="0"></div>
+        <div><label>Prime Waste/Day</label><input id="ins_waste" type="number" step="0.01" value="0"></div>
       </div>
 
       <div class="btns"><button onclick="insulinCombinedDS()">Calculate</button><button class="secondary" onclick="copyResult('ins_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
@@ -754,14 +754,14 @@
     <section class="card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M3 12s3.5-5 9-5 9 5 9 5-3.5 5-9 5-9-5-9-5z"/><circle cx="12" cy="12" r="2.5"/></svg></span><span>Eye/Ear Drop Day Supply</span></span></h2>
       <div class="row">
-        <div><label>Total mL</label><input id="eye_ml" type="number" step="0.01"></div>
-        <div><label>Drops per mL</label><input id="eye_dpm" type="number" value="15"></div>
+        <div><label>mL Dispensed</label><input id="eye_ml" type="number" step="0.01"></div>
+        <div><label>Drops/mL</label><input id="eye_dpm" type="number" value="15"></div>
       </div>
       <div class="row">
-        <div><label>Drops per dose</label><input id="eye_dose" type="number" value="1"></div>
-        <div><label>Doses per day</label><input id="eye_freq" type="number" value="1"></div>
+        <div><label>Drops Per Dose</label><input id="eye_dose" type="number" value="1"></div>
+        <div><label>Doses/Day</label><input id="eye_freq" type="number" value="1"></div>
       </div>
-      <label>Number of eyes/ears treated</label><select id="eye_eyes"><option value="1">One eye/ear</option><option value="2">Both eyes/ears</option></select>
+      <label>Eyes/Ears Treated</label><select id="eye_eyes"><option value="1">One eye/ear</option><option value="2">Both eyes/ears</option></select>
       <div class="btns"><button onclick="eyeDS()">Calculate</button><button class="secondary" onclick="copyResult('eye_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="eye_result" class="result">Ready.</div>
       <div class="preset-row">
@@ -785,20 +785,20 @@
 
       <div id="act_inhaler_mode">
         <div class="row">
-          <div><label>Total actuations</label><input id="act_total" type="number" placeholder="e.g. 200"></div>
-          <div><label>Puffs per day</label><input id="act_perday" type="number" step="0.01"></div>
+          <div><label>Total Puffs</label><input id="act_total" type="number" placeholder="e.g. 200"></div>
+          <div><label>Puffs/Day</label><input id="act_perday" type="number" step="0.01"></div>
         </div>
       </div>
 
       <div id="act_nasal_mode" style="display:none">
         <div class="row">
-          <div><label>Total sprays in bottle</label><input id="nasal_total" type="number" placeholder="e.g. 120"></div>
-          <div><label>Sprays per nostril</label><input id="nasal_pernostril" type="number" value="1"></div>
+          <div><label>Sprays in Bottle</label><input id="nasal_total" type="number" placeholder="e.g. 120"></div>
+          <div><label>Sprays Per Nostril</label><input id="nasal_pernostril" type="number" value="1"></div>
         </div>
         <div class="row">
-          <div><label>Doses per day</label><input id="nasal_freq" type="number" value="1"></div>
+          <div><label>Doses/Day</label><input id="nasal_freq" type="number" value="1"></div>
           <div>
-            <label>Number of nostrils treated</label>
+            <label>Nostrils Treated</label>
             <select id="nasal_nostrils">
               <option value="1">One nostril</option>
               <option value="2">Both nostrils</option>
@@ -819,8 +819,8 @@
     <section class="card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M8 3h8l1 5H7l1-5z"/><path d="M7 8h10l2 12H5L7 8z"/><path d="M9 14h6"/></svg></span><span>Cream/Ointment Estimate</span></span></h2>
       <div class="row">
-        <div><label>Total grams dispensed</label><input id="top_g" type="number" step="0.01"></div>
-        <div><label>Estimated grams/day</label><input id="top_gpd" type="number" step="0.01"></div>
+        <div><label>Grams Dispensed</label><input id="top_g" type="number" step="0.01"></div>
+        <div><label>Grams/Day</label><input id="top_gpd" type="number" step="0.01"></div>
       </div>
       <div class="btns"><button onclick="topicalDS()">Calculate</button><button class="secondary" onclick="copyResult('top_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="top_result" class="result">Ready.</div>
@@ -830,15 +830,15 @@
     <section class="card enzyme-card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3"/></svg></span><span>Enzyme Day Supply</span></span></h2>
       <div class="row">
-        <div><label>Total capsules dispensed</label><input id="enz_qty" type="number" placeholder="e.g. 240"></div>
-        <div><label>Capsules per meal</label><input id="enz_meal_caps" type="number" step="0.01" value="2"></div>
+        <div><label>Caps Dispensed</label><input id="enz_qty" type="number" placeholder="e.g. 240"></div>
+        <div><label>Caps Per Meal</label><input id="enz_meal_caps" type="number" step="0.01" value="2"></div>
       </div>
       <div class="row">
-        <div><label>Meals per day</label><input id="enz_meals" type="number" step="0.01" value="3"></div>
-        <div><label>Capsules per snack</label><input id="enz_snack_caps" type="number" step="0.01" value="1"></div>
+        <div><label>Meals/Day</label><input id="enz_meals" type="number" step="0.01" value="3"></div>
+        <div><label>Caps Per Snack</label><input id="enz_snack_caps" type="number" step="0.01" value="1"></div>
       </div>
       <div class="row">
-        <div><label>Snacks per day</label><input id="enz_snacks" type="number" step="0.01" value="2"></div>
+        <div><label>Snacks/Day</label><input id="enz_snacks" type="number" step="0.01" value="2"></div>
         <div><label>Rounding</label><select id="enz_round"><option value="up" selected>Round up</option><option value="down">Round down</option><option value="raw">Show raw only</option></select></div>
       </div>
       <div class="btns"><button onclick="enzymeDS()">Calculate</button><button class="secondary" onclick="copyResult('enz_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
@@ -870,9 +870,9 @@
       </div>
       <div class="row">
         <div><label>Sunday mg</label><input id="war_sun" type="number" step="0.01" value="0"></div>
-        <div><label>Tablet strength mg optional</label><input id="war_strength" type="number" step="0.01" placeholder="e.g. 5"></div>
+        <div><label>Tablet Strength Optional</label><input id="war_strength" type="number" step="0.01" placeholder="e.g. 5"></div>
       </div>
-      <label>Quantity dispensed optional</label><input id="war_qty" type="number" step="0.01" placeholder="e.g. 30">
+      <label>Qty Dispensed Optional</label><input id="war_qty" type="number" step="0.01" placeholder="e.g. 30">
       <div class="btns"><button onclick="warfarinCalc()">Calculate</button><button class="secondary" onclick="copyResult('war_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="war_result" class="result">Ready.</div>
       <div class="preset-row">
@@ -1388,7 +1388,7 @@ function generalLiquidDS(){
     raw = ml/daily;
     text = 'Liquid day supply: ';
     text += formatDaySupply(raw, roundMode) + '\n';
-    text += 'Total mL: ' + ml + '\nmL per dose: ' + dose + '\nDoses/day: ' + freq + '\nTotal mL/day: ' + daily.toFixed(2);
+    text += 'mL Dispensed: ' + ml + '\nmL Per Dose: ' + dose + '\nDoses/day: ' + freq + '\nmL Dispensed/day: ' + daily.toFixed(2);
   } else {
     const start=num('tit_start'),
           change=num('tit_change'),
@@ -1438,7 +1438,7 @@ function actuationSprayDS(){
     }
 
     const ds=Math.floor(total/perday);
-    text='Inhaler day supply: ' + ds + ' days\nTotal actuations: ' + total + '\nPuffs/day: ' + perday;
+    text='Inhaler day supply: ' + ds + ' days\nTotal Puffs: ' + total + '\nPuffs/day: ' + perday;
   } else {
     const total=num('nasal_total'),
           per=num('nasal_pernostril'),
@@ -1484,18 +1484,18 @@ function insulinCombinedDS(){
       return out('ins_result','Enter valid positive total mL and units/mL.');
     }
 
-    source = 'Total mL dispensed: ' + totalMl;
+    source = 'mL Dispensed: ' + totalMl;
   } else {
     const count = num('pen_count');
     const mlPerPen = num('pen_ml');
     unitsml = num('pen_unitsml');
 
     if(!validatePositive([count, mlPerPen, unitsml])){
-      return out('ins_result','Enter valid positive pen count, mL per pen, and units/mL.');
+      return out('ins_result','Enter valid positive pen count, mL Per Pen, and units/mL.');
     }
 
     totalMl = count * mlPerPen;
-    source = 'Pens dispensed: ' + count + '\\n' + 'mL per pen: ' + mlPerPen;
+    source = 'Pens dispensed: ' + count + '\\n' + 'mL Per Pen: ' + mlPerPen;
   }
 
   const totalUnits = totalMl * unitsml;
@@ -1513,8 +1513,8 @@ function insulinCombinedDS(){
 
   const text = 'Insulin day supply: ' + ds + ' days\\n' +
     source + '\\n' +
-    'Total mL: ' + totalMl + '\\n' +
-    'Units per mL: ' + unitsml + '\\n' +
+    'mL Dispensed: ' + totalMl + '\\n' +
+    'Units/mL: ' + unitsml + '\\n' +
     'Total units: ' + totalUnits + '\\n' +
     'Daily units used: ' + daily + (waste ? ' (' + unitsday + ' dose + ' + waste + ' prime/waste)' : '');
 
@@ -1603,8 +1603,8 @@ function injectableInterval(){
   const days=doses*interval*multiplier;
   if(days>365) return out('inj_result','Calculated day supply exceeds realistic limits. Verify dose count and interval.');
   const text=`Injection day supply: ${Math.ceil(days)} days
-Total doses dispensed: ${doses}
-Use every: ${interval} ${unitLabel}
+Doses Dispensed: ${doses}
+Every: ${interval} ${unitLabel}
 Calculation: ${doses} dose(s) × ${interval} × ${multiplier} day multiplier`;
   out('inj_result', text);
   addHistory('inj', text);
@@ -1662,7 +1662,7 @@ function warfarinCalc(){
 
 function topicalDS(){
   const g=num('top_g'), gpd=num('top_gpd'); if(!g||!gpd) return out('top_result','Missing grams or grams/day.');
-  out('top_result', `Estimated topical day supply: ${Math.floor(g/gpd)} days\nTotal grams: ${g}\nEstimated grams/day: ${gpd}`);
+  out('top_result', `Estimated topical day supply: ${Math.floor(g/gpd)} days\nTotal grams: ${g}\nGrams/Day: ${gpd}`);
 }
 
 function sameDate(a,b){
