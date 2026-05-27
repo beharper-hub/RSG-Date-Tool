@@ -676,20 +676,39 @@
       <div class="history"><h3>Recent Calculations</h3><div id="gen_history"></div></div>
     </section>
 
-    <section class="card">
-      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M4 8l8-4 8 4-8 4-8-4z"/><path d="M4 8v9l8 4 8-4V8"/><path d="M12 12v9"/></svg></span><span>Package Size / Box Rounding Helper</span></span></h2>
+    <section class="card aligned-card">
+      <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M7 10h10"/><path d="M9 14h6"/><path d="M10 18h4"/></svg></span><span>Patterned Dosing</span></span></h2>
+      <div class="small">For uneven weekly tablet/capsule schedules. Example: take 1 tablet daily and may take 1 additional tablet Monday, Wednesday, and Friday.</div>
+
       <div class="row">
-        <div><label>Quantity needed</label><input id="pkg_needed" type="number" step="0.01" placeholder="e.g. 84"></div>
-        <div><label>Package size</label><input id="pkg_size" type="number" step="0.01" placeholder="e.g. 30"></div>
+        <div><label>Total quantity dispensed</label><input id="pat_qty" type="number" step="0.01" placeholder="e.g. 30"></div>
+        <div><label>Base daily dose</label><input id="pat_base_daily" type="number" step="0.01" placeholder="e.g. 1"></div>
       </div>
-      <div class="btns"><button onclick="packageRound()">Calculate</button><button class="secondary" onclick="copyResult('pkg_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-      <div id="pkg_result" class="result">Ready.</div>
+
+      <div class="row">
+        <div><label>Additional dose amount</label><input id="pat_extra_dose" type="number" step="0.01" placeholder="e.g. 1"></div>
+        <div><label>Additional days per week</label><input id="pat_extra_days" type="number" step="1" min="0" max="7" placeholder="e.g. 3"></div>
+      </div>
+
+      <label>Rounding</label>
+      <select id="pat_round">
+        <option value="down" selected>Round down</option>
+        <option value="up">Round up</option>
+        <option value="raw">Show raw only</option>
+      </select>
+
+      <div class="btns">
+        <button onclick="patternedDosingCalc()">Calculate</button>
+        <button class="secondary" onclick="copyResult('pat_result')">Copy</button>
+        <button class="reset-btn" onclick="resetCalc(this)">Reset</button>
+      </div>
+
+      <div id="pat_result" class="result">Ready.</div>
       <div class="preset-row">
-        <button class="preset" onclick="packagePreset(84,30)">30-count Packages</button>
-        <button class="preset" onclick="packagePreset(28,3)">Sensor Boxes</button>
+        <button class="preset" onclick="patternPreset(30,1,1,3)">Daily + M/W/F Extra</button>
+        <button class="preset" onclick="patternPreset(60,1,1,2)">Daily + 2 Extra Days</button>
       </div>
-      <div class="history"><h3>Recent Calculations</h3><div id="pkg_history"></div></div>
-      <div class="small">Rounds up to the nearest whole package and shows extra quantity dispensed.</div>
+      <div class="history"><h3>Recent Calculations</h3><div id="pat_history"></div></div>
     </section>
 
     <section class="card aligned-card">
@@ -958,10 +977,7 @@ function enzymePreset(qty,mealCaps,meals,snackCaps,snacks){
 }
 
 
-function packagePreset(needed,size){
-  $('pkg_needed').value = needed;
-  $('pkg_size').value = size;
-}
+
 function injectablePreset(doses,interval,unit){
   $('inj_doses').value = doses;
   $('inj_interval').value = interval;
@@ -1021,6 +1037,63 @@ function titrationPreset(start,change,target,interval,unit,direction,qty){
   $('tit_direction').value = direction;
   $('tit_qty').value = qty || '';
   $('gen_round').value = 'down';
+}
+
+function patternPreset(qty,baseDaily,extraDose,extraDays){
+  $('pat_qty').value = qty;
+  $('pat_base_daily').value = baseDaily;
+  $('pat_extra_dose').value = extraDose;
+  $('pat_extra_days').value = extraDays;
+  $('pat_round').value = 'down';
+}
+
+function patternedDosingCalc(){
+  const qty=num('pat_qty'),
+        baseDaily=num('pat_base_daily'),
+        extraDose=num('pat_extra_dose') || 0,
+        extraDays=num('pat_extra_days') || 0,
+        roundMode=$('pat_round').value;
+
+  if(!validatePositive([qty,baseDaily])){
+    return out('pat_result','Enter valid positive quantity and base daily dose.');
+  }
+
+  if(extraDose < 0 || extraDays < 0 || extraDays > 7){
+    return out('pat_result','Additional dose must be zero or greater, and additional days must be between 0 and 7.');
+  }
+
+  const baseWeekly = baseDaily * 7;
+  const extraWeekly = extraDose * extraDays;
+  const totalWeekly = baseWeekly + extraWeekly;
+
+  if(totalWeekly <= 0){
+    return out('pat_result','Total weekly use must be greater than zero.');
+  }
+
+  const raw = (qty / totalWeekly) * 7;
+
+  if(raw > 365){
+    return out('pat_result','Calculated day supply exceeds realistic limits. Verify entry values.');
+  }
+
+  let daySupply = '';
+  if(roundMode === 'up'){
+    daySupply = Math.ceil(raw) + ' days rounded up';
+  } else if(roundMode === 'raw'){
+    daySupply = raw.toFixed(2) + ' days raw';
+  } else {
+    daySupply = Math.floor(raw) + ' days rounded down';
+  }
+
+  const text = 'Patterned dosing day supply: ' + daySupply + '\n' +
+    'Quantity dispensed: ' + qty + '\n' +
+    'Base use: ' + baseDaily + ' unit(s)/day × 7 = ' + baseWeekly.toFixed(2) + ' unit(s)/week\n' +
+    'Additional use: ' + extraDose + ' unit(s) × ' + extraDays + ' day(s)/week = ' + extraWeekly.toFixed(2) + ' unit(s)/week\n' +
+    'Total weekly use: ' + totalWeekly.toFixed(2) + ' unit(s)/week\n' +
+    'Raw day supply: ' + raw.toFixed(2) + ' days';
+
+  out('pat_result', text);
+  addHistory('pat', text);
 }
 
 function toggleActuationMode(){
@@ -1518,20 +1591,7 @@ Snack use: ${snackCaps} capsule(s) × ${snacks} snack(s) = ${snackDaily}/day`;
 }
 
 
-function packageRound(){
-  const needed=num('pkg_needed'), size=num('pkg_size');
-  if(!validatePositive([needed,size])) return out('pkg_result','Enter valid positive quantity needed and package size.');
-  const packages=Math.ceil(needed/size);
-  const dispense=packages*size;
-  const extra=dispense-needed;
-  const text=`Package rounding result: ${packages} package(s)
-Quantity needed: ${needed}
-Package size: ${size}
-Dispense quantity: ${dispense}
-Extra quantity from rounding: ${extra.toFixed(2)}`;
-  out('pkg_result', text);
-  addHistory('pkg', text);
-}
+
 
 
 function injectableInterval(){
