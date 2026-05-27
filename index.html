@@ -404,6 +404,38 @@
       height:50px;
     }
 
+    #gen_titration_mode .row{
+      align-items:start;
+    }
+    #gen_titration_mode .row > div{
+      min-width:0;
+    }
+
+
+    /* Standard Day Supply alignment fix */
+    #gen_units_mode .row > div label,
+    #gen_liquid_mode .row > div label,
+    #gen_titration_mode .row > div label{
+      min-height:72px;
+      display:flex;
+      align-items:flex-end;
+    }
+
+    #gen_units_mode .row > div,
+    #gen_liquid_mode .row > div,
+    #gen_titration_mode .row > div{
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+    }
+
+    #gen_units_mode input,
+    #gen_liquid_mode input,
+    #gen_titration_mode input,
+    #gen_titration_mode select{
+      height:50px;
+    }
+
     .help-link{
       display:inline-flex;
       align-items:center;
@@ -538,7 +570,7 @@
     <section class="card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M8 7V5h8v2"/><path d="M12 10v6"/><path d="M9.5 13h5"/></svg></span><span>Refrigerated Shipment Checker</span></span></h2>
       <label>Proposed delivery date</label><input id="fr_date" type="date">
-      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS Holiday Schedule</label>
+      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS Holiday Schedule Changes</label>
       <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid Weekend Exposure</label>
       <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
       <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
@@ -569,7 +601,7 @@
       <div class="small">Examples: GLP-1s, Ajovy, Repatha, biologics, and other maintenance injectables. For interval-based day supply math only. Verify package and directions.</div>
     </section>
 
-    <section class="card">
+    <section class="card aligned-card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="3"/><path d="M8 8h8"/><path d="M8 12h3"/><path d="M13 12h3"/><path d="M8 16h3"/><path d="M13 16h3"/><path d="M10 2h4"/></svg></span><span>Standard Day Supply</span></span></h2>
       <label>Calculation type</label>
       <select id="gen_mode" onchange="toggleGeneralMode()">
