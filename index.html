@@ -1617,11 +1617,12 @@ function fridge(){
   if(!d) return out('fr_result','Missing delivery date.');
 
   const day=d.getDay();
-  let msg='Proposed delivery: ' + fmt(d) + '\n';
-  let flags=[];
-
   const applyHolidays = $('fr_ups_holidays') ? $('fr_ups_holidays').checked : true;
   const avoidWeekend = $('fr_weekend') ? $('fr_weekend').checked : true;
+
+  let concerns = [];
+  let status = 'No major concerns identified';
+  let recommendation = 'Proceed using standard refrigerated shipping workflow.';
 
   if(applyHolidays){
     const holiday = findUpsHoliday(d);
@@ -1629,36 +1630,45 @@ function fridge(){
     const nextHoliday = findUpsHoliday(nextDay(d));
 
     if(holiday){
-      flags.push('UPS holiday closure: ' + holiday + '.');
+      concerns.push(`${holiday} shipping schedules may impact transit timing.`);
     }
     if(prevHoliday && day !== 0 && day !== 6){
-      flags.push('Delivery follows UPS holiday closure: ' + prevHoliday + '. Review cold-chain timing.');
+      concerns.push(`This delivery falls immediately after ${prevHoliday}; review possible carrier backlog or delayed movement.`);
     }
     if(nextHoliday && day !== 0 && day !== 6){
-      flags.push('Delivery is immediately before UPS holiday closure: ' + nextHoliday + '. Review pickup/transit timing.');
+      concerns.push(`This delivery falls immediately before ${nextHoliday}; confirm pickup and transit timing before release.`);
     }
     if(day === 2 && prevHoliday){
-      flags.push('Tuesday after Monday holiday may behave like Monday-risk logic.');
+      concerns.push('Tuesday delivery after a Monday holiday may still carry extended weekend hold risk.');
     }
   }
 
   if(avoidWeekend){
     if(day===0 || day===6){
-      flags.push('Weekend delivery/exposure risk.');
+      concerns.push('Weekend delivery may increase refrigerated exposure risk.');
     }
     if(day===1){
-      flags.push('Monday delivery: review weekend transit/holdover risk.');
+      concerns.push('Monday refrigerated deliveries can carry additional weekend hold risk.');
     }
     if(day===5){
-      flags.push('Friday delivery: review weekend holdover risk if delayed.');
+      concerns.push('Friday refrigerated deliveries may create weekend risk if delayed.');
     }
   }
 
-  if(flags.length){
-    const uniqueFlags = Array.from(new Set(flags));
-    msg += 'Status: REVIEW\n- ' + uniqueFlags.join('\n- ') + '\nSuggested: verify UPS schedule, product handling limits, and local policy before release.';
+  const uniqueConcerns = Array.from(new Set(concerns));
+  if(uniqueConcerns.length){
+    status = uniqueConcerns.length > 1 ? 'Higher transit risk identified' : 'Needs review';
+    recommendation = uniqueConcerns.length > 1
+      ? 'Consider alternate delivery timing or additional review before release.'
+      : 'Verify carrier schedule, product stability window, and local policy before release.';
+  }
+
+  let msg = 'Proposed delivery: ' + fmt(d) + '\n' + status + '\n\n';
+
+  if(uniqueConcerns.length){
+    msg += uniqueConcerns.join('\n') + '\n\n' + recommendation;
   } else {
-    msg += 'Status: No obvious UPS holiday/weekend flag from this checker. Verify local policy and current carrier schedule.';
+    msg += recommendation + '\n\nNo holiday or weekend timing concern was identified by this checker.';
   }
 
   out('fr_result', msg);
