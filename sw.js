@@ -1,7 +1,8 @@
-const CACHE_NAME = 'pharmcalc-v28';
+const CACHE_NAME = 'pharmcalc-v2-5-0';
 const ASSETS = [
   './',
   './index.html',
+  './how-to.html',
   './manifest.json',
   './icon-180.png',
   './icon-192.png',
