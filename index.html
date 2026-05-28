@@ -51,25 +51,6 @@
       color:#f8fafc;
       border-color:#33465f;
     }
-    body.dark button{
-      transition:
-        background .2s ease,
-        transform .15s ease,
-        box-shadow .2s ease,
-        filter .2s ease;
-    }
-
-    body.dark button:not(.secondary):not(.reset-btn):not(.preset):not(.calc-key){
-      background:#2563eb;
-      color:#fff;
-      box-shadow:0 4px 12px rgba(37,99,235,.35);
-    }
-
-    body.dark button:not(.secondary):not(.reset-btn):not(.preset):not(.calc-key):hover{
-      transform:translateY(-1px);
-      filter:brightness(1.08);
-    }
-
     body.dark button.secondary,
     body.dark .preset,
     body.dark .calc-key,
@@ -170,11 +151,7 @@
     }
 
 
-    *,
-    *::before,
-    *::after{
-      box-sizing:border-box;
-    }
+    *{box-sizing:border-box}
     body{
       margin:0;
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
@@ -226,32 +203,7 @@
       font-weight:750;
       margin-top:13px;
     }
-    .checkbox-row{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      margin-top:14px;
-      line-height:1.35;
-      width:100%;
-    }
-
-    .checkbox-row input[type="checkbox"]{
-      appearance:auto;
-      -webkit-appearance:checkbox;
-      width:20px;
-      height:20px;
-      margin:0;
-      accent-color:#2563eb;
-      flex:0 0 20px;
-    }
-
-    .checkbox-row span{
-      display:block;
-      padding-top:0;
-    }
     input,select,textarea{
-      max-width:100%;
-
       width:100%;
       margin-top:7px;
       padding:13px 14px;
@@ -542,6 +494,25 @@
     .help-link:hover{
       background:rgba(255,255,255,.2);
     }
+
+
+.checkbox-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:14px;
+}
+
+.checkbox-row input[type="checkbox"]{
+  width:18px !important;
+  height:18px;
+  margin:0;
+  flex-shrink:0;
+}
+
+.checkbox-row span{
+  line-height:1.2;
+}
 
 @media (max-width:560px){
       header{padding:30px 22px}
