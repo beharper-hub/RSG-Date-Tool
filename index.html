@@ -594,6 +594,178 @@ body.dark .checkbox-row input[type="checkbox"]{
   accent-color:#2563eb;
 }
 
+
+
+/* Branded app polish */
+.app-splash{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(145deg,#06111f,#0d243f);
+  color:#fff;
+  transition:opacity .35s ease, visibility .35s ease;
+}
+.app-splash.is-hidden{
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+}
+.splash-card{
+  width:min(86vw,360px);
+  padding:30px 24px;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.08);
+  box-shadow:0 24px 70px rgba(0,0,0,.32);
+  text-align:center;
+  backdrop-filter:blur(12px);
+}
+.splash-icon{
+  width:104px;
+  height:104px;
+  border-radius:26px;
+  margin:0 auto 18px;
+  display:block;
+  box-shadow:0 12px 30px rgba(0,0,0,.28);
+}
+.splash-title{
+  font-size:1.7rem;
+  font-weight:900;
+  letter-spacing:-.03em;
+  line-height:1.05;
+}
+.splash-subtitle{
+  margin-top:8px;
+  color:#f2efe7;
+  font-weight:700;
+}
+.splash-loader{
+  height:7px;
+  margin:22px auto 0;
+  max-width:220px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.18);
+}
+.splash-loader span{
+  display:block;
+  width:42%;
+  height:100%;
+  border-radius:999px;
+  background:var(--gold);
+  animation:splashLoad 1.1s ease-in-out infinite;
+}
+@keyframes splashLoad{
+  0%{transform:translateX(-120%)}
+  100%{transform:translateX(260%)}
+}
+.version-footer{
+  margin-top:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.version-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  color:var(--text);
+  font-weight:850;
+}
+.changelog-link{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  box-shadow:none;
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:.84rem;
+}
+body.dark .changelog-link,
+body.dark .version-chip{
+  background:#10243b;
+  color:#f8fafc;
+  border-color:#38506b;
+}
+.changelog-modal{
+  position:fixed;
+  inset:0;
+  z-index:9998;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(2,6,23,.62);
+}
+.changelog-modal.is-open{display:flex;}
+.changelog-panel{
+  width:min(92vw,560px);
+  max-height:82vh;
+  overflow:auto;
+  background:var(--card);
+  color:var(--text);
+  border:2px solid var(--line);
+  border-radius:24px;
+  box-shadow:0 24px 80px rgba(0,0,0,.34);
+  padding:22px;
+}
+.changelog-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:4px solid var(--gold);
+}
+.changelog-head h2{
+  border:0;
+  padding:0;
+  margin:0;
+}
+.changelog-close{
+  min-width:42px;
+  min-height:42px;
+  padding:0;
+  border-radius:14px;
+  box-shadow:none;
+  background:var(--soft);
+  color:var(--text);
+  border:1px solid var(--line);
+}
+.changelog-panel ul{
+  margin:14px 0 0;
+  padding-left:22px;
+  line-height:1.5;
+}
+.changelog-panel li{margin:7px 0;}
+.changelog-note{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  font-size:.92rem;
+  line-height:1.4;
+}
+body.dark .changelog-close{
+  background:#1b3656;
+  color:#f8fafc;
+  border-color:#38506b;
+}
+@media (prefers-reduced-motion:reduce){
+  .app-splash{transition:none;}
+  .splash-loader span{animation:none;width:100%;}
+}
+
 @media (max-width:560px){
       header{padding:30px 22px}
       main{padding:22px 14px}
@@ -613,6 +785,16 @@ body.dark .checkbox-row input[type="checkbox"]{
 
 </head>
 <body>
+
+<div id="app_splash" class="app-splash" aria-label="Loading Pharmacy Calc Suite">
+  <div class="splash-card">
+    <img class="splash-icon" src="icon-192.png" alt="Pharmacy Calc Suite icon">
+    <div class="splash-title">Pharmacy Calc Suite</div>
+    <div class="splash-subtitle">Loading workflow tools…</div>
+    <div class="splash-loader" aria-hidden="true"><span></span></div>
+  </div>
+</div>
+
 <header>
 <h1>Pharmacy Calc Suite</h1>
       <div class="sub">Workflow-focused pharmacy calculators · Verify all results</div>
@@ -1036,8 +1218,36 @@ body.dark .checkbox-row input[type="checkbox"]{
 
 
 </div>
-  <footer>For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.</footer>
+  <footer>
+  For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
+  <div class="version-footer">
+    <span class="version-chip">Pharmacy Calc Suite v2.5.0</span>
+    <button type="button" class="changelog-link" onclick="openChangelog()">What’s New</button>
+  </div>
+</footer>
 </main>
+
+<div id="changelog_modal" class="changelog-modal" role="dialog" aria-modal="true" aria-labelledby="changelog_title">
+  <div class="changelog-panel">
+    <div class="changelog-head">
+      <div>
+        <h2 id="changelog_title">What’s New</h2>
+        <div class="small">Pharmacy Calc Suite v2.5.0</div>
+      </div>
+      <button type="button" class="changelog-close" onclick="closeChangelog()" aria-label="Close changelog">×</button>
+    </div>
+    <ul>
+      <li>Added branded launch splash screen for installed PWA/app-style use.</li>
+      <li>Added branded loading animation while the suite initializes.</li>
+      <li>Added version footer so updates are easier to identify and troubleshoot.</li>
+      <li>Added What’s New changelog modal for visible release notes.</li>
+      <li>Kept the main calculator clean; detailed keyboard instructions live in the How-To Guide.</li>
+      <li>Included recent fixes for iPhone input overflow, checkbox alignment, and dark-mode button contrast.</li>
+    </ul>
+    <div class="changelog-note"><strong>Reminder:</strong> This tool supports workflow math only. Always verify against policy, prescription directions, adjudication, and pharmacist guidance.</div>
+  </div>
+</div>
+
 <script>
 const $ = id => document.getElementById(id);
 const num = id => parseFloat($(id).value);
@@ -2057,6 +2267,48 @@ function resetCalc(section){
   if($('act_mode')) toggleActuationMode();
   if($('ins_mode')) toggleInsulinMode();
 }
+
+
+
+const APP_VERSION = '2.5.0';
+
+function hideSplash(){
+  const splash = document.getElementById('app_splash');
+  if(!splash) return;
+  window.setTimeout(() => splash.classList.add('is-hidden'), 450);
+}
+
+function openChangelog(){
+  const modal = document.getElementById('changelog_modal');
+  if(modal) modal.classList.add('is-open');
+  localStorage.setItem('pharmCalcLastSeenVersion', APP_VERSION);
+}
+
+function closeChangelog(){
+  const modal = document.getElementById('changelog_modal');
+  if(modal) modal.classList.remove('is-open');
+}
+
+function initChangelog(){
+  const seen = localStorage.getItem('pharmCalcLastSeenVersion');
+  if(seen !== APP_VERSION){
+    window.setTimeout(openChangelog, 900);
+  }
+}
+
+window.addEventListener('load', () => {
+  hideSplash();
+  initChangelog();
+});
+
+document.addEventListener('keydown', event => {
+  if(event.key === 'Escape') closeChangelog();
+});
+
+document.addEventListener('click', event => {
+  const modal = document.getElementById('changelog_modal');
+  if(modal && event.target === modal) closeChangelog();
+});
 
 </script>
 
