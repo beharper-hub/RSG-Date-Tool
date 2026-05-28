@@ -116,7 +116,7 @@
       color:#f3f4f6;
     }
 
-    
+
     .calc-title{
       display:flex;
       align-items:center;
@@ -202,6 +202,19 @@
       color:var(--navy);
       font-weight:750;
       margin-top:13px;
+    }
+    .checkbox-row{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin-top:14px;
+      line-height:1.35;
+    }
+    .checkbox-row input[type="checkbox"]{
+      width:18px !important;
+      height:18px;
+      margin:2px 0 0;
+      flex-shrink:0;
     }
     input,select,textarea{
       width:100%;
@@ -309,7 +322,7 @@
       font-size:.86rem;
       line-height:1.35;
     }
-    
+
     .history{
       margin-top:14px;
       padding-top:12px;
@@ -533,7 +546,7 @@
 <main>
   <div class="grid">
 
-    
+
 
     <section class="card calc-card" onclick="calcFocus()">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="3"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span><span>Calculator</span></span></h2>
@@ -608,7 +621,10 @@
         <option value="0.90">90%</option>
         <option value="1">100%</option>
       </select>
-      <label><input id="fill_control" type="checkbox" style="width:auto"> Control / C-II? Auto-use 100%</label>
+      <label class="checkbox-row">
+        <input id="fill_control" type="checkbox">
+        <span>Control / C-II? Auto-use 100%</span>
+      </label>
       <div class="btns"><button onclick="fillDateCalc()">Calculate</button><button class="secondary" onclick="copyResult('fill_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="fill_result" class="result">Ready.</div>
     </section>
@@ -616,14 +632,18 @@
     <section class="card aligned-card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="11" rx="2"/><path d="M8 7V5h8v2"/><path d="M12 10v6"/><path d="M9.5 13h5"/></svg></span><span>Fridge Shipment Check</span></span></h2>
       <label>Proposed delivery date</label><input id="fr_date" type="date">
-      <label><input id="fr_ups_holidays" type="checkbox" style="width:auto" checked> Apply UPS Holiday Schedule</label>
-      <label><input id="fr_weekend" type="checkbox" style="width:auto" checked> Avoid Weekend Exposure</label>
+      <label class="checkbox-row">
+        <input id="fr_ups_holidays" type="checkbox" checked>
+        <span>Apply UPS Holiday Schedule</span>
+      </label>
+      <label class="checkbox-row">
+        <input id="fr_weekend" type="checkbox" checked>
+        <span>Avoid Weekend Exposure</span>
+      </label>
       <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
       <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
       <div id="fr_result" class="result">Ready.</div>
     </section>
-
-
 
     <section class="card aligned-card">
       <h2><span class="calc-title"><span class="calc-icon"><svg viewBox="0 0 24 24"><path d="M14 4l6 6"/><path d="M17 7L7 17"/><path d="M5 19l2-2"/><path d="M10 14l-3-3"/></svg></span><span>Injection Day Supply</span></span></h2>
@@ -924,9 +944,9 @@
       <div class="small">Arithmetic support only. Does not recommend dose changes or interpret INR.</div>
     </section>
 
-    
 
-  
+
+
 
 
 </div>
