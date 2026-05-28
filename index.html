@@ -445,10 +445,12 @@
       height:50px;
     }
 
-    #gen_titration_mode .row{
+    #gen_titration_mode .row,
+    #gen_multi_mode .row{
       align-items:start;
     }
-    #gen_titration_mode .row > div{
+    #gen_titration_mode .row > div,
+    #gen_multi_mode .row > div{
       min-width:0;
     }
 
@@ -456,7 +458,8 @@
     /* Standard Day Supply alignment fix */
     #gen_units_mode .row > div label,
     #gen_liquid_mode .row > div label,
-    #gen_titration_mode .row > div label{
+    #gen_titration_mode .row > div label,
+    #gen_multi_mode .row > div label{
       min-height:72px;
       display:flex;
       align-items:flex-end;
@@ -464,7 +467,8 @@
 
     #gen_units_mode .row > div,
     #gen_liquid_mode .row > div,
-    #gen_titration_mode .row > div{
+    #gen_titration_mode .row > div,
+    #gen_multi_mode .row > div{
       display:flex;
       flex-direction:column;
       justify-content:flex-start;
@@ -473,7 +477,9 @@
     #gen_units_mode input,
     #gen_liquid_mode input,
     #gen_titration_mode input,
-    #gen_titration_mode select{
+    #gen_titration_mode select,
+    #gen_multi_mode input,
+    #gen_multi_mode select{
       height:50px;
     }
 
@@ -942,6 +948,7 @@ body.dark .changelog-close{
         <option value="units">Tablets/Capsules</option>
         <option value="liquid">Liquid mL</option>
         <option value="titration">Simple Titration</option>
+        <option value="multi">Multi-Step Titration</option>
       </select>
 
       <div id="gen_units_mode">
@@ -988,6 +995,35 @@ body.dark .changelog-close{
         <input id="tit_qty" type="number" step="0.01" placeholder="e.g. 84">
       </div>
 
+      <div id="gen_multi_mode" style="display:none">
+        <div class="small">For staged schedules where each step has its own dose and duration. Enter dose as total units per day for that step.</div>
+        <div class="row">
+          <div><label>Qty Dispensed Optional</label><input id="multi_qty" type="number" step="0.01" placeholder="e.g. 84"></div>
+          <div><label>Rounding / Coverage</label><select id="multi_round"><option value="down" selected>Round down</option><option value="up">Round up</option><option value="raw">Show raw only</option></select></div>
+        </div>
+
+        <div class="row">
+          <div><label>Step 1 Units/Day</label><input id="multi_dose_1" type="number" step="0.01" placeholder="e.g. 1"></div>
+          <div><label>Step 1 Days</label><input id="multi_days_1" type="number" step="1" placeholder="e.g. 7"></div>
+        </div>
+        <div class="row">
+          <div><label>Step 2 Units/Day</label><input id="multi_dose_2" type="number" step="0.01" placeholder="e.g. 2"></div>
+          <div><label>Step 2 Days</label><input id="multi_days_2" type="number" step="1" placeholder="e.g. 7"></div>
+        </div>
+        <div class="row">
+          <div><label>Step 3 Units/Day</label><input id="multi_dose_3" type="number" step="0.01" placeholder="optional"></div>
+          <div><label>Step 3 Days</label><input id="multi_days_3" type="number" step="1" placeholder="optional"></div>
+        </div>
+        <div class="row">
+          <div><label>Step 4 Units/Day</label><input id="multi_dose_4" type="number" step="0.01" placeholder="optional"></div>
+          <div><label>Step 4 Days</label><input id="multi_days_4" type="number" step="1" placeholder="optional"></div>
+        </div>
+        <div class="row">
+          <div><label>Step 5 Units/Day</label><input id="multi_dose_5" type="number" step="0.01" placeholder="optional"></div>
+          <div><label>Step 5 Days</label><input id="multi_days_5" type="number" step="1" placeholder="optional"></div>
+        </div>
+      </div>
+
       <label>Rounding</label>
       <select id="gen_round">
         <option value="down" selected>Round down</option>
@@ -1001,6 +1037,7 @@ body.dark .changelog-close{
         <button class="preset" onclick="generalPreset(30,1)">30 tabs/caps / 1 daily</button>
         <button class="preset" onclick="liquidPreset(473,5,2)">473 mL / 5 mL BID</button>
         <button class="preset" onclick="titrationPreset(1,1,4,7,'days','up',84)">Titrate Up Example</button>
+        <button class="preset" onclick="multiStepPreset()">Multi-Step Example</button>
       </div>
       <div class="history"><h3>Recent Calculations</h3><div id="gen_history"></div></div>
     </section>
@@ -1221,7 +1258,7 @@ body.dark .changelog-close{
   <footer>
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   <div class="version-footer">
-    <span class="version-chip">Pharmacy Calc Suite v2.5.0</span>
+    <span class="version-chip">Pharmacy Calc Suite v2.6.0</span>
     <button type="button" class="changelog-link" onclick="openChangelog()">What’s New</button>
   </div>
 </footer>
@@ -1232,11 +1269,12 @@ body.dark .changelog-close{
     <div class="changelog-head">
       <div>
         <h2 id="changelog_title">What’s New</h2>
-        <div class="small">Pharmacy Calc Suite v2.5.0</div>
+        <div class="small">Pharmacy Calc Suite v2.6.0</div>
       </div>
       <button type="button" class="changelog-close" onclick="closeChangelog()" aria-label="Close changelog">×</button>
     </div>
     <ul>
+      <li>Added Multi-Step Titration under Standard Day Supply for staged dose schedules.</li>
       <li>Added branded launch splash screen for installed PWA/app-style use.</li>
       <li>Added branded loading animation while the suite initializes.</li>
       <li>Added version footer so updates are easier to identify and troubleshoot.</li>
@@ -1420,6 +1458,8 @@ function toggleGeneralMode(){
   $('gen_liquid_mode').style.display = mode === 'liquid' ? 'block' : 'none';
   const titration = $('gen_titration_mode');
   if(titration) titration.style.display = mode === 'titration' ? 'block' : 'none';
+  const multi = $('gen_multi_mode');
+  if(multi) multi.style.display = mode === 'multi' ? 'block' : 'none';
 }
 
 function generalPreset(qty,perday){
@@ -1450,6 +1490,24 @@ function titrationPreset(start,change,target,interval,unit,direction,qty){
   $('tit_direction').value = direction;
   $('tit_qty').value = qty || '';
   $('gen_round').value = 'down';
+}
+
+function multiStepPreset(){
+  $('gen_mode').value = 'multi';
+  toggleGeneralMode();
+  $('multi_qty').value = 84;
+  $('multi_round').value = 'down';
+  const preset = [
+    [1,7],
+    [2,7],
+    [3,7],
+    [4,14],
+    ['', '']
+  ];
+  preset.forEach((step, idx) => {
+    $('multi_dose_' + (idx + 1)).value = step[0];
+    $('multi_days_' + (idx + 1)).value = step[1];
+  });
 }
 
 function patternPreset(qty,baseDaily,extraDose,extraDays){
@@ -1776,6 +1834,68 @@ function formatTitrationSchedule(steps, qty){
   return text;
 }
 
+function collectMultiStepTitration(){
+  const steps = [];
+
+  for(let i = 1; i <= 5; i++){
+    const dose = num('multi_dose_' + i);
+    const days = num('multi_days_' + i);
+    const doseBlank = $('multi_dose_' + i).value === '';
+    const daysBlank = $('multi_days_' + i).value === '';
+
+    if(doseBlank && daysBlank) continue;
+
+    if(!validatePositive([dose, days])){
+      return {error:'Each filled multi-step row needs a positive Units/Day and Days value.'};
+    }
+
+    steps.push({dose:dose, days:days});
+  }
+
+  if(steps.length < 2){
+    return {error:'Enter at least two titration steps.'};
+  }
+
+  return {steps:steps};
+}
+
+function formatMultiStepTitration(steps, qty, roundMode){
+  let totalUsed = 0;
+  let scheduledDays = 0;
+
+  const lines = steps.map((step, idx) => {
+    const use = step.dose * step.days;
+    totalUsed += use;
+    scheduledDays += step.days;
+    return 'Step ' + (idx + 1) + ': ' + step.dose + ' unit(s)/day × ' + step.days + ' day(s) = ' + use.toFixed(2) + ' unit(s)';
+  });
+
+  let text = 'Multi-step titration: ' + scheduledDays + ' scheduled day(s)';
+  text += '\n' + lines.join('\n');
+  text += '\nTotal scheduled quantity needed: ' + totalUsed.toFixed(2) + ' unit(s)';
+
+  if(qty && qty > 0){
+    const remaining = qty - totalUsed;
+    const lastDose = steps[steps.length - 1].dose;
+    text += '\nQuantity dispensed: ' + qty;
+
+    if(remaining >= 0){
+      const extraRaw = remaining / lastDose;
+      const totalCoverageRaw = scheduledDays + extraRaw;
+      text += '\nCoverage status: Enough for entered schedule';
+      text += '\nRemaining after schedule: ' + remaining.toFixed(2) + ' unit(s)';
+      text += '\nEstimated total coverage: ' + formatDaySupply(totalCoverageRaw, roundMode);
+      text += '\nAssumption: remaining quantity continues at final step dose of ' + lastDose + ' unit(s)/day.';
+    } else {
+      text += '\nCoverage status: Short for entered schedule';
+      text += '\nShort by: ' + Math.abs(remaining).toFixed(2) + ' unit(s)';
+    }
+  }
+
+  text += '\n\nNote: Arithmetic support only. Verify prescriber directions, package sizes, refill timing, and pharmacist guidance.';
+  return text;
+}
+
 function generalLiquidDS(){
   const mode = $('gen_mode').value;
   const roundMode = $('gen_round').value;
@@ -1803,6 +1923,18 @@ function generalLiquidDS(){
     text = 'Day supply: ';
     text += formatDaySupply(raw, roundMode) + '\n';
     text += 'mL Dispensed: ' + ml + '\nmL Per Dose: ' + dose + '\nDoses/day: ' + freq + '\nmL Dispensed/day: ' + daily.toFixed(2);
+  } else if(mode === 'multi') {
+    const collected = collectMultiStepTitration();
+    if(collected.error){
+      return out('gen_result', collected.error);
+    }
+
+    const qty = num('multi_qty');
+    const multiRound = $('multi_round').value;
+    text = formatMultiStepTitration(collected.steps, qty, multiRound);
+    out('gen_result', text);
+    addHistory('gen', text);
+    return;
   } else {
     const start=num('tit_start'),
           change=num('tit_change'),
@@ -2270,7 +2402,7 @@ function resetCalc(section){
 
 
 
-const APP_VERSION = '2.5.0';
+const APP_VERSION = '2.6.0';
 
 function hideSplash(){
   const splash = document.getElementById('app_splash');
