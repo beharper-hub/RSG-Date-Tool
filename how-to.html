@@ -1,493 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pharmacy Calc Suite — How-To Guide</title>
-    <style>
-    :root {
-        --navy: #0d243f;
-        --gold: #d4a017;
-        --cream: #f8f6ef;
-        --card: #fff;
-        --text: #0d243f;
-        --muted: #667085;
-        --line: #d9d6cc;
-        --soft: #f3f0e8;
-    }
-
-    * {
-        box-sizing: border-box
-    }
-
-    body {
-        margin: 0;
-        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        background: var(--cream);
-        color: var(--text);
-    }
-
-    header {
-        padding: 34px 28px 38px;
-        background: var(--navy);
-        color: #fff;
-        border-bottom: 7px solid var(--gold);
-    }
-
-    h1 {
-        margin: 0;
-        font-size: clamp(2rem, 4vw, 3rem);
-        line-height: 1.05;
-        font-weight: 850;
-        letter-spacing: -.03em;
-    }
-
-    .sub {
-        color: #f2efe7;
-        margin-top: 12px;
-        font-size: 1.1rem;
-        line-height: 1.35;
-        max-width: 900px;
-    }
-
-    main {
-        max-width: 1050px;
-        margin: 0 auto;
-        padding: 28px 18px;
-    }
-
-    .card {
-        background: var(--card);
-        border: 2px solid var(--line);
-        border-radius: 22px;
-        padding: 22px;
-        margin-bottom: 18px;
-        box-shadow: 0 10px 28px rgba(13, 36, 63, .08);
-    }
-
-    h2 {
-        font-size: 1.35rem;
-        margin: 0 0 12px;
-        padding-bottom: 10px;
-        border-bottom: 4px solid var(--gold);
-        color: var(--navy);
-        font-weight: 850;
-    }
-
-    h3 {
-        font-size: 1rem;
-        margin: 18px 0 8px;
-        color: var(--navy);
-    }
-
-    ol, ul {
-        margin-top: 8px;
-        padding-left: 24px;
-        line-height: 1.55;
-    }
-
-    li {
-        margin: 5px 0;
-    }
-
-    .note {
-        padding: 14px;
-        border: 2px solid #d8d2c5;
-        border-radius: 16px;
-        background: #fbfaf7;
-        line-height: 1.45;
-    }
-
-    .badge {
-        display: inline-block;
-        background: var(--soft);
-        border: 1px solid #d8d2c5;
-        border-radius: 999px;
-        padding: 4px 9px;
-        margin: 3px;
-        font-size: .84rem;
-    }
-
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 12px
-    }
-
-    .small {
-        font-size: .9rem;
-        color: var(--muted);
-        line-height: 1.4;
-    }
-
-    .result-note {
-        border-left: 5px solid var(--gold);
-        padding: 12px 14px;
-        background: #fbfaf7;
-        border-radius: 14px;
-        margin-top: 12px;
-        line-height: 1.45;
-    }
-
-    footer {
-        text-align: center;
-        color: var(--muted);
-        font-size: .86rem;
-        padding: 20px 8px 8px;
-        line-height: 1.35;
-    }
-
-    @media print {
-        header {
-            background: #fff;
-            color:var(--navy)
-        }
-
-        .card {
-            box-shadow: none;
-            break-inside: avoid
-        }
-    }
-
-    .back-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 18px;
-        padding: 10px 14px;
-        border-radius: 14px;
-        background: rgba(255, 255, 255, .12);
-        color: #fff;
-        text-decoration: none;
-        font-weight: 800;
-        border: 1px solid rgba(255, 255, 255, .18);
-        transition: .2s ease;
-    }
-
-    .back-link:hover {
-        background: rgba(255, 255, 255, .2);
-    }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacy Calc Suite — How-To Guide</title>
+  <style>
+:root{
+  --navy:#0d243f; --gold:#d4a017; --cream:#f8f6ef; --card:#fff;
+  --text:#0d243f; --muted:#667085; --line:#d9d6cc; --soft:#f3f0e8;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--text);}
+header{padding:34px 28px 38px;background:var(--navy);color:#fff;border-bottom:7px solid var(--gold);}
+h1{margin:0;font-size:clamp(2rem,4vw,3rem);line-height:1.05;font-weight:850;letter-spacing:-.03em;}
+.sub{color:#f2efe7;margin-top:12px;font-size:1.1rem;line-height:1.35;max-width:900px;}
+main{max-width:1050px;margin:0 auto;padding:28px 18px;}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 10px 28px rgba(13,36,63,.08);}
+h2{font-size:1.35rem;margin:0 0 12px;padding-bottom:10px;border-bottom:4px solid var(--gold);color:var(--navy);font-weight:850;}
+h3{font-size:1rem;margin:18px 0 8px;color:var(--navy);}
+ol,ul{margin-top:8px;padding-left:24px;line-height:1.55;}
+li{margin:5px 0;}
+.note{padding:14px;border:2px solid #d8d2c5;border-radius:16px;background:#fbfaf7;line-height:1.45;}
+.badge{display:inline-block;background:var(--soft);border:1px solid #d8d2c5;border-radius:999px;padding:4px 9px;margin:3px;font-size:.84rem;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.small{font-size:.9rem;color:var(--muted);line-height:1.4;}
+.result-note{border-left:5px solid var(--gold);padding:12px 14px;background:#fbfaf7;border-radius:14px;margin-top:12px;line-height:1.45;}
+footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8px;line-height:1.35;}
+@media print{header{background:#fff;color:var(--navy)}.card{box-shadow:none;break-inside:avoid}}
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:18px;
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,.18);
+  transition:.2s ease;
+}
+.back-link:hover{background:rgba(255,255,255,.2);}
+</style>
 </head>
 <body>
-    <header>
-        <h1>
-            Pharmacy Calc Suite
-            <br>
-            How-To Guide
-        </h1>
-        <div class="sub">Quick reference for using each module. Arithmetic support only — verify against policy, prescription directions, adjudication, and pharmacist guidance.</div>
-        <a class="back-link" href="index.html">← Back to Main Suite</a>
-    </header>
+<header>
+  <h1>Pharmacy Calc Suite<br>How-To Guide</h1>
+  <div class="sub">Quick reference for using each module. Arithmetic support only — verify against policy, prescription directions, adjudication, and pharmacist guidance.</div>
+  <a class="back-link" href="index.html">← Back to Main Suite</a>
+</header>
 
-    <main>
-        <section class="card">
-            <h2>General Use</h2>
-            <div class="grid">
-                <div class="note">
-                    <strong>Calculate</strong>
-                    <br>
-                    Runs the selected module.
-                </div>
-                <div class="note">
-                    <strong>Copy</strong>
-                    <br>
-                    Copies the displayed result text, including the main result and supporting details.
-                </div>
-                <div class="note">
-                    <strong>Reset</strong>
-                    <br>
-                    Clears the card back to default values.
-                </div>
-            </div>
-            <div class="result-note">
-                <strong>Result boxes now show the answer first.</strong>
-                <br>
+<main>
+  <section class="card">
+    <h2>General Use</h2>
+    <div class="grid">
+      <div class="note"><strong>Calculate</strong><br>Runs the selected module.</div>
+      <div class="note"><strong>Copy</strong><br>Copies the displayed result text, including the main result and supporting details.</div>
+      <div class="note"><strong>Reset</strong><br>Clears the card back to default values.</div>
+    </div>
+    <div class="result-note">
+      <strong>Result boxes now show the answer first.</strong><br>
+      The top line is the main result. Supporting math, assumptions, and warnings appear underneath so the answer is easier to scan during workflow interruptions.
+    </div>
+    <p class="small">Calculator histories keep the 5 most recent entries. Once history is full, the newest result replaces the oldest. The main Calculator uses AC instead of Reset because it behaves like a standard calculator.</p>
+  </section>
 
-                      The top line is the main result. Supporting math, assumptions, and warnings appear underneath so the answer is easier to scan during workflow interruptions.
-                    
-            </div>
-            <p class="small">Calculator histories keep the 5 most recent entries. Once history is full, the newest result replaces the oldest. The main Calculator uses AC instead of Reset because it behaves like a standard calculator.</p>
-        </section>
+  <section class="card">
+    <h2>Calculator</h2>
+    <h3>What it is for</h3>
+    <p class="small">Quick standard or scientific calculations inside the suite.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Keyboard input</span>
+      <span class="badge">Standard mode</span>
+      <span class="badge">Scientific mode</span>
+      <span class="badge">Backspace</span>
+      <span class="badge">AC</span>
+      <span class="badge">Recent Calculations</span>
+      <span class="badge">Clear History</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Click the calculator, then use the on-screen buttons or keyboard.</li>
+      <li>Tap = or press Enter to calculate.</li>
+      <li>Use Backspace to remove the last entry.</li>
+      <li>Use AC to clear the current calculation.</li>
+      <li>Use Scientific only when you need square root, trig, logs, powers, or pi.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Calculator</h2>
-            <h3>What it is for</h3>
-            <p class="small">Quick standard or scientific calculations inside the suite.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Keyboard input</span>
-                <span class="badge">Standard mode</span>
-                <span class="badge">Scientific mode</span>
-                <span class="badge">Backspace</span>
-                <span class="badge">AC</span>
-                <span class="badge">Recent Calculations</span>
-                <span class="badge">Clear History</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Click the calculator, then use the on-screen buttons or keyboard.</li>
-                <li>Tap = or press Enter to calculate.</li>
-                <li>Use Backspace to remove the last entry.</li>
-                <li>Use AC to clear the current calculation.</li>
-                <li>Use Scientific only when you need square root, trig, logs, powers, or pi.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Fill Date / RTS</h2>
+    <h3>What it is for</h3>
+    <p class="small">Estimates the eligible next fill date using the last fill date, days supply, and selected threshold.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Last fill date</span>
+      <span class="badge">Days supply</span>
+      <span class="badge">Threshold</span>
+      <span class="badge">Control / C-II? Auto-use 100%</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter the last fill date.</li>
+      <li>Enter the days supply.</li>
+      <li>Choose the refill threshold.</li>
+      <li>Check Control / C-II when the calculation should force 100%.</li>
+      <li>Tap Calculate to display the eligible next fill date.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Fill Date / RTS</h2>
-            <h3>What it is for</h3>
-            <p class="small">Estimates the eligible next fill date using the last fill date, days supply, and selected threshold.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Last fill date</span>
-                <span class="badge">Days supply</span>
-                <span class="badge">Threshold</span>
-                <span class="badge">Control / C-II? Auto-use 100%</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter the last fill date.</li>
-                <li>Enter the days supply.</li>
-                <li>Choose the refill threshold.</li>
-                <li>Check Control / C-II when the calculation should force 100%.</li>
-                <li>Tap Calculate to display the eligible next fill date.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Fridge Shipment Check</h2>
+    <h3>What it is for</h3>
+    <p class="small">Flags refrigerated delivery timing concerns such as weekends, holidays, Monday risk, Friday delay risk, and holiday-adjacent shipping risk.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Proposed delivery date</span>
+      <span class="badge">Apply UPS Holiday Schedule</span>
+      <span class="badge">Avoid Weekend Exposure</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter the proposed delivery date.</li>
+      <li>Leave both safety checks on unless intentionally reviewing without those safeguards.</li>
+      <li>Tap Check.</li>
+      <li>Review the displayed status and supporting concerns.</li>
+      <li>Reset clears the date/result while keeping both safety checks on.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Fridge Shipment Check</h2>
-            <h3>What it is for</h3>
-            <p class="small">Flags refrigerated delivery timing concerns such as weekends, holidays, Monday risk, Friday delay risk, and holiday-adjacent shipping risk.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Proposed delivery date</span>
-                <span class="badge">Apply UPS Holiday Schedule</span>
-                <span class="badge">Avoid Weekend Exposure</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter the proposed delivery date.</li>
-                <li>Leave both safety checks on unless intentionally reviewing without those safeguards.</li>
-                <li>Tap Check.</li>
-                <li>Review the displayed status and supporting concerns.</li>
-                <li>Reset clears the date/result while keeping both safety checks on.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Injection Day Supply</h2>
+    <h3>What it is for</h3>
+    <p class="small">Estimates day supply for interval-based injections such as GLP-1s, Ajovy, Repatha, biologics, and other maintenance injectables.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Doses Dispensed</span>
+      <span class="badge">Every</span>
+      <span class="badge">Interval unit</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter how many doses were dispensed.</li>
+      <li>Enter the interval in the Every field.</li>
+      <li>Choose days, weeks, or estimated months.</li>
+      <li>Tap Calculate to estimate day supply.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Injection Day Supply</h2>
-            <h3>What it is for</h3>
-            <p class="small">Estimates day supply for interval-based injections such as GLP-1s, Ajovy, Repatha, biologics, and other maintenance injectables.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Doses Dispensed</span>
-                <span class="badge">Every</span>
-                <span class="badge">Interval unit</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter how many doses were dispensed.</li>
-                <li>Enter the interval in the Every field.</li>
-                <li>Choose days, weeks, or estimated months.</li>
-                <li>Tap Calculate to estimate day supply.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Standard Day Supply</h2>
+    <h3>What it is for</h3>
+    <p class="small">Day-supply support for tablets/capsules, liquids, and simple titration schedules.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Calculation type</span>
+      <span class="badge">Tablets/Capsules</span>
+      <span class="badge">Liquid mL</span>
+      <span class="badge">Simple Titration</span>
+      <span class="badge">Qty Dispensed</span>
+      <span class="badge">Used Per Day</span>
+      <span class="badge">mL Dispensed</span>
+      <span class="badge">mL Per Dose</span>
+      <span class="badge">Doses/Day</span>
+      <span class="badge">Starting Dose</span>
+      <span class="badge">Change by</span>
+      <span class="badge">Target Dose</span>
+      <span class="badge">Adjust Every</span>
+      <span class="badge">Direction</span>
+      <span class="badge">Rounding</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Choose Tablets/Capsules, Liquid mL, or Simple Titration.</li>
+      <li>For Tablets/Capsules: enter Qty Dispensed and Used Per Day.</li>
+      <li>For Liquid mL: enter mL Dispensed, mL Per Dose, and Doses/Day.</li>
+      <li>For Simple Titration: enter Starting Dose, Change by, Target Dose, Adjust Every, interval unit, direction, and optional Qty Dispensed.</li>
+      <li>Choose rounding, then tap Calculate.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Standard Day Supply</h2>
-            <h3>What it is for</h3>
-            <p class="small">Day-supply support for tablets/capsules, liquids, and simple titration schedules.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Calculation type</span>
-                <span class="badge">Tablets/Capsules</span>
-                <span class="badge">Liquid mL</span>
-                <span class="badge">Simple Titration</span>
-                <span class="badge">Qty Dispensed</span>
-                <span class="badge">Used Per Day</span>
-                <span class="badge">mL Dispensed</span>
-                <span class="badge">mL Per Dose</span>
-                <span class="badge">Doses/Day</span>
-                <span class="badge">Starting Dose</span>
-                <span class="badge">Change by</span>
-                <span class="badge">Target Dose</span>
-                <span class="badge">Adjust Every</span>
-                <span class="badge">Direction</span>
-                <span class="badge">Rounding</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Choose Tablets/Capsules, Liquid mL, or Simple Titration.</li>
-                <li>For Tablets/Capsules: enter Qty Dispensed and Used Per Day.</li>
-                <li>For Liquid mL: enter mL Dispensed, mL Per Dose, and Doses/Day.</li>
-                <li>For Simple Titration: enter Starting Dose, Change by, Target Dose, Adjust Every, interval unit, direction, and optional Qty Dispensed.</li>
-                <li>Choose rounding, then tap Calculate.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Patterned Dosing</h2>
+    <h3>What it is for</h3>
+    <p class="small">Day-supply support for uneven weekly tablet/capsule schedules, such as a base daily dose plus extra doses on selected days.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Qty Dispensed</span>
+      <span class="badge">Daily Base Dose</span>
+      <span class="badge">Extra Dose</span>
+      <span class="badge">Extra Days/Week</span>
+      <span class="badge">Rounding</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter Qty Dispensed.</li>
+      <li>Enter the Daily Base Dose.</li>
+      <li>Enter the Extra Dose amount, if any.</li>
+      <li>Enter how many days per week the extra dose is used.</li>
+      <li>Choose rounding, then tap Calculate.</li>
+    </ol>
+    <p class="small">Example: 1 tablet daily plus 1 extra tablet on Monday, Wednesday, and Friday equals 10 tablets per week.</p>
+  </section>
 
-        <section class="card">
-            <h2>Patterned Dosing</h2>
-            <h3>What it is for</h3>
-            <p class="small">Day-supply support for uneven weekly tablet/capsule schedules, such as a base daily dose plus extra doses on selected days.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Qty Dispensed</span>
-                <span class="badge">Daily Base Dose</span>
-                <span class="badge">Extra Dose</span>
-                <span class="badge">Extra Days/Week</span>
-                <span class="badge">Rounding</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter Qty Dispensed.</li>
-                <li>Enter the Daily Base Dose.</li>
-                <li>Enter the Extra Dose amount, if any.</li>
-                <li>Enter how many days per week the extra dose is used.</li>
-                <li>Choose rounding, then tap Calculate.</li>
-            </ol>
-            <p class="small">Example: 1 tablet daily plus 1 extra tablet on Monday, Wednesday, and Friday equals 10 tablets per week.</p>
-        </section>
+  <section class="card">
+    <h2>Insulin / Pen Day Supply</h2>
+    <h3>What it is for</h3>
+    <p class="small">Estimates insulin day supply from total mL dispensed or pen count.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Dispense type</span>
+      <span class="badge">mL Dispensed</span>
+      <span class="badge">Pen count</span>
+      <span class="badge">Pens Dispensed</span>
+      <span class="badge">mL Per Pen</span>
+      <span class="badge">Units/mL</span>
+      <span class="badge">Units/day</span>
+      <span class="badge">Prime Waste/Day</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Choose mL Dispensed or Pen count.</li>
+      <li>Enter the dispense amount.</li>
+      <li>Enter Units/mL and Units/day.</li>
+      <li>Enter Prime Waste/Day when applicable.</li>
+      <li>Tap Calculate to estimate insulin day supply.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Insulin / Pen Day Supply</h2>
-            <h3>What it is for</h3>
-            <p class="small">Estimates insulin day supply from total mL dispensed or pen count.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Dispense type</span>
-                <span class="badge">mL Dispensed</span>
-                <span class="badge">Pen count</span>
-                <span class="badge">Pens Dispensed</span>
-                <span class="badge">mL Per Pen</span>
-                <span class="badge">Units/mL</span>
-                <span class="badge">Units/day</span>
-                <span class="badge">Prime Waste/Day</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Choose mL Dispensed or Pen count.</li>
-                <li>Enter the dispense amount.</li>
-                <li>Enter Units/mL and Units/day.</li>
-                <li>Enter Prime Waste/Day when applicable.</li>
-                <li>Tap Calculate to estimate insulin day supply.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Eye/Ear Drop Day Supply</h2>
+    <h3>What it is for</h3>
+    <p class="small">Estimates day supply for eye or ear drops using mL, drops per mL, dose, frequency, and treated eyes/ears.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">mL Dispensed</span>
+      <span class="badge">Drops/mL</span>
+      <span class="badge">Drops Per Dose</span>
+      <span class="badge">Doses/Day</span>
+      <span class="badge">Eyes/Ears Treated</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter mL Dispensed.</li>
+      <li>Drops/mL defaults to 15.</li>
+      <li>Adjust Drops/mL only when workflow or product guidance supports a different value.</li>
+      <li>Enter Drops Per Dose and Doses/Day.</li>
+      <li>Choose one eye/ear or both eyes/ears, then tap Calculate.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Eye/Ear Drop Day Supply</h2>
-            <h3>What it is for</h3>
-            <p class="small">Estimates day supply for eye or ear drops using mL, drops per mL, dose, frequency, and treated eyes/ears.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">mL Dispensed</span>
-                <span class="badge">Drops/mL</span>
-                <span class="badge">Drops Per Dose</span>
-                <span class="badge">Doses/Day</span>
-                <span class="badge">Eyes/Ears Treated</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter mL Dispensed.</li>
-                <li>Drops/mL defaults to 15.</li>
-                <li>Adjust Drops/mL only when workflow or product guidance supports a different value.</li>
-                <li>Enter Drops Per Dose and Doses/Day.</li>
-                <li>Choose one eye/ear or both eyes/ears, then tap Calculate.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Inhaler / Spray Day Supply</h2>
+    <h3>What it is for</h3>
+    <p class="small">Estimates day supply for inhaler puffs or nasal spray directions.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Calculation type</span>
+      <span class="badge">Inhaler puffs</span>
+      <span class="badge">Nasal spray</span>
+      <span class="badge">Total Puffs</span>
+      <span class="badge">Puffs/Day</span>
+      <span class="badge">Sprays in Bottle</span>
+      <span class="badge">Sprays Per Nostril</span>
+      <span class="badge">Doses/Day</span>
+      <span class="badge">Nostrils Treated</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Choose Inhaler puffs or Nasal spray.</li>
+      <li>For inhalers: enter Total Puffs and Puffs/Day.</li>
+      <li>For nasal sprays: enter Sprays in Bottle, Sprays Per Nostril, Doses/Day, and Nostrils Treated.</li>
+      <li>Tap Calculate to estimate day supply.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Inhaler / Spray Day Supply</h2>
-            <h3>What it is for</h3>
-            <p class="small">Estimates day supply for inhaler puffs or nasal spray directions.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Calculation type</span>
-                <span class="badge">Inhaler puffs</span>
-                <span class="badge">Nasal spray</span>
-                <span class="badge">Total Puffs</span>
-                <span class="badge">Puffs/Day</span>
-                <span class="badge">Sprays in Bottle</span>
-                <span class="badge">Sprays Per Nostril</span>
-                <span class="badge">Doses/Day</span>
-                <span class="badge">Nostrils Treated</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Choose Inhaler puffs or Nasal spray.</li>
-                <li>For inhalers: enter Total Puffs and Puffs/Day.</li>
-                <li>For nasal sprays: enter Sprays in Bottle, Sprays Per Nostril, Doses/Day, and Nostrils Treated.</li>
-                <li>Tap Calculate to estimate day supply.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Cream/Ointment Estimate</h2>
+    <h3>What it is for</h3>
+    <p class="small">Quick topical day-supply estimate using grams dispensed and estimated grams used per day.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Grams Dispensed</span>
+      <span class="badge">Grams/Day</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter Grams Dispensed.</li>
+      <li>Enter estimated Grams/Day.</li>
+      <li>Tap Calculate for a topical day-supply estimate.</li>
+    </ol>
+    <p class="small">This is intentionally simple. Use only as an estimate when workflow permits; topicals can be audit-sensitive.</p>
+  </section>
 
-        <section class="card">
-            <h2>Cream/Ointment Estimate</h2>
-            <h3>What it is for</h3>
-            <p class="small">Quick topical day-supply estimate using grams dispensed and estimated grams used per day.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Grams Dispensed</span>
-                <span class="badge">Grams/Day</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter Grams Dispensed.</li>
-                <li>Enter estimated Grams/Day.</li>
-                <li>Tap Calculate for a topical day-supply estimate.</li>
-            </ol>
-            <p class="small">This is intentionally simple. Use only as an estimate when workflow permits; topicals can be audit-sensitive.</p>
-        </section>
+  <section class="card">
+    <h2>Enzyme Day Supply</h2>
+    <h3>What it is for</h3>
+    <p class="small">Estimates pancreatic enzyme day supply from meal and snack capsule use.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Caps Dispensed</span>
+      <span class="badge">Caps Per Meal</span>
+      <span class="badge">Meals/Day</span>
+      <span class="badge">Caps Per Snack</span>
+      <span class="badge">Snacks/Day</span>
+      <span class="badge">Rounding</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter Caps Dispensed.</li>
+      <li>Enter Caps Per Meal and Meals/Day.</li>
+      <li>Enter Caps Per Snack and Snacks/Day if applicable.</li>
+      <li>Choose rounding.</li>
+      <li>Tap Calculate to estimate enzyme day supply.</li>
+    </ol>
+  </section>
 
-        <section class="card">
-            <h2>Enzyme Day Supply</h2>
-            <h3>What it is for</h3>
-            <p class="small">Estimates pancreatic enzyme day supply from meal and snack capsule use.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Caps Dispensed</span>
-                <span class="badge">Caps Per Meal</span>
-                <span class="badge">Meals/Day</span>
-                <span class="badge">Caps Per Snack</span>
-                <span class="badge">Snacks/Day</span>
-                <span class="badge">Rounding</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter Caps Dispensed.</li>
-                <li>Enter Caps Per Meal and Meals/Day.</li>
-                <li>Enter Caps Per Snack and Snacks/Day if applicable.</li>
-                <li>Choose rounding.</li>
-                <li>Tap Calculate to estimate enzyme day supply.</li>
-            </ol>
-        </section>
+  <section class="card">
+    <h2>Warfarin Weekly Dose</h2>
+    <h3>What it is for</h3>
+    <p class="small">Totals a weekly warfarin schedule and optionally estimates tablets per week and day supply when tablet strength and quantity are entered.</p>
+    <h3>Fields / controls</h3>
+    <div>
+      <span class="badge">Monday mg</span>
+      <span class="badge">Tuesday mg</span>
+      <span class="badge">Wednesday mg</span>
+      <span class="badge">Thursday mg</span>
+      <span class="badge">Friday mg</span>
+      <span class="badge">Saturday mg</span>
+      <span class="badge">Sunday mg</span>
+      <span class="badge">Tablet Strength Optional</span>
+      <span class="badge">Qty Dispensed Optional</span>
+    </div>
+    <h3>How to use</h3>
+    <ol>
+      <li>Enter the mg dose for each day of the week.</li>
+      <li>Optionally enter Tablet Strength and Qty Dispensed.</li>
+      <li>Tap Calculate to get weekly dose, average daily dose, schedule, tablets per week, and estimated day supply when available.</li>
+    </ol>
+    <p class="small">Arithmetic support only. Does not recommend dose changes or interpret INR.</p>
+  </section>
 
-        <section class="card">
-            <h2>Warfarin Weekly Dose</h2>
-            <h3>What it is for</h3>
-            <p class="small">Totals a weekly warfarin schedule and optionally estimates tablets per week and day supply when tablet strength and quantity are entered.</p>
-            <h3>Fields / controls</h3>
-            <div>
-                <span class="badge">Monday mg</span>
-                <span class="badge">Tuesday mg</span>
-                <span class="badge">Wednesday mg</span>
-                <span class="badge">Thursday mg</span>
-                <span class="badge">Friday mg</span>
-                <span class="badge">Saturday mg</span>
-                <span class="badge">Sunday mg</span>
-                <span class="badge">Tablet Strength Optional</span>
-                <span class="badge">Qty Dispensed Optional</span>
-            </div>
-            <h3>How to use</h3>
-            <ol>
-                <li>Enter the mg dose for each day of the week.</li>
-                <li>Optionally enter Tablet Strength and Qty Dispensed.</li>
-                <li>Tap Calculate to get weekly dose, average daily dose, schedule, tablets per week, and estimated day supply when available.</li>
-            </ol>
-            <p class="small">Arithmetic support only. Does not recommend dose changes or interpret INR.</p>
-        </section>
-
-        <footer>For workflow support only. Not a substitute for clinical judgment, pharmacist review, prescriber directions, adjudication, or current policy.</footer>
-    </main>
+  <footer>For workflow support only. Not a substitute for clinical judgment, pharmacist review, prescriber directions, adjudication, or current policy.</footer>
+</main>
 </body>
 </html>
