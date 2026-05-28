@@ -546,6 +546,54 @@ input[type="date"]{
   padding-top:1px;
 }
 
+
+
+/* Stronger dark-mode action buttons */
+body.dark button:not(.secondary):not(.reset-btn):not(.calc-key){
+  background:#2563eb;
+  color:#ffffff;
+  border:1px solid #60a5fa;
+  box-shadow:0 4px 0 rgba(0,0,0,.35), 0 0 0 1px rgba(96,165,250,.18);
+}
+
+body.dark button:not(.secondary):not(.reset-btn):not(.calc-key):hover{
+  background:#3b82f6;
+  filter:none;
+}
+
+body.dark button.secondary{
+  background:#1e3a5f;
+  color:#ffffff;
+  border:1px solid #5b789f;
+  box-shadow:0 4px 0 rgba(0,0,0,.25);
+}
+
+body.dark button.secondary:hover{
+  background:#284b78;
+  filter:none;
+}
+
+body.dark button.reset-btn{
+  background:#b43a1d;
+  color:#ffffff;
+  border:1px solid #f9735b;
+  box-shadow:0 4px 0 rgba(0,0,0,.35);
+}
+
+body.dark button.reset-btn:hover{
+  background:#c2410c;
+  filter:none;
+}
+
+body.dark button.good{
+  background:#15803d;
+  border:1px solid #4ade80;
+}
+
+body.dark .checkbox-row input[type="checkbox"]{
+  accent-color:#2563eb;
+}
+
 @media (max-width:560px){
       header{padding:30px 22px}
       main{padding:22px 14px}
