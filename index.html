@@ -1258,7 +1258,7 @@ body.dark .changelog-close{
   <footer>
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   <div class="version-footer">
-    <span class="version-chip">Pharmacy Calc Suite v2.6.1</span>
+    <span class="version-chip">Pharmacy Calc Suite v2.6.2</span>
     <button type="button" class="changelog-link" onclick="openChangelog()">What’s New</button>
   </div>
 </footer>
@@ -1269,11 +1269,12 @@ body.dark .changelog-close{
     <div class="changelog-head">
       <div>
         <h2 id="changelog_title">What’s New</h2>
-        <div class="small">Pharmacy Calc Suite v2.6.1</div>
+        <div class="small">Pharmacy Calc Suite v2.6.2</div>
       </div>
       <button type="button" class="changelog-close" onclick="closeChangelog()" aria-label="Close changelog">×</button>
     </div>
     <ul>
+      <li>Fixed calculator percentage behavior so entries like 90 − 20% calculate as 72 instead of 89.8.</li>
       <li>Calculator now starts a new equation when a number is entered after a completed calculation.</li>
       <li>Operators entered after a completed calculation continue from the previous answer.</li>
       <li>Added Multi-Step Titration under Standard Day Supply for staged dose schedules.</li>
@@ -1657,12 +1658,88 @@ function calcBackspace(){
   calcUpdateDisplay();
 }
 
+function findLastCalcOperator(expr){
+  let depth = 0;
+
+  for(let i = expr.length - 1; i >= 0; i--){
+    const ch = expr[i];
+
+    if(ch === ')'){
+      depth++;
+      continue;
+    }
+
+    if(ch === '('){
+      depth--;
+      continue;
+    }
+
+    if(depth !== 0) continue;
+
+    if(['+','-','*','/'].includes(ch)){
+      // Treat ** as one power operator, not a percent base operator.
+      if(ch === '*' && (expr[i - 1] === '*' || expr[i + 1] === '*')) continue;
+
+      // Skip unary negative signs.
+      const prev = expr[i - 1];
+      if(ch === '-' && (i === 0 || ['+','-','*','/','('].includes(prev))) continue;
+
+      return { index:i, op:ch };
+    }
+  }
+
+  return null;
+}
+
+function calcEvaluateSafe(expr){
+  if(!/^[0-9+\-*/().\sA-Za-z,_]+$/.test(expr)){
+    throw new Error('Invalid expression');
+  }
+
+  const value = Function('"use strict"; return (' + expr + ')')();
+
+  if(typeof value !== 'number' || !isFinite(value)){
+    throw new Error('Invalid result');
+  }
+
+  return value;
+}
+
 function calcPercent(){
-  const expr = $('calc_expr').value;
+  let expr = $('calc_expr').value.trim();
   if(!expr) return;
-  calcJustSolved = false;
-  $('calc_expr').value = expr + '/100';
-  calcUpdateDisplay();
+
+  const numberMatch = expr.match(/(\d+(?:\.\d+)?|\.\d+)$/);
+  if(!numberMatch) return;
+
+  const numberText = numberMatch[1];
+  const percentNumber = parseFloat(numberText);
+  const beforeNumber = expr.slice(0, -numberText.length);
+  const opInfo = findLastCalcOperator(beforeNumber);
+
+  let replacement;
+
+  try{
+    if(opInfo && (opInfo.op === '+' || opInfo.op === '-')){
+      const leftExpr = beforeNumber.slice(0, opInfo.index).trim();
+
+      if(leftExpr){
+        const baseValue = calcEvaluateSafe(leftExpr);
+        replacement = String(Number(((baseValue * percentNumber) / 100).toFixed(10)));
+      } else {
+        replacement = String(percentNumber / 100);
+      }
+    } else {
+      replacement = String(Number((percentNumber / 100).toFixed(10)));
+    }
+
+    $('calc_expr').value = beforeNumber + replacement;
+    calcJustSolved = false;
+    calcUpdateDisplay();
+  } catch(e){
+    $('calc_display').textContent = 'Error';
+    $('calc_expression').textContent = 'Check percent entry';
+  }
 }
 
 function generalCalc(){
