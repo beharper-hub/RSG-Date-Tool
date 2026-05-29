@@ -1626,12 +1626,31 @@ function calcUpdateDisplay(){
   $('calc_display').textContent = display || '0';
 }
 
+let calcJustSolved = false;
+
 function calcPress(value){
+  const startsNewCalculation = /^[0-9.]$/.test(value);
+  const continuesFromAnswer = ['+','-','*','/','**'].includes(value);
+
+  if(calcJustSolved){
+    if(startsNewCalculation){
+      $('calc_expr').value = '';
+      $('calc_expression').textContent = '';
+    } else if(!continuesFromAnswer){
+      $('calc_expression').textContent = '';
+    }
+    calcJustSolved = false;
+  }
+
   $('calc_expr').value += value;
   calcUpdateDisplay();
 }
 
 function calcBackspace(){
+  if(calcJustSolved){
+    calcJustSolved = false;
+    $('calc_expression').textContent = '';
+  }
   $('calc_expr').value = $('calc_expr').value.slice(0,-1);
   calcUpdateDisplay();
 }
@@ -1639,6 +1658,7 @@ function calcBackspace(){
 function calcPercent(){
   const expr = $('calc_expr').value;
   if(!expr) return;
+  calcJustSolved = false;
   $('calc_expr').value = expr + '/100';
   calcUpdateDisplay();
 }
@@ -1672,6 +1692,7 @@ function generalCalc(){
     $('calc_expression').textContent = prettyExpr + ' =';
     $('calc_expr').value = String(cleanResult);
     $('calc_display').textContent = cleanResult;
+    calcJustSolved = true;
     addHistory('calc', prettyExpr + ' = ' + cleanResult);
   } catch(e){
     $('calc_display').textContent = 'Error';
@@ -1680,6 +1701,7 @@ function generalCalc(){
 }
 
 function clearGeneralCalc(){
+  calcJustSolved = false;
   $('calc_expr').value = '';
   $('calc_display').textContent = '0';
   $('calc_expression').textContent = '';
@@ -1707,6 +1729,11 @@ function setCalcMode(mode){
 }
 
 function calcFunction(fn){
+  if(calcJustSolved){
+    $('calc_expr').value = '';
+    $('calc_expression').textContent = '';
+    calcJustSolved = false;
+  }
   $('calc_expr').value += fn;
   calcUpdateDisplay();
 }
