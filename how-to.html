@@ -311,38 +311,13 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
 }
 
 
-/* Advanced Utilities mobile layout cleanup */
+/* Advanced Utilities meeting/mobile helper */
 .advanced-full-row{
   grid-column:1 / -1;
 }
-.advanced-utils-panel label{
-  line-height:1.2;
-}
-.advanced-utils-panel textarea{
-  width:100%;
-  min-height:130px;
-  display:block;
-}
 @media (max-width:560px){
-  .advanced-utils-panel{
-    width:min(92vw,680px);
-    padding:18px;
-  }
-  .advanced-tabs{
-    gap:8px;
-  }
-  .advanced-tab{
-    font-size:.9rem;
-    padding:8px 10px;
-  }
   .advanced-full-row{
     grid-column:auto;
-  }
-  .advanced-utils-panel textarea{
-    min-height:145px;
-  }
-  .advanced-pane .grid{
-    grid-template-columns:1fr !important;
   }
 }
 
@@ -476,7 +451,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
   </section>
 
   <section class="card">
-    <h2>Day Supply & Adherence</h2>
+    <h2>Standard Day Supply</h2>
     <h3>What it is for</h3>
     <p class="small">Day-supply support for tablets/capsules, liquids, titration schedules, average daily-dose math, and estimated medication remaining.</p>
     <h3>Fields / controls</h3>
@@ -717,6 +692,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
         <button type="button" class="advanced-tab is-active" data-advanced-tab="countdown">Countdown</button>
         <button type="button" class="advanced-tab" data-advanced-tab="payday">Days Until Payday</button>
         <button type="button" class="advanced-tab" data-advanced-tab="pto">PTO Optimizer</button>
+        <button type="button" class="advanced-tab" data-advanced-tab="meeting">Meeting Justification</button>
       </div>
 
       <section class="advanced-pane is-active" id="advanced-pane-countdown">
@@ -815,9 +791,10 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
               <label>Shift length / PTO hours per workday</label>
               <input id="pto_shift_hours" type="number" step="0.25" value="10">
             </div>
-            <div class="advanced-full-row">
-              <label>Pharmacy Closure / Holiday Dates</label>
-              <textarea id="pto_closures" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;MM/DD/YYYY&#10;One date per line or comma-separated"></textarea>
+            <div>
+              <label>Pharmacy Closure / Holiday Dates (MM/DD/YYYY)</label>
+              <textarea id="pto_closures" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;One date per line or comma-separated"></textarea>
+              <div class="small">Example: 07/03/2026 = observed Independence Day closure.</div>
             </div>
           </div>
         </div>
@@ -832,9 +809,10 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
               <label>Shift length / PTO hours per day</label>
               <input id="stretch_shift_hours" type="number" step="0.25" value="10">
             </div>
-            <div class="advanced-full-row">
-              <label>Holiday / Closure Dates</label>
-              <textarea id="stretch_holidays" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;MM/DD/YYYY&#10;One date per line or comma-separated"></textarea>
+            <div>
+              <label>Holiday / Closure Dates (MM/DD/YYYY)</label>
+              <textarea id="stretch_holidays" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;One date per line or comma-separated"></textarea>
+              <div class="small">Enter the holidays or pharmacy closures you want to build around.</div>
             </div>
           </div>
         </div>
@@ -847,6 +825,64 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
         <div class="result" id="pto_result">Ready.</div>
         <p class="small">Use request mode to check a specific PTO window. Use stretch mode to find the best holiday stretch from available PTO days. PTO hours are estimated only. Verify schedule, holiday rules, payroll, and approval requirements.</p>
       </section>
+
+
+      <section class="advanced-pane" id="advanced-pane-meeting">
+        <h3>Meeting Justification</h3>
+        <div class="grid">
+          <div>
+            <label>Number of attendees</label>
+            <input id="meet_attendees" type="number" step="1" value="8">
+          </div>
+          <div>
+            <label>Meeting length minutes</label>
+            <input id="meet_minutes" type="number" step="5" value="30">
+          </div>
+          <div>
+            <label>Information sharing only?</label>
+            <select id="meet_info_only">
+              <option value="no" selected>No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+          <div>
+            <label>Decision required?</label>
+            <select id="meet_decision">
+              <option value="no" selected>No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+          <div>
+            <label>Discussion required?</label>
+            <select id="meet_discussion">
+              <option value="no" selected>No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+          <div>
+            <label>Screen share / demo required?</label>
+            <select id="meet_demo">
+              <option value="no" selected>No</option>
+              <option value="yes">Yes</option>
+            </select>
+          </div>
+          <div class="advanced-full-row">
+            <label>Could this be handled in Teams chat?</label>
+            <select id="meet_teams">
+              <option value="yes" selected>Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+        <div class="btns">
+          <button type="button" onclick="calcMeetingJustification()">Calculate</button>
+          <button type="button" class="secondary" onclick="copyAdvancedResult('meeting_result')">Copy</button>
+          <button type="button" class="secondary" onclick="resetMeetingJustification()">Reset</button>
+        </div>
+        <div class="result" id="meeting_result">Ready.</div>
+        <p class="small">For morale only. Do not submit this result to leadership unless you enjoy follow-up meetings.</p>
+      </section>
+
 
       <div class="advanced-utils-note">
         Hidden utility drawer. For planning, morale, and checking how long until freedom.
@@ -1405,6 +1441,106 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     togglePtoMode();
   }
 
+
+  function yesNo(id){
+    const el = document.getElementById(id);
+    return el && el.value === 'yes';
+  }
+
+  function calcMeetingJustification(){
+    const attendees = Math.max(1, Number(document.getElementById('meet_attendees').value || 0));
+    const minutes = Math.max(1, Number(document.getElementById('meet_minutes').value || 0));
+    const infoOnly = yesNo('meet_info_only');
+    const decision = yesNo('meet_decision');
+    const discussion = yesNo('meet_discussion');
+    const demo = yesNo('meet_demo');
+    const teams = yesNo('meet_teams');
+
+    if(!attendees || !minutes){
+      document.getElementById('meeting_result').textContent = 'Enter attendees and meeting length.';
+      return;
+    }
+
+    let score = 20;
+
+    if(decision) score += 30;
+    if(discussion) score += 25;
+    if(demo) score += 20;
+    if(infoOnly) score -= 30;
+    if(teams) score -= 25;
+
+    if(attendees >= 12) score -= 5;
+    if(attendees >= 20) score -= 10;
+    if(minutes > 30) score -= 5;
+    if(minutes > 60) score -= 10;
+
+    score = Math.max(0, Math.min(100, Math.round(score)));
+
+    const peopleMinutes = attendees * minutes;
+
+    let verdict = 'Email';
+    let icon = '📧';
+    let message = 'This should have been an email.';
+    let suggestion = 'Type it once. Let people read it when they are emotionally ready.';
+
+    if(score >= 76){
+      verdict = 'Actual Meeting';
+      icon = '🤝';
+      message = 'Against all odds, this appears to be a legitimate meeting.';
+      suggestion = 'Discussion, decisions, or demonstration are actually required.';
+    } else if(score >= 51){
+      verdict = 'Quick Meeting';
+      icon = '🎤';
+      message = 'A short meeting is reasonable.';
+      suggestion = 'Keep it tight. Fifteen minutes. Please do not add an icebreaker.';
+    } else if(score >= 26){
+      verdict = 'Teams Message';
+      icon = '💬';
+      message = 'This should have been a Teams message.';
+      suggestion = 'Two reactions and one follow-up question probably would have handled it.';
+    }
+
+    if(attendees >= 20 && minutes >= 60 && infoOnly && !decision && !discussion){
+      verdict = 'Emergency Alert';
+      icon = '🚨';
+      score = 0;
+      message = 'You have scheduled a captive audience.';
+      suggestion = 'This should have been an email, a Teams message, and possibly not exist at all.';
+    }
+
+    const output =
+      '<div class="advanced-result-title">Meeting Justification</div>' +
+      '<div class="advanced-result-big">' + icon + ' ' + verdict + '</div>' +
+      '<div class="advanced-result-line"><strong>Meeting score:</strong> ' + score + '%</div>' +
+      '<div class="advanced-result-line"><strong>Attendees:</strong> ' + attendees + '</div>' +
+      '<div class="advanced-result-line"><strong>Length:</strong> ' + minutes + ' minute(s)</div>' +
+      '<div class="advanced-result-line"><strong>Total people-minutes:</strong> ' + peopleMinutes.toLocaleString() + '</div>' +
+      '<div class="advanced-result-status">' + message + '</div>' +
+      '<div class="small" style="margin-top:10px;">' + suggestion + '</div>';
+
+    document.getElementById('meeting_result').innerHTML = output;
+  }
+
+  function resetMeetingJustification(){
+    const fields = {
+      meet_attendees:'8',
+      meet_minutes:'30',
+      meet_info_only:'no',
+      meet_decision:'no',
+      meet_discussion:'no',
+      meet_demo:'no',
+      meet_teams:'yes'
+    };
+
+    Object.keys(fields).forEach(function(id){
+      const el = document.getElementById(id);
+      if(el) el.value = fields[id];
+    });
+
+    const result = document.getElementById('meeting_result');
+    if(result) result.textContent = 'Ready.';
+  }
+
   function copyAdvancedResult(id){
     const el = document.getElementById(id);
     if(!el) return;
@@ -1416,8 +1552,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
   </script>
 
 
-  <footer>Pharmacy Calc Suite v2.6.10 · Build 2026.05.30.01 · For workflow support only. Not a substitute for clinical judgment, pharmacist review, prescriber directions, adjudication, or current policy.<br>Version 2.6.11 · Build 2026.05.30.01
-</footer>
+  <footer>Pharmacy Calc Suite v2.6.11 · Build 2026.05.30.01 · For workflow support only. Not a substitute for clinical judgment, pharmacist review, prescriber directions, adjudication, or current policy.</footer>
 </main>
 </body>
 </html>
