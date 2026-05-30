@@ -116,7 +116,7 @@
 <span>Control / C-II? Auto-use 100%</span>
 </label>
 <div class="btns"><button onclick="fillDateCalc()">Calculate</button><button class="secondary" onclick="copyResult('fill_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="fill_result">Ready.</div>
+<div class="result result-hidden" id="fill_result"></div>
 </section>
 <section class="card aligned-card" data-tool-card="true" data-tool-title="Fridge Shipment Check" id="tool_fridge">
 <h2><span class="calc-title"><span class="calc-icon"><svg viewbox="0 0 24 24"><rect height="11" rx="2" width="16" x="4" y="7"></rect><path d="M8 7V5h8v2"></path><path d="M12 10v6"></path><path d="M9.5 13h5"></path></svg></span><span>Fridge Shipment Check</span></span></h2>
@@ -131,7 +131,7 @@
 </label>
 <div class="small">Checks New Year’s Day, Martin Luther King Jr. Day, Memorial Day, Independence Day, Labor Day, Thanksgiving, and Christmas Day.</div>
 <div class="btns"><button onclick="fridge()">Check</button><button class="secondary" onclick="copyResult('fr_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="fr_result">Ready.</div>
+<div class="result result-hidden" id="fr_result"></div>
 </section>
 <section class="card aligned-card" data-tool-card="true" data-tool-title="Injection Day Supply" id="tool_injection">
 <h2><span class="calc-title"><span class="calc-icon"><svg viewbox="0 0 24 24"><path d="M14 4l6 6"></path><path d="M17 7L7 17"></path><path d="M5 19l2-2"></path><path d="M10 14l-3-3"></path></svg></span><span>Injection Day Supply</span></span></h2>
@@ -146,7 +146,7 @@
 <option value="months">Month(s), estimated 30 days</option>
 </select>
 <div class="btns"><button onclick="injectableInterval()">Calculate</button><button class="secondary" onclick="copyResult('inj_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="inj_result">Ready.</div>
+<div class="result result-hidden" id="inj_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="injectablePreset(4,1,'weeks')">Weekly × 4</button>
 <button class="preset" onclick="injectablePreset(2,14,'days')">Every 14 Days</button>
@@ -259,7 +259,7 @@
 <option value="raw">Show raw only</option>
 </select>
 <div class="btns"><button onclick="generalLiquidDS()">Calculate</button><button class="secondary" onclick="copyResult('gen_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="gen_result">Ready.</div>
+<div class="result result-hidden" id="gen_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="generalPreset(30,1)">30 tabs/caps / 1 daily</button>
 <button class="preset" onclick="liquidPreset(473,5,2)">473 mL / 5 mL BID</button>
@@ -293,7 +293,7 @@
 <button class="secondary" onclick="copyResult('pat_result')">Copy</button>
 <button class="reset-btn" onclick="resetCalc(this)">Reset</button>
 </div>
-<div class="result" id="pat_result">Ready.</div>
+<div class="result result-hidden" id="pat_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="patternPreset(30,1,1,3)">Daily + M/W/F Extra</button>
 <button class="preset" onclick="patternPreset(60,1,1,2)">Daily + 2 Extra Days</button>
@@ -325,7 +325,7 @@
 <div><label>Prime Waste/Day</label><input id="ins_waste" step="0.01" type="number" value="0"/></div>
 </div>
 <div class="btns"><button onclick="insulinCombinedDS()">Calculate</button><button class="secondary" onclick="copyResult('ins_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="ins_result">Ready.</div>
+<div class="result result-hidden" id="ins_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="insulinMlPreset(15,100,50,2)">15 mL / U-100</button>
 <button class="preset" onclick="insulinPenPreset(5,3,100,50,2)">5 Pens / U-100</button>
@@ -347,7 +347,7 @@
 </div>
 <label>Eyes/Ears Treated</label><select id="eye_eyes"><option value="1">One eye/ear</option><option value="2">Both eyes/ears</option></select>
 <div class="btns"><button onclick="eyeDS()">Calculate</button><button class="secondary" onclick="copyResult('eye_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="eye_result">Ready.</div>
+<div class="result result-hidden" id="eye_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="eyePreset(5,20,1,4,2)">QID Both Eyes/Ears</button>
 <button class="preset" onclick="eyePreset(10,20,1,2,1)">BID One Eye/Ear</button>
@@ -387,7 +387,7 @@
 </div>
 </div>
 <div class="btns"><button onclick="actuationSprayDS()">Calculate</button><button class="secondary" onclick="copyResult('act_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="act_result">Ready.</div>
+<div class="result result-hidden" id="act_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="actuationPreset(200,2)">Inhaler 200 / 2 per day</button>
 <button class="preset" onclick="nasalPreset(120,1,1,2)">Flonase Typical</button>
@@ -401,7 +401,7 @@
 <div><label>Grams/Day</label><input id="top_gpd" step="0.01" type="number"/></div>
 </div>
 <div class="btns"><button onclick="topicalDS()">Calculate</button><button class="secondary" onclick="copyResult('top_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="top_result">Ready.</div>
+<div class="result result-hidden" id="top_result"></div>
 <div class="small">Use only as an estimate when workflow permits. Topicals can be audit-sensitive.</div>
 </section>
 <section class="card enzyme-card" data-tool-card="true" data-tool-title="Enzyme Day Supply" id="tool_enzyme">
@@ -419,7 +419,7 @@
 <div><label>Rounding</label><select id="enz_round"><option selected="" value="up">Round up</option><option value="down">Round down</option><option value="raw">Show raw only</option></select></div>
 </div>
 <div class="btns"><button onclick="enzymeDS()">Calculate</button><button class="secondary" onclick="copyResult('enz_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="enz_result">Ready.</div>
+<div class="result result-hidden" id="enz_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="enzymePreset(240,2,3,1,2)">2 Meals / 1 Snacks</button>
 <button class="preset" onclick="enzymePreset(360,3,3,2,2)">High Usage</button>
@@ -450,7 +450,7 @@
 </div>
 <label>Qty Dispensed Optional</label><input id="war_qty" placeholder="e.g. 30" step="0.01" type="number"/>
 <div class="btns"><button onclick="warfarinCalc()">Calculate</button><button class="secondary" onclick="copyResult('war_result')">Copy</button><button class="reset-btn" onclick="resetCalc(this)">Reset</button></div>
-<div class="result" id="war_result">Ready.</div>
+<div class="result result-hidden" id="war_result"></div>
 <div class="preset-row">
 <button class="preset" onclick="warfarinPreset(5,5,5,5,5,5,5,5,30)">5 mg Daily</button>
 <button class="preset" onclick="warfarinPreset(5,2.5,5,2.5,5,2.5,5,5,30)">Alternating Example</button>
@@ -463,7 +463,7 @@
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   
 <div class="version-footer">
-  <span class="version-chip">Version 2.6.11 · Build 2026.05.30.03</span>
+  <span class="version-chip">Version 2.6.11 · Build 2026.05.30.04</span>
   <button type="button" class="changelog-link" onclick="openChangelogModal()">What’s New</button>
   <button type="button" class="disclaimer-link" onclick="openDisclaimerModal()">Disclaimer</button>
 </div>
@@ -474,7 +474,7 @@
 <div class="changelog-head">
 <div>
 <h2 id="changelog_title">What’s New</h2>
-<div class="small">Version 2.6.11 · Build 2026.05.30.03</div>
+<div class="small">Version 2.6.11 · Build 2026.05.30.04</div>
 </div>
 <button aria-label="Close changelog" class="changelog-close" onclick="closeChangelog()" type="button">×</button>
 </div>

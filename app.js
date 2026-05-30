@@ -32,10 +32,18 @@ function out(id, text){
   const el = $(id);
   if(!el) return;
 
+  el.classList.remove('result-hidden');
+
   const value = String(text || '');
 
   // Keep simple/default messages plain.
-  if(!value || value === 'Ready.' || value.split('\n').length === 1 && !value.includes(':')){
+  if(!value || value === 'Ready.'){
+    el.className = 'result result-hidden';
+    el.textContent = '';
+    return;
+  }
+
+  if(value.split('\n').length === 1 && !value.includes(':')){
     el.className = 'result';
     el.textContent = value;
     return;
@@ -367,7 +375,13 @@ function nasalPreset(total,per,freq,nostrils){
   $('nasal_nostrils').value = nostrils;
 }
 
-function copyResult(id){ navigator.clipboard.writeText(($(id).innerText || $(id).textContent).trim()); }
+function copyResult(id){
+  const el = $(id);
+  if(!el || el.classList.contains('result-hidden')) return;
+  const text = (el.innerText || el.textContent || '').trim();
+  if(!text) return;
+  navigator.clipboard.writeText(text);
+}
 
 
 
@@ -1213,7 +1227,8 @@ function resetCalc(section){
   });
 
   card.querySelectorAll('.result').forEach(el => {
-    el.textContent = 'Ready.';
+    el.textContent = '';
+    /* hidden reset handled by resetCalc */
   });
 
   if(card.querySelector('#calc_display')){
