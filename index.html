@@ -1372,7 +1372,7 @@ body.dark .layout-row{
 <footer>
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   <div class="version-footer">
-<span class="version-chip">Version 2.6.10 · Build 2026.05.29.06</span>
+<span class="version-chip">Version 2.6.11 · Build 2026.05.30.01</span>
 <button class="changelog-link" onclick="openChangelog()" type="button">What’s New</button>
 </div>
 </footer>
@@ -1382,23 +1382,20 @@ body.dark .layout-row{
 <div class="changelog-head">
 <div>
 <h2 id="changelog_title">What’s New</h2>
-<div class="small">Version 2.6.10 · Build 2026.05.29.06</div>
+<div class="small">Version 2.6.11 · Build 2026.05.30.01</div>
 </div>
 <button aria-label="Close changelog" class="changelog-close" onclick="closeChangelog()" type="button">×</button>
 </div>
 <ul>
-<li>Version 2.6.10 build 2026.05.29.06: grouped Average Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards; Average Daily Dose now calculates average daily use from quantity and days supply.</li>
-<li>Fixed calculator percentage behavior so entries like 90 − 20% calculate as 72 instead of 89.8.</li>
-<li>Calculator now starts a new equation when a number is entered after a completed calculation.</li>
-<li>Operators entered after a completed calculation continue from the previous answer.</li>
-<li>Added Average Daily Dose and Medication Remaining inside Standard Day Supply so the suite stays at 12 movable cards.</li>
-<li>Added Multi-Step Titration under Standard Day Supply for staged dose schedules.</li>
-<li>Added branded launch splash screen for installed PWA/app-style use.</li>
-<li>Added branded loading animation while the suite initializes.</li>
-<li>Added version footer so updates are easier to identify and troubleshoot.</li>
-<li>Added What’s New changelog modal for visible release notes.</li>
-<li>Kept the main calculator clean; detailed keyboard instructions live in the How-To Guide.</li>
-<li>Included recent fixes for iPhone input overflow, checkbox alignment, and dark-mode button contrast.</li>
+<li>Renamed <strong>Standard Day Supply</strong> to <strong>Day Supply &amp; Adherence</strong> to better reflect included calculations and adherence tools.</li>
+<li>Added dedicated <strong>Disclaimer</strong> page covering workflow-use guidance, verification reminders, privacy considerations, calculation limitations, and user responsibilities.</li>
+<li>Added direct Disclaimer links from the main suite and How-To Guide.</li>
+<li>Updated offline cache configuration to include the new Disclaimer page.</li>
+<li>Improved public-release and App Store readiness.</li>
+<li>Continued PWA branding improvements using the pharmacy-specific Rx calculator icon set.</li>
+<li>Maintained support for Day Supply, Average Daily Dose, Medication Remaining, Simple Titration, Multi-Step Titration, and Coverage Estimation.</li>
+<li>Refined navigation, terminology, and overall workflow consistency across the suite.</li>
+<li>Additional UI polish and quality-of-life improvements.</li>
 </ul>
 <div class="changelog-note"><strong>Reminder:</strong> This tool supports workflow math only. Always verify against policy, prescription directions, adjudication, and pharmacist guidance.</div>
 </div>
