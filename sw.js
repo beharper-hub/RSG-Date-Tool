@@ -1,9 +1,12 @@
-const CACHE_NAME = 'pharmcalc-v2-6-11-build-2026-05-30-02';
+const CACHE_NAME = 'pharmcalc-v2-6-11-build-2026-05-30-03';
 
 const ASSETS = [
   '/',
   '/index.html',
   '/how-to.html',
+  '/styles.css',
+  '/calculators.js',
+  '/app.js',
   '/manifest.json',
   '/icon-180.png',
   '/icon-192.png',
