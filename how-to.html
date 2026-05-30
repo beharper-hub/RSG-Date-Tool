@@ -42,6 +42,139 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
   transition:.2s ease;
 }
 .back-link:hover{background:rgba(255,255,255,.2);}
+
+.advanced-utils-trigger{
+  text-align:center;
+  margin-top:24px;
+}
+.advanced-utils-trigger a{
+  color:#667085;
+  font-size:.85rem;
+  text-decoration:none;
+  opacity:.75;
+}
+.advanced-utils-trigger a:hover{
+  opacity:1;
+  text-decoration:underline;
+}
+.advanced-utils-modal{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(2,6,23,.62);
+}
+.advanced-utils-modal.is-open{
+  display:flex;
+}
+.advanced-utils-panel{
+  width:min(94vw,820px);
+  max-height:86vh;
+  overflow:auto;
+  background:var(--card);
+  color:var(--text);
+  border:2px solid var(--line);
+  border-radius:24px;
+  box-shadow:0 24px 80px rgba(0,0,0,.34);
+  padding:22px;
+}
+.advanced-utils-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:4px solid var(--gold);
+}
+.advanced-utils-head h2{
+  border:0;
+  padding:0;
+  margin:0;
+}
+.advanced-utils-head p{
+  margin:8px 0 0;
+  color:var(--muted);
+  line-height:1.35;
+}
+.advanced-utils-close{
+  min-width:42px;
+  min-height:42px;
+  padding:0;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--soft);
+  color:var(--text);
+  font-size:1.3rem;
+  font-weight:900;
+  cursor:pointer;
+}
+.advanced-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:16px 0;
+}
+.advanced-tab{
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:9px 12px;
+  background:var(--soft);
+  color:var(--text);
+  cursor:pointer;
+  font-weight:800;
+}
+.advanced-tab.is-active{
+  background:var(--navy);
+  color:#fff;
+  border-color:var(--navy);
+}
+.advanced-pane{
+  display:none;
+}
+.advanced-pane.is-active{
+  display:block;
+}
+.advanced-pane textarea{
+  min-height:92px;
+}
+.advanced-utils-note{
+  margin-top:16px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  color:var(--muted);
+  line-height:1.35;
+  font-size:.9rem;
+}
+
+
+.advanced-result-title{
+  font-weight:900;
+  font-size:1.05rem;
+  margin-bottom:8px;
+}
+.advanced-result-big{
+  font-size:1.45rem;
+  font-weight:900;
+  color:var(--navy);
+  margin:4px 0 10px;
+}
+.advanced-result-line{
+  margin:4px 0;
+}
+.advanced-result-status{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:14px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  font-weight:800;
+}
+
 </style>
 </head>
 <body>
@@ -391,6 +524,482 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     </ol>
     <p class="small">Arithmetic support only. Does not recommend dose changes or interpret INR.</p>
   </section>
+
+  <section class="advanced-utils-trigger">
+    <a href="#" id="advancedUtilitiesLink">Advanced Utilities</a>
+  </section>
+
+  <div class="advanced-utils-modal" id="advancedUtilitiesModal" aria-hidden="true">
+    <div class="advanced-utils-panel" role="dialog" aria-modal="true" aria-labelledby="advancedUtilitiesTitle">
+      <div class="advanced-utils-head">
+        <div>
+          <h2 id="advancedUtilitiesTitle">Advanced Utilities</h2>
+          <p>Planning and morale tools. Useful? Maybe. Official? Absolutely not.</p>
+        </div>
+        <button type="button" class="advanced-utils-close" id="advancedUtilitiesClose" aria-label="Close Advanced Utilities">×</button>
+      </div>
+
+      <div class="advanced-tabs" role="tablist" aria-label="Advanced utility tabs">
+        <button type="button" class="advanced-tab is-active" data-advanced-tab="weekend">Minutes Until Weekend</button>
+        <button type="button" class="advanced-tab" data-advanced-tab="payday">Days Until Payday</button>
+        <button type="button" class="advanced-tab" data-advanced-tab="pto">PTO Optimizer</button>
+      </div>
+
+      <section class="advanced-pane is-active" id="advanced-pane-weekend">
+        <h3>Minutes Until Weekend</h3>
+        <div class="grid">
+          <div>
+            <label>Weekend starts on</label>
+            <select id="weekend_day">
+              <option value="5" selected>Friday</option>
+              <option value="4">Thursday</option>
+              <option value="6">Saturday</option>
+            </select>
+          </div>
+          <div>
+            <label>Clock-out time</label>
+            <input id="weekend_time" type="time" value="16:30">
+          </div>
+        </div>
+        <div class="btns">
+          <button type="button" onclick="calcWeekendCountdown()">Calculate</button>
+          <button type="button" class="secondary" onclick="copyAdvancedResult('weekend_result')">Copy</button>
+          <button type="button" class="secondary" onclick="resetWeekendCountdown()">Reset</button>
+        </div>
+        <div class="result" id="weekend_result">Ready.</div>
+      </section>
+
+      <section class="advanced-pane" id="advanced-pane-payday">
+        <h3>Days Until Payday</h3>
+        <div class="grid">
+          <div>
+            <label>Next payday</label>
+            <input id="payday_date" type="date">
+          </div>
+          <div>
+            <label>Pay frequency</label>
+            <select id="payday_frequency">
+              <option value="once" selected>One-time date</option>
+              <option value="weekly">Weekly</option>
+              <option value="biweekly">Biweekly</option>
+              <option value="semimonthly">Twice monthly</option>
+              <option value="monthly">Monthly</option>
+            </select>
+          </div>
+        </div>
+        <div class="btns">
+          <button type="button" onclick="calcPaydayCountdown()">Calculate</button>
+          <button type="button" class="secondary" onclick="copyAdvancedResult('payday_result')">Copy</button>
+          <button type="button" class="secondary" onclick="resetPaydayCountdown()">Reset</button>
+        </div>
+        <div class="result" id="payday_result">Ready.</div>
+      </section>
+
+      <section class="advanced-pane" id="advanced-pane-pto">
+        <h3>PTO Optimizer</h3>
+        <div class="grid">
+          <div>
+            <label>First day away</label>
+            <input id="pto_start" type="date">
+          </div>
+          <div>
+            <label>Last day away</label>
+            <input id="pto_end" type="date">
+          </div>
+          <div>
+            <label>Shift length / PTO hours per workday</label>
+            <input id="pto_shift_hours" type="number" step="0.25" value="10">
+          </div>
+          <div>
+            <label>Pharmacy Closure / Holiday Dates (MM/DD/YYYY)</label>
+            <textarea id="pto_closures" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;One date per line or comma-separated"></textarea><div class="small">Example: 07/03/2026 = observed Independence Day closure.</div>
+          </div>
+        </div>
+        <div class="btns">
+          <button type="button" onclick="calcPtoOptimizer()">Calculate</button>
+          <button type="button" class="secondary" onclick="copyAdvancedResult('pto_result')">Copy</button>
+          <button type="button" class="secondary" onclick="resetPtoOptimizer()">Reset</button>
+        </div>
+        <div class="result" id="pto_result">Ready.</div>
+        <p class="small">Weekend days and entered closure dates count as free days. PTO hours are estimated only. Verify schedule, holiday rules, payroll, and approval requirements.</p>
+      </section>
+
+      <div class="advanced-utils-note">
+        Hidden utility drawer. For planning, morale, and checking how long until freedom.
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const modal = document.getElementById('advancedUtilitiesModal');
+    const openLink = document.getElementById('advancedUtilitiesLink');
+    const closeBtn = document.getElementById('advancedUtilitiesClose');
+
+    function openModal(){
+      if(!modal) return;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden','false');
+      setDefaultAdvancedDates();
+    }
+
+    function closeModal(){
+      if(!modal) return;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden','true');
+    }
+
+    if(openLink){
+      openLink.addEventListener('click', function(e){
+        e.preventDefault();
+        openModal();
+      });
+    }
+
+    if(closeBtn){
+      closeBtn.addEventListener('click', closeModal);
+    }
+
+    if(modal){
+      modal.addEventListener('click', function(e){
+        if(e.target === modal) closeModal();
+      });
+    }
+
+    document.addEventListener('keydown', function(e){
+      if(e.key === 'Escape') closeModal();
+    });
+
+    document.querySelectorAll('.advanced-tab').forEach(function(tab){
+      tab.addEventListener('click', function(){
+        const target = tab.getAttribute('data-advanced-tab');
+        document.querySelectorAll('.advanced-tab').forEach(function(t){ t.classList.remove('is-active'); });
+        document.querySelectorAll('.advanced-pane').forEach(function(p){ p.classList.remove('is-active'); });
+        tab.classList.add('is-active');
+        const pane = document.getElementById('advanced-pane-' + target);
+        if(pane) pane.classList.add('is-active');
+      });
+    });
+  })();
+
+  function advancedDateOnly(value){
+    if(!value) return null;
+    const parts = value.split('-').map(Number);
+    if(parts.length !== 3 || parts.some(isNaN)) return null;
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+  function advancedFormatDate(date){
+    if(!date || isNaN(date)) return '';
+    return date.toLocaleDateString(undefined, {weekday:'short', month:'short', day:'numeric', year:'numeric'});
+  }
+
+  function advancedIsoDate(date){
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2,'0');
+    const d = String(date.getDate()).padStart(2,'0');
+    return y + '-' + m + '-' + d;
+  }
+
+  function advancedAddDays(date, days){
+    const copy = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    copy.setDate(copy.getDate() + days);
+    return copy;
+  }
+
+  function advancedDiffDays(start, end){
+    const ms = 24 * 60 * 60 * 1000;
+    const a = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+    const b = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    return Math.round((b - a) / ms);
+  }
+
+  function advancedIsWeekend(date){
+    return date.getDay() === 0 || date.getDay() === 6;
+  }
+
+  function advancedPlural(n, word){
+    return Number(n) === 1 ? word : word + 's';
+  }
+
+  function setDefaultAdvancedDates(){
+    const today = new Date();
+    const isoToday = advancedIsoDate(today);
+
+    const payday = document.getElementById('payday_date');
+    if(payday && !payday.value){
+      const next = advancedAddDays(today, 14);
+      payday.value = advancedIsoDate(next);
+    }
+
+    const ptoStart = document.getElementById('pto_start');
+    const ptoEnd = document.getElementById('pto_end');
+    if(ptoStart && !ptoStart.value) ptoStart.value = isoToday;
+    if(ptoEnd && !ptoEnd.value) ptoEnd.value = advancedIsoDate(advancedAddDays(today, 4));
+  }
+
+  function calcWeekendCountdown(){
+    const day = Number(document.getElementById('weekend_day').value);
+    const time = document.getElementById('weekend_time').value || '16:30';
+    const parts = time.split(':').map(Number);
+    const hour = parts[0] || 16;
+    const minute = parts[1] || 30;
+
+    const now = new Date();
+    const target = new Date(now);
+    target.setHours(hour, minute, 0, 0);
+
+    let add = (day - now.getDay() + 7) % 7;
+    if(add === 0 && target <= now) add = 7;
+    target.setDate(now.getDate() + add);
+
+    const diffMs = target - now;
+    const minutes = Math.max(0, Math.ceil(diffMs / 60000));
+    const hours = Math.floor(minutes / 60);
+    const leftoverMinutes = minutes % 60;
+    const days = Math.floor(hours / 24);
+
+    let status = 'You got this.';
+    if(minutes <= 0) status = 'Weekend mode is officially active.';
+    else if(minutes <= 60) status = 'Don’t start anything new.';
+    else if(hours <= 4) status = 'Don’t volunteer for anything.';
+    else if(days <= 1) status = 'The weekend can see you.';
+    else if(days >= 5) status = 'It’s gonna be a long one.';
+
+    const dayLine = days >= 1
+      ? days + ' ' + advancedPlural(days, 'day') + ' remaining'
+      : hours + ' ' + advancedPlural(hours, 'hour') + ' remaining';
+
+    const html =
+      '<div class="advanced-result-title">Weekend Countdown</div>' +
+      '<div class="advanced-result-big">' + dayLine + '</div>' +
+      '<div class="advanced-result-line"><strong>Weekend begins:</strong> ' + advancedFormatDate(target) + '</div>' +
+      '<div class="advanced-result-line"><strong>Time:</strong> ' + time + '</div>' +
+      '<div class="advanced-result-line"><strong>Hours:</strong> ' + hours.toLocaleString() + ' hour(s), ' + leftoverMinutes + ' minute(s)</div>' +
+      '<div class="advanced-result-line"><strong>Minutes:</strong> ' + minutes.toLocaleString() + '</div>' +
+      '<div class="advanced-result-status">' + status + '</div>';
+
+    document.getElementById('weekend_result').innerHTML = html;
+  }
+
+  function calcPaydayCountdown(){
+    const input = document.getElementById('payday_date').value;
+    const frequency = document.getElementById('payday_frequency').value;
+    let payDate = advancedDateOnly(input);
+    if(!payDate){
+      document.getElementById('payday_result').textContent = 'Enter a valid payday.';
+      return;
+    }
+
+    const today = new Date();
+    const todayOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    while(payDate < todayOnly && frequency !== 'once'){
+      if(frequency === 'weekly') payDate = advancedAddDays(payDate, 7);
+      else if(frequency === 'biweekly') payDate = advancedAddDays(payDate, 14);
+      else if(frequency === 'monthly') payDate = new Date(payDate.getFullYear(), payDate.getMonth() + 1, payDate.getDate());
+      else if(frequency === 'semimonthly'){
+        const day = payDate.getDate();
+        if(day < 15) payDate = new Date(payDate.getFullYear(), payDate.getMonth(), 15);
+        else payDate = new Date(payDate.getFullYear(), payDate.getMonth() + 1, 1);
+      } else break;
+    }
+
+    const days = advancedDiffDays(todayOnly, payDate);
+    let workdays = 0;
+    for(let d = new Date(todayOnly); d < payDate; d.setDate(d.getDate() + 1)){
+      if(!advancedIsWeekend(d)) workdays++;
+    }
+
+    let status = 'Almost there.';
+    if(days < 0) status = 'That payday already passed.';
+    else if(days === 0) status = 'Payday. Treat yourself responsibly. Or at least pretend.';
+    else if(days <= 2) status = 'Almost there. No financial freestyle right now.';
+    else if(days >= 10) status = 'Ramen remains an option.';
+
+    const html =
+      '<div class="advanced-result-title">Payday Countdown</div>' +
+      '<div class="advanced-result-big">' + days + ' ' + advancedPlural(days, 'day') + ' remaining</div>' +
+      '<div class="advanced-result-line"><strong>Next payday:</strong> ' + advancedFormatDate(payDate) + '</div>' +
+      '<div class="advanced-result-line"><strong>Workdays left:</strong> ' + workdays + '</div>' +
+      '<div class="advanced-result-line"><strong>Frequency:</strong> ' + frequency + '</div>' +
+      '<div class="advanced-result-status">' + status + '</div>';
+
+    document.getElementById('payday_result').innerHTML = html;
+  }
+
+  function parseClosureDates(){
+    const raw = document.getElementById('pto_closures').value || '';
+    const dates = new Set();
+
+    raw
+      .split(/[,\n]/)
+      .map(s => s.trim())
+      .filter(Boolean)
+      .forEach(function(value){
+        let match;
+
+        // Accept MM/DD/YYYY or M/D/YYYY.
+        match = value.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if(match){
+          const month = Number(match[1]);
+          const day = Number(match[2]);
+          const year = Number(match[3]);
+          if(month >= 1 && month <= 12 && day >= 1 && day <= 31){
+            dates.add(String(year).padStart(4,'0') + '-' + String(month).padStart(2,'0') + '-' + String(day).padStart(2,'0'));
+          }
+          return;
+        }
+
+        // Accept MM-DD-YYYY or M-D-YYYY.
+        match = value.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/);
+        if(match){
+          const month = Number(match[1]);
+          const day = Number(match[2]);
+          const year = Number(match[3]);
+          if(month >= 1 && month <= 12 && day >= 1 && day <= 31){
+            dates.add(String(year).padStart(4,'0') + '-' + String(month).padStart(2,'0') + '-' + String(day).padStart(2,'0'));
+          }
+          return;
+        }
+
+        // Quietly still accept YYYY-MM-DD for anyone who already copied the old format.
+        match = value.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
+        if(match){
+          const year = Number(match[1]);
+          const month = Number(match[2]);
+          const day = Number(match[3]);
+          if(month >= 1 && month <= 12 && day >= 1 && day <= 31){
+            dates.add(String(year).padStart(4,'0') + '-' + String(month).padStart(2,'0') + '-' + String(day).padStart(2,'0'));
+          }
+        }
+      });
+
+    return dates;
+  }
+
+  function calcPtoOptimizer(){
+    const start = advancedDateOnly(document.getElementById('pto_start').value);
+    const end = advancedDateOnly(document.getElementById('pto_end').value);
+    const shiftHours = Number(document.getElementById('pto_shift_hours').value || 0);
+    const closures = parseClosureDates();
+
+    if(!start || !end){
+      document.getElementById('pto_result').textContent = 'Enter a valid start and end date.';
+      return;
+    }
+    if(end < start){
+      document.getElementById('pto_result').textContent = 'End date cannot be before start date.';
+      return;
+    }
+    if(!shiftHours || shiftHours <= 0){
+      document.getElementById('pto_result').textContent = 'Enter valid PTO hours per workday.';
+      return;
+    }
+
+    let calendarDays = 0;
+    let weekendDays = 0;
+    let closureDays = 0;
+    let ptoDays = 0;
+    let closureList = [];
+
+    for(let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)){
+      calendarDays++;
+      const iso = advancedIsoDate(d);
+      if(advancedIsWeekend(d)){
+        weekendDays++;
+      } else if(closures.has(iso)){
+        closureDays++;
+        closureList.push(advancedFormatDate(new Date(d)));
+      } else {
+        ptoDays++;
+      }
+    }
+
+    const ptoHours = ptoDays * shiftHours;
+    const freeDays = weekendDays + closureDays;
+    const efficiency = calendarDays / Math.max(ptoDays, 0.5);
+
+    let score = '★☆☆☆☆';
+    let recommendation = 'Not much PTO magic here.';
+    if(efficiency >= 4){
+      score = '★★★★★';
+      recommendation = 'Submit immediately before everybody else figures this out.';
+    } else if(efficiency >= 3){
+      score = '★★★★☆';
+      recommendation = 'This is a solid PTO play.';
+    } else if(efficiency >= 2){
+      score = '★★★☆☆';
+      recommendation = 'You’re getting decent mileage out of your PTO.';
+    } else if(efficiency >= 1.5){
+      score = '★★☆☆☆';
+      recommendation = 'It works, but it’s not exactly a finesse.';
+    }
+
+    const closureLine = closureList.length
+      ? '<div class="advanced-result-line"><strong>Closure dates counted free:</strong> ' + closureList.join('; ') + '</div>'
+      : '';
+
+    const html =
+      '<div class="advanced-result-title">PTO Optimizer</div>' +
+      '<div class="advanced-result-big">' + ptoHours + ' PTO hour(s)</div>' +
+      '<div class="advanced-result-line"><strong>Time away:</strong> ' + advancedFormatDate(start) + ' – ' + advancedFormatDate(end) + '</div>' +
+      '<div class="advanced-result-line"><strong>Total days away:</strong> ' + calendarDays + '</div>' +
+      '<div class="advanced-result-line"><strong>PTO workdays needed:</strong> ' + ptoDays + '</div>' +
+      '<div class="advanced-result-line"><strong>Weekend days:</strong> ' + weekendDays + '</div>' +
+      '<div class="advanced-result-line"><strong>Holiday / closure days:</strong> ' + closureDays + '</div>' +
+      closureLine +
+      '<div class="advanced-result-line"><strong>PTO value:</strong> ' + score + '</div>' +
+      '<div class="advanced-result-status">' + recommendation + '</div>' +
+      '<div class="small" style="margin-top:10px;">Estimate only. Verify schedule, holiday rules, payroll, staffing, and approval requirements.</div>';
+
+    document.getElementById('pto_result').innerHTML = html;
+  }
+
+
+  function resetWeekendCountdown(){
+    const day = document.getElementById('weekend_day');
+    const time = document.getElementById('weekend_time');
+    const result = document.getElementById('weekend_result');
+    if(day) day.value = '5';
+    if(time) time.value = '16:30';
+    if(result) result.textContent = 'Ready.';
+  }
+
+  function resetPaydayCountdown(){
+    const payday = document.getElementById('payday_date');
+    const frequency = document.getElementById('payday_frequency');
+    const result = document.getElementById('payday_result');
+    if(payday) payday.value = '';
+    if(frequency) frequency.value = 'once';
+    if(result) result.textContent = 'Ready.';
+    setDefaultAdvancedDates();
+  }
+
+  function resetPtoOptimizer(){
+    const start = document.getElementById('pto_start');
+    const end = document.getElementById('pto_end');
+    const hours = document.getElementById('pto_shift_hours');
+    const closures = document.getElementById('pto_closures');
+    const result = document.getElementById('pto_result');
+    if(start) start.value = '';
+    if(end) end.value = '';
+    if(hours) hours.value = '10';
+    if(closures) closures.value = '';
+    if(result) result.textContent = 'Ready.';
+    setDefaultAdvancedDates();
+  }
+
+  function copyAdvancedResult(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    const text = el.innerText || el.textContent || '';
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text);
+    }
+  }
+  </script>
+
 
   <footer>Pharmacy Calc Suite v2.6.10 · Build 2026.05.29.06 · For workflow support only. Not a substitute for clinical judgment, pharmacist review, prescriber directions, adjudication, or current policy.</footer>
 </main>
