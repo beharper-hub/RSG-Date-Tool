@@ -208,6 +208,11 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
   }
 }
 
+
+.advanced-result-hidden{
+  display:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -626,7 +631,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
           <button type="button" class="secondary" onclick="copyAdvancedResult('countdown_result')">Copy</button>
           <button type="button" class="secondary" onclick="resetCountdown()">Reset</button>
         </div>
-        <div class="result" id="countdown_result">Ready.</div>
+        <div class="result advanced-result-hidden" id="countdown_result"></div>
       </section>
 
       <section class="advanced-pane" id="advanced-pane-payday">
@@ -652,7 +657,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
           <button type="button" class="secondary" onclick="copyAdvancedResult('payday_result')">Copy</button>
           <button type="button" class="secondary" onclick="resetPaydayCountdown()">Reset</button>
         </div>
-        <div class="result" id="payday_result">Ready.</div>
+        <div class="result advanced-result-hidden" id="payday_result"></div>
       </section>
 
       <section class="advanced-pane" id="advanced-pane-pto">
@@ -707,7 +712,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
           <button type="button" class="secondary" onclick="copyAdvancedResult('pto_result')">Copy</button>
           <button type="button" class="secondary" onclick="resetPtoOptimizer()">Reset</button>
         </div>
-        <div class="result" id="pto_result">Ready.</div>
+        <div class="result advanced-result-hidden" id="pto_result"></div>
         <p class="small">Use request mode to check a specific PTO window. Use stretch mode to find the best holiday stretch from available PTO days. PTO hours are estimated only. Verify schedule, holiday rules, payroll, and approval requirements.</p>
       </section>
 
@@ -764,7 +769,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
           <button type="button" class="secondary" onclick="copyAdvancedResult('meeting_result')">Copy</button>
           <button type="button" class="secondary" onclick="resetMeetingJustification()">Reset</button>
         </div>
-        <div class="result" id="meeting_result">Ready.</div>
+        <div class="result advanced-result-hidden" id="meeting_result"></div>
         <p class="small">For morale only. Do not submit this result to leadership unless you enjoy follow-up meetings.</p>
       </section>
 
@@ -884,6 +889,21 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     if(ptoEnd && !ptoEnd.value) ptoEnd.value = advancedIsoDate(advancedAddDays(today, 4));
   }
 
+
+  function showAdvancedResult(id){
+    const el = document.getElementById(id);
+    if(el) el.classList.remove('advanced-result-hidden');
+  }
+
+  function hideAdvancedResult(id){
+    const el = document.getElementById(id);
+    if(el){
+      el.classList.add('advanced-result-hidden');
+      el.innerHTML = '';
+      el.textContent = '';
+    }
+  }
+
   function toggleCountdownMode(){
     const mode = document.getElementById('countdown_mode') ? document.getElementById('countdown_mode').value : 'weekend';
     const weekendFields = document.getElementById('countdown_weekend_fields');
@@ -892,7 +912,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
 
     if(weekendFields) weekendFields.classList.toggle('is-hidden', mode !== 'weekend');
     if(shiftFields) shiftFields.classList.toggle('is-hidden', mode !== 'shift');
-    if(result) result.textContent = 'Ready.';
+    if(result) hideAdvancedResult(result.id);
   }
 
   function calcCountdown(){
@@ -933,6 +953,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
       ? days + ' ' + advancedPlural(days, 'day') + ' remaining'
       : hours + ' ' + advancedPlural(hours, 'hour') + ' remaining';
 
+    showAdvancedResult('countdown_result');
     document.getElementById('countdown_result').innerHTML =
       '<div class="advanced-result-title">Weekend Countdown</div>' +
       '<div class="advanced-result-big">' + dayLine + '</div>' +
@@ -967,6 +988,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     else if(diffMinutes <= 90) status = 'The finish line is visible.';
     else if(diffMinutes >= 480) status = 'Fresh shift. Pace yourself.';
 
+    showAdvancedResult('countdown_result');
     document.getElementById('countdown_result').innerHTML =
       '<div class="advanced-result-title">Shift Countdown</div>' +
       '<div class="advanced-result-big">' + hours + 'h ' + minutes + 'm remaining</div>' +
@@ -989,7 +1011,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     if(weekendTime) weekendTime.value = '16:30';
     if(shiftTime) shiftTime.value = '16:30';
     if(breakMinutes) breakMinutes.value = '0';
-    if(result) result.textContent = 'Ready.';
+    if(result) hideAdvancedResult(result.id);
     toggleCountdownMode();
   }
 
@@ -998,6 +1020,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     const frequency = document.getElementById('payday_frequency').value;
     let payDate = advancedDateOnly(input);
     if(!payDate){
+      showAdvancedResult('payday_result');
       document.getElementById('payday_result').textContent = 'Enter a valid payday.';
       return;
     }
@@ -1028,6 +1051,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     else if(days <= 2) status = 'Almost there. No financial freestyle right now.';
     else if(days >= 10) status = 'Ramen remains an option.';
 
+    showAdvancedResult('payday_result');
     document.getElementById('payday_result').innerHTML =
       '<div class="advanced-result-title">Payday Countdown</div>' +
       '<div class="advanced-result-big">' + days + ' ' + advancedPlural(days, 'day') + ' remaining</div>' +
@@ -1043,7 +1067,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     const result = document.getElementById('payday_result');
     if(payday) payday.value = '';
     if(frequency) frequency.value = 'once';
-    if(result) result.textContent = 'Ready.';
+    if(result) hideAdvancedResult(result.id);
     setDefaultAdvancedDates();
   }
 
@@ -1105,7 +1129,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
 
     if(requestFields) requestFields.classList.toggle('is-hidden', mode !== 'request');
     if(stretchFields) stretchFields.classList.toggle('is-hidden', mode !== 'stretch');
-    if(result) result.textContent = 'Ready.';
+    if(result) hideAdvancedResult(result.id);
   }
 
   function calcPtoOptimizer(){
@@ -1121,14 +1145,17 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     const closures = parseClosureDates();
 
     if(!start || !end){
+      showAdvancedResult('pto_result');
       document.getElementById('pto_result').textContent = 'Enter a valid start and end date.';
       return;
     }
     if(end < start){
+      showAdvancedResult('pto_result');
       document.getElementById('pto_result').textContent = 'End date cannot be before start date.';
       return;
     }
     if(!shiftHours || shiftHours <= 0){
+      showAdvancedResult('pto_result');
       document.getElementById('pto_result').textContent = 'Enter valid PTO hours per workday.';
       return;
     }
@@ -1175,6 +1202,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
       ? '<div class="advanced-result-line"><strong>Closure dates counted free:</strong> ' + closureList.join('; ') + '</div>'
       : '';
 
+    showAdvancedResult('pto_result');
     document.getElementById('pto_result').innerHTML =
       '<div class="advanced-result-title">PTO Optimizer</div>' +
       '<div class="advanced-result-big">' + ptoHours + ' PTO hour(s)</div>' +
@@ -1195,14 +1223,17 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     const holidays = parseAdvancedDateList(document.getElementById('stretch_holidays').value || '');
 
     if(ptoDaysAvailable <= 0){
+      showAdvancedResult('pto_result');
       document.getElementById('pto_result').textContent = 'Enter PTO days available.';
       return;
     }
     if(!shiftHours || shiftHours <= 0){
+      showAdvancedResult('pto_result');
       document.getElementById('pto_result').textContent = 'Enter a valid shift length.';
       return;
     }
     if(!holidays.size){
+      showAdvancedResult('pto_result');
       document.getElementById('pto_result').textContent = 'Enter at least one holiday or closure date.';
       return;
     }
@@ -1269,6 +1300,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     });
 
     if(!best){
+      showAdvancedResult('pto_result');
       document.getElementById('pto_result').textContent = 'No stretch found with those dates and PTO days.';
       return;
     }
@@ -1287,6 +1319,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
       recommendation = 'Not bad. You are getting mileage out of it.';
     }
 
+    showAdvancedResult('pto_result');
     document.getElementById('pto_result').innerHTML =
       '<div class="advanced-result-title">PTO Optimizer</div>' +
       '<div class="advanced-result-big">' + best.calendarDays + ' days away</div>' +
@@ -1320,7 +1353,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     if(stretchDays) stretchDays.value = '2';
     if(stretchHours) stretchHours.value = '10';
     if(stretchHolidays) stretchHolidays.value = '';
-    if(result) result.textContent = 'Ready.';
+    if(result) hideAdvancedResult(result.id);
 
     setDefaultAdvancedDates();
     togglePtoMode();
@@ -1342,6 +1375,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     const teams = yesNo('meet_teams');
 
     if(!attendees || !minutes){
+      showAdvancedResult('meeting_result');
       document.getElementById('meeting_result').textContent = 'Enter attendees and meeting length.';
       return;
     }
@@ -1403,6 +1437,7 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
       '<div class="advanced-result-status">' + message + '</div>' +
       '<div class="small" style="margin-top:10px;">' + suggestion + '</div>';
 
+    showAdvancedResult('meeting_result');
     document.getElementById('meeting_result').innerHTML = output;
   }
 
@@ -1423,13 +1458,14 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
     });
 
     const result = document.getElementById('meeting_result');
-    if(result) result.textContent = 'Ready.';
+    if(result) hideAdvancedResult(result.id);
   }
 
   function copyAdvancedResult(id){
     const el = document.getElementById(id);
-    if(!el) return;
+    if(!el || el.classList.contains('advanced-result-hidden')) return;
     const text = el.innerText || el.textContent || '';
+    if(!text.trim()) return;
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text);
     }
