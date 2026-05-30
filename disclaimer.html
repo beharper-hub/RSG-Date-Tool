@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacy Calc Suite — Disclaimer</title>
+  <style>
+:root{
+  --navy:#0d243f; --gold:#d4a017; --cream:#f8f6ef; --card:#fff;
+  --text:#0d243f; --muted:#667085; --line:#d9d6cc; --soft:#f3f0e8;
+  --red:#b42318;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--cream);color:var(--text);}
+header{padding:34px 28px 38px;background:var(--navy);color:#fff;border-bottom:7px solid var(--gold);}
+h1{margin:0;font-size:clamp(2rem,4vw,3rem);line-height:1.05;font-weight:850;letter-spacing:-.03em;}
+.sub{color:#f2efe7;margin-top:12px;font-size:1.1rem;line-height:1.35;max-width:900px;}
+main{max-width:950px;margin:0 auto;padding:28px 18px;}
+.card{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:22px;margin-bottom:18px;box-shadow:0 10px 28px rgba(13,36,63,.08);}
+h2{font-size:1.35rem;margin:0 0 12px;padding-bottom:10px;border-bottom:4px solid var(--gold);color:var(--navy);font-weight:850;}
+p,li{line-height:1.55;}
+ul{margin-top:8px;padding-left:24px;}
+li{margin:7px 0;}
+.notice{padding:16px;border:2px solid #d8d2c5;border-radius:16px;background:#fbfaf7;line-height:1.45;}
+.strong-warning{border-left:6px solid var(--red);padding:14px 16px;background:#fff7ed;border-radius:16px;margin-top:12px;}
+.back-link{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  margin-top:18px;
+  margin-right:8px;
+  padding:10px 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,.12);
+  color:#fff;
+  text-decoration:none;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,.18);
+  transition:.2s ease;
+}
+.back-link:hover{background:rgba(255,255,255,.2);}
+footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8px;line-height:1.35;}
+@media print{header{background:#fff;color:var(--navy)}.card{box-shadow:none;break-inside:avoid}}
+  </style>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" sizes="192x192" type="image/png" href="icon-192.png">
+  <meta name="theme-color" content="#0d243f">
+</head>
+<body>
+<header>
+  <h1>Pharmacy Calc Suite<br>Disclaimer</h1>
+  <div class="sub">Important use limitations for workflow-focused pharmacy calculations.</div>
+  <a class="back-link" href="index.html">← Back to Main Suite</a>
+  <a class="back-link" href="how-to.html">📘 How-To Guide</a>
+</header>
+
+<main>
+  <section class="card">
+    <h2>Workflow Support Only</h2>
+    <div class="notice">
+      Pharmacy Calc Suite is intended for arithmetic and workflow support only. It is not medical advice, clinical decision support, prescribing guidance, billing guidance, legal advice, or a substitute for professional judgment.
+    </div>
+    <div class="strong-warning">
+      Always verify results against the current prescription, prescriber directions, pharmacy system adjudication, package labeling, payer requirements, current workplace policy, and pharmacist guidance.
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>No Clinical Judgment Replacement</h2>
+    <p>This tool does not determine whether a medication, dose, refill, shipment, or claim is clinically appropriate. It does not evaluate patient-specific medical conditions, allergies, labs, diagnosis, renal/hepatic function, drug interactions, contraindications, or therapeutic appropriateness.</p>
+    <p>Any clinical concern, unclear direction, unusual dose, questionable day supply, controlled-substance concern, shipping concern, or policy exception should be escalated according to applicable pharmacy workflow and pharmacist direction.</p>
+  </section>
+
+  <section class="card">
+    <h2>No PHI Storage or Transmission</h2>
+    <p>This app is designed to perform calculations in the browser. Do not enter protected health information, patient identifiers, full names, dates of birth, medical record numbers, insurance identifiers, addresses, phone numbers, or other patient-identifying information.</p>
+    <p>The app does not require accounts, logins, cloud sync, or server-side patient records. Browser features such as local storage, cache, history, screenshots, autofill, device backups, or shared devices may still preserve information outside the app's control. Use appropriate workplace privacy practices.</p>
+  </section>
+
+  <section class="card">
+    <h2>Calculation Limits</h2>
+    <ul>
+      <li>Results are estimates based on the values entered by the user.</li>
+      <li>Incorrect inputs produce incorrect outputs. Garbage in, garbage out — computers are loyal, not smart.</li>
+      <li>Rounding rules, payer requirements, plan limits, package sizes, quantity limits, and workplace policies may differ from calculator assumptions.</li>
+      <li>Holiday, delivery, and shipping checks may not include every carrier exception, weather delay, local delay, patient-specific restriction, or operational change.</li>
+      <li>Medication packaging, priming waste, drop factors, device limits, and titration schedules should be verified against current product and workflow guidance.</li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>User Responsibility</h2>
+    <p>By using this app, the user accepts responsibility for independently verifying all calculations and applying current pharmacy policy, pharmacist guidance, and professional standards before acting on any result.</p>
+  </section>
+</main>
+
+<footer>
+  Pharmacy Calc Suite · Workflow support only · Verify all results before use
+</footer>
+</body>
+</html>
