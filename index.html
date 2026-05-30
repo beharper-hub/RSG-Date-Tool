@@ -1069,6 +1069,8 @@ body.dark .layout-row{
 <option value="liquid">Liquid mL</option>
 <option value="titration">Simple Titration</option>
 <option value="multi">Multi-Step Titration</option>
+<option value="daily">Daily Dose</option>
+<option value="remaining">Medication Remaining</option>
 </select>
 <div id="gen_units_mode">
 <div class="row">
@@ -1138,7 +1140,26 @@ body.dark .layout-row{
 <div><label>Step 5 Days</label><input id="multi_days_5" placeholder="optional" step="1" type="number"/></div>
 </div>
 </div>
-<label>Rounding</label>
+<div id="gen_daily_mode" style="display:none">
+<div class="small">Reverse day-supply math: quantity dispensed and billed days supply → expected daily use.</div>
+<div class="row">
+<div><label>Qty Dispensed</label><input id="dose_qty" placeholder="e.g. 180" step="0.01" type="number"/></div>
+<div><label>Days Supply</label><input id="dose_days" placeholder="e.g. 30" step="0.01" type="number"/></div>
+</div>
+</div>
+<div id="gen_remaining_mode" style="display:none">
+<div class="small">Estimates how much medication a patient should have left based on quantity, daily dose, and last fill date.</div>
+<div class="row">
+<div><label>Qty Dispensed</label><input id="rem_qty" placeholder="e.g. 90" step="0.01" type="number"/></div>
+<div><label>Daily Dose</label><input id="rem_daily" placeholder="e.g. 3" step="0.01" type="number"/></div>
+</div>
+<div class="row">
+<div><label>Last Fill Date</label><input id="rem_last" type="date"/></div>
+<div><label>As Of Date</label><input id="rem_asof" type="date"/></div>
+</div>
+<div class="small">Leave As Of Date blank to use today.</div>
+</div>
+<label id="gen_round_label">Rounding</label>
 <select id="gen_round">
 <option selected="" value="down">Round down</option>
 <option value="up">Round up</option>
@@ -1151,9 +1172,12 @@ body.dark .layout-row{
 <button class="preset" onclick="liquidPreset(473,5,2)">473 mL / 5 mL BID</button>
 <button class="preset" onclick="titrationPreset(1,1,4,7,'days','up',84)">Titrate Up Example</button>
 <button class="preset" onclick="multiStepPreset()">Multi-Step Example</button>
+<button class="preset" onclick="dailyDosePreset(180,30)">180 qty / 30 days</button>
+<button class="preset" onclick="medRemainingPreset(90,3,30)">90 qty / 3 daily / 30 days ago</button>
 </div>
 <div class="history"><h3>Recent Calculations</h3><div id="gen_history"></div></div>
 </section>
+
 <section class="card aligned-card" data-tool-card="true" data-tool-title="Patterned Dosing" id="tool_patterned">
 <h2><span class="calc-title"><span class="calc-icon"><svg viewbox="0 0 24 24"><path d="M4 6h16"></path><path d="M7 10h10"></path><path d="M9 14h6"></path><path d="M10 18h4"></path></svg></span><span>Patterned Dosing</span></span></h2>
 <div class="small">For uneven weekly tablet/capsule schedules. Example: take 1 tablet daily and may take 1 additional tablet Monday, Wednesday, and Friday.</div>
@@ -1343,12 +1367,11 @@ body.dark .layout-row{
 </section>
 </div>
 <footer>
-  <div>Version 2.6.9</div>
-  <div>Build 2026.05.29.01</div>
-
-  <br>
-
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
+  <div class="version-footer">
+<span class="version-chip">Version 2.6.10 · Build 2026.05.29.02</span>
+<button class="changelog-link" onclick="openChangelog()" type="button">What’s New</button>
+</div>
 </footer>
 </main>
 <div aria-labelledby="changelog_title" aria-modal="true" class="changelog-modal" id="changelog_modal" role="dialog">
@@ -1356,14 +1379,16 @@ body.dark .layout-row{
 <div class="changelog-head">
 <div>
 <h2 id="changelog_title">What’s New</h2>
-<div class="small">Pharmacy Calc Suite v2.6.9</div>
+<div class="small">Version 2.6.10 · Build 2026.05.29.02</div>
 </div>
 <button aria-label="Close changelog" class="changelog-close" onclick="closeChangelog()" type="button">×</button>
 </div>
 <ul>
+<li>Version 2.6.10 build 2026.05.29.02: grouped Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards.</li>
 <li>Fixed calculator percentage behavior so entries like 90 − 20% calculate as 72 instead of 89.8.</li>
 <li>Calculator now starts a new equation when a number is entered after a completed calculation.</li>
 <li>Operators entered after a completed calculation continue from the previous answer.</li>
+<li>Added Daily Dose and Medication Remaining inside Standard Day Supply so the suite stays at 12 movable cards.</li>
 <li>Added Multi-Step Titration under Standard Day Supply for staged dose schedules.</li>
 <li>Added branded launch splash screen for installed PWA/app-style use.</li>
 <li>Added branded loading animation while the suite initializes.</li>
@@ -1581,6 +1606,12 @@ function toggleGeneralMode(){
   if(titration) titration.style.display = mode === 'titration' ? 'block' : 'none';
   const multi = $('gen_multi_mode');
   if(multi) multi.style.display = mode === 'multi' ? 'block' : 'none';
+  const daily = $('gen_daily_mode');
+  if(daily) daily.style.display = mode === 'daily' ? 'block' : 'none';
+  const remaining = $('gen_remaining_mode');
+  if(remaining) remaining.style.display = mode === 'remaining' ? 'block' : 'none';
+  const roundControls = [$('gen_round'), $('gen_round_label')];
+  roundControls.forEach(el => { if(el) el.style.display = (mode === 'daily' || mode === 'remaining') ? 'none' : 'block'; });
 }
 
 function generalPreset(qty,perday){
@@ -1637,6 +1668,96 @@ function patternPreset(qty,baseDaily,extraDose,extraDays){
   $('pat_extra_dose').value = extraDose;
   $('pat_extra_days').value = extraDays;
   $('pat_round').value = 'down';
+}
+
+
+function roundDisplay(value){
+  if(!isFinite(value)) return '0';
+  return Number.isInteger(value) ? String(value) : value.toFixed(2).replace(/\.00$/,'').replace(/0$/,'');
+}
+
+function dailyDoseCalc(){
+  const qty = num('dose_qty');
+  const days = num('dose_days');
+  if(!validatePositive([qty, days])) return out('gen_result','Missing quantity dispensed or days supply.');
+
+  const daily = qty / days;
+  const text = 'Daily dose: ' + roundDisplay(daily) + ' unit(s)/day\n' +
+    'Quantity dispensed: ' + qty + '\n' +
+    'Days supply: ' + days + '\n' +
+    'Math: ' + qty + ' ÷ ' + days + ' = ' + roundDisplay(daily) + ' unit(s)/day\n' +
+    'Note: Arithmetic support only. Verify prescription directions, adjudication, and pharmacist guidance.';
+  out('gen_result', text);
+  addHistory('gen', text);
+}
+
+function dailyDosePreset(qty, days){
+  $('gen_mode').value = 'daily';
+  toggleGeneralMode();
+  $('dose_qty').value = qty;
+  $('dose_days').value = days;
+  generalLiquidDS();
+}
+
+function daysBetweenDates(start, end){
+  const a = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+  const b = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+  return Math.floor((b - a) / 86400000);
+}
+
+function medRemainingCalc(){
+  const qty = num('rem_qty');
+  const daily = num('rem_daily');
+  const last = dval('rem_last');
+  const asOf = dval('rem_asof') || new Date();
+
+  if(!validatePositive([qty, daily]) || !last){
+    return out('gen_result','Missing quantity dispensed, daily dose, or last fill date.');
+  }
+
+  const daysSince = daysBetweenDates(last, asOf);
+  if(daysSince < 0){
+    return out('gen_result','Invalid date range: As Of Date is before the last fill date.');
+  }
+
+  const expectedUsed = daysSince * daily;
+  const expectedRemaining = qty - expectedUsed;
+  const daysRemainingRaw = expectedRemaining / daily;
+  const runOut = addDays(last, qty / daily);
+
+  let statusLine;
+  if(expectedRemaining > 0){
+    statusLine = 'Expected quantity remaining: ' + roundDisplay(expectedRemaining) + ' unit(s)';
+  } else if(expectedRemaining === 0){
+    statusLine = 'Expected quantity remaining: 0 unit(s)';
+  } else {
+    statusLine = 'Expected quantity remaining: 0 unit(s) — supply should be exhausted';
+  }
+
+  const text = statusLine + '\n' +
+    'Days since fill: ' + daysSince + '\n' +
+    'Expected used: ' + roundDisplay(expectedUsed) + ' unit(s)\n' +
+    'Expected days remaining: ' + roundDisplay(Math.max(daysRemainingRaw, 0)) + '\n' +
+    'Estimated run-out date: ' + fmt(runOut) + '\n' +
+    'Last fill date: ' + fmt(last) + '\n' +
+    'As of date: ' + fmt(asOf) + '\n' +
+    'Math: ' + qty + ' dispensed − (' + daysSince + ' day(s) × ' + daily + '/day) = ' + roundDisplay(expectedRemaining) + ' unit(s)\n' +
+    'Note: Estimate only. Actual remaining supply depends on adherence, dose changes, lost medication, early/late starts, and pharmacist guidance.';
+
+  out('gen_result', text);
+  addHistory('gen', text);
+}
+
+function medRemainingPreset(qty, daily, daysAgo){
+  const d = new Date();
+  d.setDate(d.getDate() - daysAgo);
+  $('gen_mode').value = 'remaining';
+  toggleGeneralMode();
+  $('rem_qty').value = qty;
+  $('rem_daily').value = daily;
+  $('rem_last').value = d.toISOString().slice(0,10);
+  $('rem_asof').value = '';
+  generalLiquidDS();
 }
 
 function patternedDosingCalc(){
@@ -2296,6 +2417,12 @@ function generalLiquidDS(){
     out('gen_result', text);
     addHistory('gen', text);
     return;
+  } else if(mode === 'daily') {
+    dailyDoseCalc();
+    return;
+  } else if(mode === 'remaining') {
+    medRemainingCalc();
+    return;
   } else {
     const start=num('tit_start'),
           change=num('tit_change'),
@@ -2763,7 +2890,7 @@ function resetCalc(section){
 
 
 
-const APP_VERSION = '2.6.0';
+const APP_VERSION = '2.6.10-2026.05.29.02';
 
 function hideSplash(){
   const splash = document.getElementById('app_splash');
