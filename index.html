@@ -613,7 +613,7 @@ body.dark .checkbox-row input[type="checkbox"]{
   justify-content:center;
   background:linear-gradient(145deg,#06111f,#0d243f);
   color:#fff;
-  transition:opacity .35s ease, visibility .35s ease;
+  transition:opacity .18s ease, visibility .18s ease;
 }
 .app-splash.is-hidden{
   opacity:0;
@@ -1451,7 +1451,7 @@ body.dark .disclaimer-close{
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   
 <div class="version-footer">
-  <span class="version-chip">Version 2.6.11 · Build 2026.05.30.01</span>
+  <span class="version-chip">Version 2.6.11 · Build 2026.05.30.02</span>
   <button type="button" class="changelog-link" onclick="openChangelogModal()">What’s New</button>
   <button type="button" class="disclaimer-link" onclick="openDisclaimerModal()">Disclaimer</button>
 </div>
@@ -1462,7 +1462,7 @@ body.dark .disclaimer-close{
 <div class="changelog-head">
 <div>
 <h2 id="changelog_title">What’s New</h2>
-<div class="small">Version 2.6.11 · Build 2026.05.30.01</div>
+<div class="small">Version 2.6.11 · Build 2026.05.30.02</div>
 </div>
 <button aria-label="Close changelog" class="changelog-close" onclick="closeChangelog()" type="button">×</button>
 </div>
@@ -2970,13 +2970,13 @@ function resetCalc(section){
 
 
 
-const APP_VERSION = '2.6.11-2026.05.30.01';
+const APP_VERSION = '2.6.11-2026.05.30.02';
 
 function hideSplash(){
-  const splash = document.getElementById('app_splash');
-  if(!splash) return;
-  window.setTimeout(() => splash.classList.add('is-hidden'), 450);
-}
+      const splash = document.getElementById('app_splash');
+      if(!splash) return;
+      requestAnimationFrame(() => splash.classList.add('is-hidden'));
+    }
 
 function openChangelog(){
   const modal = document.getElementById('changelog_modal');
