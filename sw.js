@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pharmcalc-v2-6-9';
+const CACHE_NAME = 'pharmcalc-v2-6-10-build-2026-05-29-02';
 
 const ASSETS = [
   '/',
