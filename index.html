@@ -1449,9 +1449,11 @@ body.dark .disclaimer-close{
 </div>
 <footer>
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
-  <div class="version-footer">
-<span class="version-chip">Version 2.6.11 · Build 2026.05.30.01</span>
-<button class="changelog-link" onclick="openChangelog()" type="button">What’s New</button>
+  
+<div class="version-footer">
+  <span class="version-chip">Version 2.6.11 · Build 2026.05.30.01</span>
+  <button type="button" class="changelog-link" onclick="openChangelogModal()">What’s New</button>
+  <button type="button" class="disclaimer-link" onclick="openDisclaimerModal()">Disclaimer</button>
 </div>
 </footer>
 </main>
@@ -1466,10 +1468,10 @@ body.dark .disclaimer-close{
 </div>
 <ul>
 <li>Renamed <strong>Standard Day Supply</strong> to <strong>Day Supply &amp; Adherence</strong> to better reflect included calculations and adherence tools.</li>
-<li>Added dedicated <strong>Disclaimer</strong> page covering workflow-use guidance, verification reminders, privacy considerations, calculation limitations, and user responsibilities.</li>
-<li>Added direct Disclaimer links from the main suite and How-To Guide.</li>
-<li>Updated offline cache configuration to include the new Disclaimer page.</li>
-<li>Improved public-release and App Store readiness.</li>
+<li>Moved <strong>Disclaimer</strong> into a footer modal beside <strong>What’s New</strong> for faster access without leaving the main suite.</li>
+<li>Removed the standalone Disclaimer page from the active app package.</li>
+<li>Removed the Disclaimer link from the How-To Guide navigation.</li>
+<li>Maintained public-release readiness language while keeping the daily-use interface cleaner.</li>
 <li>Continued PWA branding improvements using the pharmacy-specific Rx calculator icon set.</li>
 <li>Maintained support for Day Supply, Average Daily Dose, Medication Remaining, Simple Titration, Multi-Step Titration, and Coverage Estimation.</li>
 <li>Refined navigation, terminology, and overall workflow consistency across the suite.</li>
@@ -3009,6 +3011,28 @@ document.addEventListener('click', event => {
 });
 
 
+
+document.addEventListener('click', function(event){
+  const modal = document.getElementById('disclaimer_modal');
+  if(modal && event.target === modal) closeDisclaimerModal();
+});
+document.addEventListener('keydown', function(event){
+  if(event.key === 'Escape') closeDisclaimerModal();
+});
+
+
+function openChangelogModal(){
+  const modal = document.getElementById('changelog_modal');
+  if(!modal) return;
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden','false');
+}
+function closeChangelogModal(){
+  const modal = document.getElementById('changelog_modal');
+  if(!modal) return;
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden','true');
+}
 function openDisclaimerModal(){
   const modal = document.getElementById('disclaimer_modal');
   if(!modal) return;
@@ -3022,11 +3046,16 @@ function closeDisclaimerModal(){
   modal.setAttribute('aria-hidden','true');
 }
 document.addEventListener('click', function(event){
-  const modal = document.getElementById('disclaimer_modal');
-  if(modal && event.target === modal) closeDisclaimerModal();
+  const changelogModal = document.getElementById('changelog_modal');
+  const disclaimerModal = document.getElementById('disclaimer_modal');
+  if(changelogModal && event.target === changelogModal) closeChangelogModal();
+  if(disclaimerModal && event.target === disclaimerModal) closeDisclaimerModal();
 });
 document.addEventListener('keydown', function(event){
-  if(event.key === 'Escape') closeDisclaimerModal();
+  if(event.key === 'Escape'){
+    closeChangelogModal();
+    closeDisclaimerModal();
+  }
 });
 
 </script>
