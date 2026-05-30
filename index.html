@@ -913,7 +913,88 @@ body.dark .layout-row{
       .row{grid-template-columns:1fr}
       .card{padding:20px 18px}
     }
-  </style>
+  
+.disclaimer-link{
+  border:1px solid var(--line);
+  background:var(--card);
+  color:var(--text);
+  box-shadow:none;
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:.84rem;
+}
+body.dark .disclaimer-link{
+  background:#10243b;
+  color:#f8fafc;
+  border-color:#38506b;
+}
+.disclaimer-modal{
+  position:fixed;
+  inset:0;
+  z-index:9998;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  background:rgba(2,6,23,.62);
+}
+.disclaimer-modal.is-open{display:flex;}
+.disclaimer-panel{
+  width:min(92vw,620px);
+  max-height:82vh;
+  overflow:auto;
+  background:var(--card);
+  color:var(--text);
+  border:2px solid var(--line);
+  border-radius:24px;
+  box-shadow:0 24px 80px rgba(0,0,0,.34);
+  padding:22px;
+}
+.disclaimer-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  padding-bottom:12px;
+  border-bottom:4px solid var(--gold);
+}
+.disclaimer-head h2{
+  border:0;
+  padding:0;
+  margin:0;
+}
+.disclaimer-close{
+  min-width:42px;
+  min-height:42px;
+  padding:0;
+  border-radius:14px;
+  box-shadow:none;
+  background:var(--soft);
+  color:var(--text);
+  border:1px solid var(--line);
+}
+.disclaimer-panel ul{
+  margin:14px 0 0;
+  padding-left:22px;
+  line-height:1.5;
+}
+.disclaimer-panel li{margin:7px 0;}
+.disclaimer-note{
+  margin-top:14px;
+  padding:12px 14px;
+  border-radius:16px;
+  background:var(--soft);
+  border:1px solid var(--line);
+  font-size:.92rem;
+  line-height:1.4;
+}
+body.dark .disclaimer-close{
+  background:#1b3656;
+  color:#f8fafc;
+  border-color:#38506b;
+}
+
+</style>
 <link href="manifest.json" rel="manifest"/>
 <link href="icon-180.png" rel="apple-touch-icon"/>
 <link href="icon-192.png" rel="icon" sizes="192x192" type="image/png"/>
@@ -936,9 +1017,6 @@ body.dark .layout-row{
 <div class="sub">Workflow-focused pharmacy calculators · Verify all results</div>
 <a class="help-link" href="how-to.html">
     📘 How-To Guide
-  </a>
-  <a class="help-link" href="disclaimer.html">
-    ⚖ Disclaimer
   </a>
 <div class="header-actions">
 <label class="theme-switch">
@@ -2930,6 +3008,27 @@ document.addEventListener('click', event => {
   if(modal && event.target === modal) closeChangelog();
 });
 
+
+function openDisclaimerModal(){
+  const modal = document.getElementById('disclaimer_modal');
+  if(!modal) return;
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden','false');
+}
+function closeDisclaimerModal(){
+  const modal = document.getElementById('disclaimer_modal');
+  if(!modal) return;
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden','true');
+}
+document.addEventListener('click', function(event){
+  const modal = document.getElementById('disclaimer_modal');
+  if(modal && event.target === modal) closeDisclaimerModal();
+});
+document.addEventListener('keydown', function(event){
+  if(event.key === 'Escape') closeDisclaimerModal();
+});
+
 </script>
 <script>
 if ('serviceWorker' in navigator) {
@@ -2950,5 +3049,29 @@ document.addEventListener('DOMContentLoaded', () => setTimeout(hideAppSplashSafe
 setTimeout(hideAppSplashSafely, 3000);
 
 </script>
+
+<div class="disclaimer-modal" id="disclaimer_modal" aria-hidden="true">
+  <div class="disclaimer-panel" role="dialog" aria-modal="true" aria-labelledby="disclaimer_title">
+    <div class="disclaimer-head">
+      <div>
+        <h2 id="disclaimer_title">Disclaimer</h2>
+        <p class="small">Workflow-focused pharmacy calculators · Verify all results.</p>
+      </div>
+      <button type="button" class="disclaimer-close" onclick="closeDisclaimerModal()" aria-label="Close disclaimer">×</button>
+    </div>
+    <ul>
+      <li>For workflow support and arithmetic assistance only.</li>
+      <li>Not medical advice, clinical decision support, prescribing guidance, billing guidance, legal advice, or a substitute for professional judgment.</li>
+      <li>Verify against current prescription directions, pharmacy system adjudication, package labeling, payer requirements, workplace policy, and pharmacist guidance.</li>
+      <li>Do not enter protected health information or patient-identifying information.</li>
+      <li>Results are estimates based on the values entered. Incorrect inputs can produce incorrect outputs.</li>
+      <li>Rounding rules, payer requirements, plan limits, package sizes, delivery restrictions, and workplace policies may differ from calculator assumptions.</li>
+    </ul>
+    <div class="disclaimer-note">
+      <strong>User responsibility:</strong> Use of this suite means the user is responsible for independently verifying all calculations before acting on any result.
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
