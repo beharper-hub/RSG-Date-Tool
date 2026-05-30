@@ -1369,7 +1369,7 @@ body.dark .layout-row{
 <footer>
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   <div class="version-footer">
-<span class="version-chip">Version 2.6.10 · Build 2026.05.29.05</span>
+<span class="version-chip">Version 2.6.10 · Build 2026.05.29.06</span>
 <button class="changelog-link" onclick="openChangelog()" type="button">What’s New</button>
 </div>
 </footer>
@@ -1379,12 +1379,12 @@ body.dark .layout-row{
 <div class="changelog-head">
 <div>
 <h2 id="changelog_title">What’s New</h2>
-<div class="small">Version 2.6.10 · Build 2026.05.29.05</div>
+<div class="small">Version 2.6.10 · Build 2026.05.29.06</div>
 </div>
 <button aria-label="Close changelog" class="changelog-close" onclick="closeChangelog()" type="button">×</button>
 </div>
 <ul>
-<li>Version 2.6.10 build 2026.05.29.05: grouped Average Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards; Average Daily Dose now calculates average daily use from quantity and days supply.</li>
+<li>Version 2.6.10 build 2026.05.29.06: grouped Average Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards; Average Daily Dose now calculates average daily use from quantity and days supply.</li>
 <li>Fixed calculator percentage behavior so entries like 90 − 20% calculate as 72 instead of 89.8.</li>
 <li>Calculator now starts a new equation when a number is entered after a completed calculation.</li>
 <li>Operators entered after a completed calculation continue from the previous answer.</li>
@@ -1682,10 +1682,10 @@ function dailyDoseCalc(){
   if(!validatePositive([qty, days])) return out('gen_result','Missing quantity dispensed or days supply.');
 
   const daily = qty / days;
-  const text = 'Average daily dose: ' + roundDisplay(daily) + ' unit(s)/day\\n' +
-    'Quantity dispensed: ' + qty + '\\n' +
-    'Days supply: ' + days + '\\n' +
-    'Math: ' + qty + ' ÷ ' + days + ' = ' + roundDisplay(daily) + ' unit(s)/day\\n' +
+  const text = 'Average daily dose: ' + roundDisplay(daily) + ' unit(s)/day\n' +
+    'Quantity dispensed: ' + qty + '\n' +
+    'Days supply: ' + days + '\n' +
+    'Math: ' + qty + ' ÷ ' + days + ' = ' + roundDisplay(daily) + ' unit(s)/day\n' +
     'Note: Arithmetic support only. Verify prescription directions, adjudication, and pharmacist guidance.';
   out('gen_result', text);
   addHistory('gen', text);
@@ -2530,7 +2530,7 @@ function insulinCombinedDS(){
     }
 
     totalMl = count * mlPerPen;
-    source = 'Pens dispensed: ' + count + '\\n' + 'mL Per Pen: ' + mlPerPen;
+    source = 'Pens dispensed: ' + count + '\n' + 'mL Per Pen: ' + mlPerPen;
   }
 
   const totalUnits = totalMl * unitsml;
@@ -2546,12 +2546,12 @@ function insulinCombinedDS(){
     return out('ins_result','Calculated day supply exceeds realistic limits. Verify entry values.');
   }
 
-  const text = 'Day supply: ' + ds + ' days\\n' +
-    'Type: Insulin / Pen\\n' +
-    source + '\\n' +
-    'mL Dispensed: ' + totalMl + '\\n' +
-    'Units/mL: ' + unitsml + '\\n' +
-    'Total units: ' + totalUnits + '\\n' +
+  const text = 'Day supply: ' + ds + ' days\n' +
+    'Type: Insulin / Pen\n' +
+    source + '\n' +
+    'mL Dispensed: ' + totalMl + '\n' +
+    'Units/mL: ' + unitsml + '\n' +
+    'Total units: ' + totalUnits + '\n' +
     'Daily units used: ' + daily + (waste ? ' (' + unitsday + ' dose + ' + waste + ' prime/waste)' : '');
 
   out('ins_result', text);
