@@ -43,136 +43,10 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
 }
 .back-link:hover{background:rgba(255,255,255,.2);}
 
-.advanced-utils-trigger{
-  text-align:center;
-  margin-top:24px;
-}
-.advanced-utils-trigger a{
-  color:#667085;
-  font-size:.85rem;
-  text-decoration:none;
-  opacity:.75;
-}
-.advanced-utils-trigger a:hover{
-  opacity:1;
-  text-decoration:underline;
-}
-.advanced-utils-modal{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  background:rgba(2,6,23,.62);
-}
-.advanced-utils-modal.is-open{
-  display:flex;
-}
-.advanced-utils-panel{
-  width:min(94vw,820px);
-  max-height:86vh;
-  overflow:auto;
-  background:var(--card);
-  color:var(--text);
-  border:2px solid var(--line);
-  border-radius:24px;
-  box-shadow:0 24px 80px rgba(0,0,0,.34);
-  padding:22px;
-}
-.advanced-utils-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:12px;
-  padding-bottom:12px;
-  border-bottom:4px solid var(--gold);
-}
-.advanced-utils-head h2{
-  border:0;
-  padding:0;
-  margin:0;
-}
-.advanced-utils-head p{
-  margin:8px 0 0;
-  color:var(--muted);
-  line-height:1.35;
-}
-.advanced-utils-close{
-  min-width:42px;
-  min-height:42px;
-  padding:0;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:var(--soft);
-  color:var(--text);
-  font-size:1.3rem;
-  font-weight:900;
-  cursor:pointer;
-}
-.advanced-tabs{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin:16px 0;
-}
-.advanced-tab{
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:9px 12px;
-  background:var(--soft);
-  color:var(--text);
-  cursor:pointer;
-  font-weight:800;
-}
-.advanced-tab.is-active{
-  background:var(--navy);
-  color:#fff;
-  border-color:var(--navy);
-}
-.advanced-pane{
-  display:none;
-}
-.advanced-pane.is-active{
-  display:block;
-}
-.advanced-pane textarea{
-  min-height:92px;
-}
-.advanced-utils-note{
-  margin-top:16px;
-  padding:12px 14px;
-  border-radius:16px;
-  background:var(--soft);
-  border:1px solid var(--line);
-  color:var(--muted);
-  line-height:1.35;
-  font-size:.9rem;
-}
-
-
-.advanced-result-title{
-  font-weight:900;
-  font-size:1.05rem;
-  margin-bottom:8px;
-}
-.advanced-result-big{
-  font-size:1.45rem;
-  font-weight:900;
-  color:var(--navy);
-  margin:4px 0 10px;
-}
-.advanced-result-line{
-  margin:4px 0;
-}
-.advanced-result-status{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:14px;
-  background:var(--soft);
-  border:1px solid var(--line);
-  font-weight:800;
+@media (max-width:560px){
+  .advanced-full-row{
+    grid-column:auto;
+  }
 }
 
 
@@ -277,6 +151,14 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
 .advanced-mode-block.is-hidden{
   display:none;
 }
+.advanced-full-row{
+  grid-column:1 / -1;
+}
+.advanced-utils-panel textarea{
+  width:100%;
+  min-height:145px;
+  display:block;
+}
 .advanced-result-title{
   font-weight:900;
   font-size:1.05rem;
@@ -309,13 +191,18 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
   line-height:1.35;
   font-size:.9rem;
 }
-
-
-/* Advanced Utilities meeting/mobile helper */
-.advanced-full-row{
-  grid-column:1 / -1;
-}
 @media (max-width:560px){
+  .advanced-utils-panel{
+    width:min(92vw,680px);
+    padding:18px;
+  }
+  .advanced-tab{
+    font-size:.9rem;
+    padding:8px 10px;
+  }
+  .advanced-pane .grid{
+    grid-template-columns:1fr !important;
+  }
   .advanced-full-row{
     grid-column:auto;
   }
@@ -791,10 +678,9 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
               <label>Shift length / PTO hours per workday</label>
               <input id="pto_shift_hours" type="number" step="0.25" value="10">
             </div>
-            <div>
-              <label>Pharmacy Closure / Holiday Dates (MM/DD/YYYY)</label>
-              <textarea id="pto_closures" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;One date per line or comma-separated"></textarea>
-              <div class="small">Example: 07/03/2026 = observed Independence Day closure.</div>
+            <div class="advanced-full-row">
+              <label>Pharmacy Closure / Holiday Dates</label>
+              <textarea id="pto_closures" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;MM/DD/YYYY&#10;One date per line or comma-separated"></textarea>
             </div>
           </div>
         </div>
@@ -809,10 +695,9 @@ footer{text-align:center;color:var(--muted);font-size:.86rem;padding:20px 8px 8p
               <label>Shift length / PTO hours per day</label>
               <input id="stretch_shift_hours" type="number" step="0.25" value="10">
             </div>
-            <div>
-              <label>Holiday / Closure Dates (MM/DD/YYYY)</label>
-              <textarea id="stretch_holidays" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;One date per line or comma-separated"></textarea>
-              <div class="small">Enter the holidays or pharmacy closures you want to build around.</div>
+            <div class="advanced-full-row">
+              <label>Holiday / Closure Dates</label>
+              <textarea id="stretch_holidays" placeholder="07/03/2026&#10;12/25/2026&#10;01/01/2027&#10;&#10;MM/DD/YYYY&#10;One date per line or comma-separated"></textarea>
             </div>
           </div>
         </div>
