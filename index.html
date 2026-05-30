@@ -1144,7 +1144,7 @@ body.dark .layout-row{
 <div class="small">Reverse day-supply math: quantity dispensed and billed days supply → average daily use.</div>
 <div class="row">
 <div><label>Qty Dispensed</label><input id="dose_qty" placeholder="e.g. 180" step="0.01" type="number"/></div>
-<div><label>Average Daily Dose</label><input id="dose_days" placeholder="e.g. 6" step="0.01" type="number"/></div>
+<div><label>Days Supply</label><input id="dose_days" placeholder="e.g. 30" step="0.01" type="number"/></div>
 </div>
 </div>
 <div id="gen_remaining_mode" style="display:none">
@@ -1369,7 +1369,7 @@ body.dark .layout-row{
 <footer>
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   <div class="version-footer">
-<span class="version-chip">Version 2.6.10 · Build 2026.05.29.04</span>
+<span class="version-chip">Version 2.6.10 · Build 2026.05.29.05</span>
 <button class="changelog-link" onclick="openChangelog()" type="button">What’s New</button>
 </div>
 </footer>
@@ -1379,12 +1379,12 @@ body.dark .layout-row{
 <div class="changelog-head">
 <div>
 <h2 id="changelog_title">What’s New</h2>
-<div class="small">Version 2.6.10 · Build 2026.05.29.04</div>
+<div class="small">Version 2.6.10 · Build 2026.05.29.05</div>
 </div>
 <button aria-label="Close changelog" class="changelog-close" onclick="closeChangelog()" type="button">×</button>
 </div>
 <ul>
-<li>Version 2.6.10 build 2026.05.29.04: grouped Average Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards; Average Daily Dose now calculates average daily use from quantity and days supply.</li>
+<li>Version 2.6.10 build 2026.05.29.05: grouped Average Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards; Average Daily Dose now calculates average daily use from quantity and days supply.</li>
 <li>Fixed calculator percentage behavior so entries like 90 − 20% calculate as 72 instead of 89.8.</li>
 <li>Calculator now starts a new equation when a number is entered after a completed calculation.</li>
 <li>Operators entered after a completed calculation continue from the previous answer.</li>
@@ -1682,14 +1682,10 @@ function dailyDoseCalc(){
   if(!validatePositive([qty, days])) return out('gen_result','Missing quantity dispensed or days supply.');
 
   const daily = qty / days;
-  const text = 'Average daily dose: ' + roundDisplay(daily) + ' unit(s)/day
-' +
-    'Quantity dispensed: ' + qty + '
-' +
-    'Days supply: ' + days + '
-' +
-    'Math: ' + qty + ' ÷ ' + days + ' = ' + roundDisplay(daily) + ' unit(s)/day
-' +
+  const text = 'Average daily dose: ' + roundDisplay(daily) + ' unit(s)/day\\n' +
+    'Quantity dispensed: ' + qty + '\\n' +
+    'Days supply: ' + days + '\\n' +
+    'Math: ' + qty + ' ÷ ' + days + ' = ' + roundDisplay(daily) + ' unit(s)/day\\n' +
     'Note: Arithmetic support only. Verify prescription directions, adjudication, and pharmacist guidance.';
   out('gen_result', text);
   addHistory('gen', text);
@@ -2943,6 +2939,16 @@ if ('serviceWorker' in navigator) {
     });
   });
 }
+
+/* Splash failsafe: prevents a startup script error from trapping the app on the loading screen. */
+function hideAppSplashSafely(){
+  const splash = document.getElementById('app_splash');
+  if(splash) splash.classList.add('is-hidden');
+}
+window.addEventListener('load', () => setTimeout(hideAppSplashSafely, 250));
+document.addEventListener('DOMContentLoaded', () => setTimeout(hideAppSplashSafely, 1200));
+setTimeout(hideAppSplashSafely, 3000);
+
 </script>
 </body>
 </html>
