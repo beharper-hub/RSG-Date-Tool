@@ -1069,7 +1069,7 @@ body.dark .layout-row{
 <option value="liquid">Liquid mL</option>
 <option value="titration">Simple Titration</option>
 <option value="multi">Multi-Step Titration</option>
-<option value="daily">Daily Dose</option>
+<option value="daily">Average Daily Dose</option>
 <option value="remaining">Medication Remaining</option>
 </select>
 <div id="gen_units_mode">
@@ -1141,17 +1141,17 @@ body.dark .layout-row{
 </div>
 </div>
 <div id="gen_daily_mode" style="display:none">
-<div class="small">Day-supply math: quantity dispensed and daily dose → estimated day supply.</div>
+<div class="small">Reverse day-supply math: quantity dispensed and billed days supply → average daily use.</div>
 <div class="row">
 <div><label>Qty Dispensed</label><input id="dose_qty" placeholder="e.g. 180" step="0.01" type="number"/></div>
-<div><label>Daily Dose</label><input id="dose_days" placeholder="e.g. 6" step="0.01" type="number"/></div>
+<div><label>Average Daily Dose</label><input id="dose_days" placeholder="e.g. 6" step="0.01" type="number"/></div>
 </div>
 </div>
 <div id="gen_remaining_mode" style="display:none">
 <div class="small">Estimates how much medication a patient should have left based on quantity, daily dose, and last fill date.</div>
 <div class="row">
 <div><label>Qty Dispensed</label><input id="rem_qty" placeholder="e.g. 90" step="0.01" type="number"/></div>
-<div><label>Daily Dose</label><input id="rem_daily" placeholder="e.g. 3" step="0.01" type="number"/></div>
+<div><label>Average Daily Dose</label><input id="rem_daily" placeholder="e.g. 3" step="0.01" type="number"/></div>
 </div>
 <div class="row">
 <div><label>Last Fill Date</label><input id="rem_last" type="date"/></div>
@@ -1172,7 +1172,7 @@ body.dark .layout-row{
 <button class="preset" onclick="liquidPreset(473,5,2)">473 mL / 5 mL BID</button>
 <button class="preset" onclick="titrationPreset(1,1,4,7,'days','up',84)">Titrate Up Example</button>
 <button class="preset" onclick="multiStepPreset()">Multi-Step Example</button>
-<button class="preset" onclick="dailyDosePreset(180,6)">180 qty / 6 daily</button>
+<button class="preset" onclick="dailyDosePreset(180,30)">180 qty / 30 days</button>
 <button class="preset" onclick="medRemainingPreset(90,3,30)">90 qty / 3 daily / 30 days ago</button>
 </div>
 <div class="history"><h3>Recent Calculations</h3><div id="gen_history"></div></div>
@@ -1369,7 +1369,7 @@ body.dark .layout-row{
 <footer>
   For workflow support only. Verify against current pharmacy policy, prescriber directions, system adjudication, and pharmacist guidance. Do not use as a substitute for clinical judgment.
   <div class="version-footer">
-<span class="version-chip">Version 2.6.10 · Build 2026.05.29.03</span>
+<span class="version-chip">Version 2.6.10 · Build 2026.05.29.04</span>
 <button class="changelog-link" onclick="openChangelog()" type="button">What’s New</button>
 </div>
 </footer>
@@ -1379,16 +1379,16 @@ body.dark .layout-row{
 <div class="changelog-head">
 <div>
 <h2 id="changelog_title">What’s New</h2>
-<div class="small">Version 2.6.10 · Build 2026.05.29.03</div>
+<div class="small">Version 2.6.10 · Build 2026.05.29.04</div>
 </div>
 <button aria-label="Close changelog" class="changelog-close" onclick="closeChangelog()" type="button">×</button>
 </div>
 <ul>
-<li>Version 2.6.10 build 2026.05.29.03: grouped Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards; Daily Dose now calculates day supply from quantity and daily dose.</li>
+<li>Version 2.6.10 build 2026.05.29.04: grouped Average Daily Dose and Medication Remaining under Standard Day Supply to keep the suite at 12 cards; Average Daily Dose now calculates average daily use from quantity and days supply.</li>
 <li>Fixed calculator percentage behavior so entries like 90 − 20% calculate as 72 instead of 89.8.</li>
 <li>Calculator now starts a new equation when a number is entered after a completed calculation.</li>
 <li>Operators entered after a completed calculation continue from the previous answer.</li>
-<li>Added Daily Dose and Medication Remaining inside Standard Day Supply so the suite stays at 12 movable cards.</li>
+<li>Added Average Daily Dose and Medication Remaining inside Standard Day Supply so the suite stays at 12 movable cards.</li>
 <li>Added Multi-Step Titration under Standard Day Supply for staged dose schedules.</li>
 <li>Added branded launch splash screen for installed PWA/app-style use.</li>
 <li>Added branded loading animation while the suite initializes.</li>
@@ -1678,24 +1678,28 @@ function roundDisplay(value){
 
 function dailyDoseCalc(){
   const qty = num('dose_qty');
-  const daily = num('dose_days');
-  if(!validatePositive([qty, daily])) return out('gen_result','Missing quantity dispensed or daily dose.');
+  const days = num('dose_days');
+  if(!validatePositive([qty, days])) return out('gen_result','Missing quantity dispensed or days supply.');
 
-  const raw = qty / daily;
-  const text = 'Day supply: ' + roundDisplay(raw) + ' day(s)\n' +
-    'Quantity dispensed: ' + qty + '\n' +
-    'Daily dose: ' + daily + ' unit(s)/day\n' +
-    'Math: ' + qty + ' ÷ ' + daily + ' = ' + roundDisplay(raw) + ' day(s)\n' +
+  const daily = qty / days;
+  const text = 'Average daily dose: ' + roundDisplay(daily) + ' unit(s)/day
+' +
+    'Quantity dispensed: ' + qty + '
+' +
+    'Days supply: ' + days + '
+' +
+    'Math: ' + qty + ' ÷ ' + days + ' = ' + roundDisplay(daily) + ' unit(s)/day
+' +
     'Note: Arithmetic support only. Verify prescription directions, adjudication, and pharmacist guidance.';
   out('gen_result', text);
   addHistory('gen', text);
 }
 
-function dailyDosePreset(qty, daily){
+function dailyDosePreset(qty, days){
   $('gen_mode').value = 'daily';
   toggleGeneralMode();
   $('dose_qty').value = qty;
-  $('dose_days').value = daily;
+  $('dose_days').value = days;
   generalLiquidDS();
 }
 
